@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SYNAPSE v19.0 - AUTO ENGINE</title>
+    <title>SYNAPSE v20.0 - DEBUG MODE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;900&family=Noto+Sans+KR:wght@300;500;700;900&display=swap" rel="stylesheet">
@@ -19,9 +19,7 @@
         .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
         .brand h1 { font-family: 'Exo 2'; font-size: 1.8rem; font-weight: 900; line-height: 1; margin: 0; }
         .brand span { font-size: 0.7rem; color: #666; font-weight: 700; letter-spacing: 1px; display: block; margin-top: 5px; }
-        .status-badge { font-size: 0.7rem; color: #0f0; border: 1px solid #0f0; padding: 3px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
-        .blink-dot { width: 6px; height: 6px; background: #0f0; border-radius: 50%; animation: blink 1.5s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        .status-badge { font-size: 0.7rem; color: #fbbf24; border: 1px solid #fbbf24; padding: 3px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
         .director-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
         .card { background: #141416; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; height: 150px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: 0.2s; cursor: pointer; }
         .card:active { transform: scale(0.98); border-color: var(--card-color); }
@@ -51,7 +49,7 @@
         .bubble { padding: 12px 16px; border-radius: 12px; max-width: 85%; line-height: 1.5; font-size: 0.95rem; }
         .ai { background: rgba(255,255,255,0.05); align-self: flex-start; border-left: 3px solid var(--cyan); color: #ddd; }
         .user { background: var(--blue); align-self: flex-end; color: #fff; border-bottom-right-radius: 2px; }
-        .sys-err { background: rgba(255, 42, 109, 0.1); border: 1px solid var(--danger); color: var(--danger); align-self: center; font-size: 0.8rem; text-align: center; width: 90%; }
+        .sys-err { background: rgba(255, 42, 109, 0.1); border: 1px solid var(--danger); color: var(--danger); align-self: center; font-size: 0.75rem; text-align: left; width: 95%; word-break: break-all; font-family: monospace; }
         .input-area { padding: 15px; background: #111; border-top: 1px solid #333; display: flex; gap: 10px; }
         .chat-input { flex: 1; background: #000; border: 1px solid #444; border-radius: 10px; padding: 12px; color: #fff; font-size: 1rem; }
         .send-btn { width: 50px; background: var(--cyan); border-radius: 10px; border: none; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
@@ -68,7 +66,7 @@
     <div id="boot-layer"><div class="boot-text">SYNAPSE</div><div class="loader-bar"><div class="loader-progress" id="prog"></div></div><div style="margin-top:10px; font-size:0.7rem; color:#666;" id="boot-msg">SYSTEM INITIALIZING...</div></div>
     <div id="auth-pop" style="display:none;"><div class="auth-box"><h2 style="color:var(--cyan); font-weight:800; margin-bottom:10px;">SECURITY CHECK</h2><p style="font-size:0.8rem; color:#aaa;">구글 API 키를 입력하십시오.<br>(최초 1회만 인증)</p><input type="password" id="key-input" class="auth-inp" placeholder="API KEY HERE"><button onclick="saveKey()" style="width:100%; padding:12px; background:var(--cyan); border:none; border-radius:8px; font-weight:800;">ACCESS</button></div></div>
     <div class="container" id="main-ui" style="opacity:0; transition:opacity 1s;">
-        <div class="header"><div class="brand"><h1>AZI-VISION</h1><span>CHAIRMAN CONTROL UNIT</span></div><div class="status-badge"><div class="blink-dot"></div> ONLINE v19.0</div></div>
+        <div class="header"><div class="brand"><h1>AZI-VISION</h1><span>CHAIRMAN CONTROL UNIT</span></div><div class="status-badge"> DEBUG MODE v20.0</div></div>
         <div class="sec-title"><i class="fas fa-users"></i> EXECUTIVE BOARD <div class="sec-line"></div></div>
         <div class="director-grid">
             <div class="card role-coo" onclick="openChat('COO')"><div><span class="card-title" style="color:var(--blue)">COO</span><i class="fas fa-shipping-fast card-icon"></i></div><div class="card-desc">운영/배송<br>현황 보고</div></div>
@@ -95,10 +93,10 @@
             CSO: { name: "전략이사", color: "#00f2ff", prompt: "당신은 CSO입니다. 리스크를 진단하고 미래 기회를 보고하세요.", acts: ["시장 리스크", "신사업 기회", "약점 분석"] },
             CFO: { name: "재무이사", color: "#fbbf24", prompt: "당신은 CFO입니다. 자금과 비용을 냉철하게 분석하세요.", acts: ["자금 현황", "비용 절감", "손익 분석"] }
         };
-        let curRole = 'COO'; let apiKey = localStorage.getItem('v19_key');
+        let curRole = 'COO'; let apiKey = localStorage.getItem('v20_key');
         window.onload = () => { let p=0; const t=setInterval(()=>{ p+=5; document.getElementById('prog').style.width=p+"%"; if(p>=100){ clearInterval(t); document.getElementById('boot-layer').style.display='none'; if(!apiKey) document.getElementById('auth-pop').style.display='flex'; else document.getElementById('main-ui').style.opacity=1; } },30); };
-        function saveKey(){ const k=document.getElementById('key-input').value.trim(); if(k.length<10)return alert("키 확인 필요"); localStorage.setItem('v19_key',k); apiKey=k; document.getElementById('auth-pop').style.display='none'; document.getElementById('main-ui').style.opacity=1; }
-        function resetKey(){ if(confirm("키 재설정?")) { localStorage.removeItem('v19_key'); location.reload(); } }
+        function saveKey(){ const k=document.getElementById('key-input').value.trim(); if(k.length<10)return alert("키 확인 필요"); localStorage.setItem('v20_key',k); apiKey=k; document.getElementById('auth-pop').style.display='none'; document.getElementById('main-ui').style.opacity=1; }
+        function resetKey(){ if(confirm("키 재설정?")) { localStorage.removeItem('v20_key'); location.reload(); } }
         function openChat(r){ curRole=r; const p=personas[r]; document.getElementById('chat-role-name').innerText=r; document.getElementById('chat-role-name').style.color=p.color; const c=document.getElementById('chat-history'); c.innerHTML=`<div class="bubble ai"><strong>[${p.name}]</strong><br>보고 준비되었습니다.</div>`; const q=document.getElementById('quick-btns'); q.innerHTML=''; p.acts.forEach(a=>{ q.innerHTML+=`<button onclick="quickAsk('${a}')" style="background:#333; color:#fff; border:1px solid #555; padding:8px 12px; border-radius:20px; font-size:0.8rem;">${a}</button>`; }); document.getElementById('chat-modal').classList.add('active'); }
         function closeChat(){ document.getElementById('chat-modal').classList.remove('active'); }
         function quickAsk(m){ document.getElementById('user-msg').value=m; sendMsg(); }
@@ -108,10 +106,10 @@
             c.innerHTML+=`<div class="bubble user">${t}</div>`; i.value=''; c.scrollTop=c.scrollHeight;
             const lid="l"+Date.now(); c.innerHTML+=`<div id="${lid}" class="bubble ai" style="opacity:0.7"><i class="fas fa-circle-notch fa-spin"></i> 분석 중...</div>`; c.scrollTop=c.scrollHeight;
             
-            // [핵심] 자동 엔진 교체 시스템 (Flash -> Pro -> 1.0)
             const models = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-1.0-pro'];
             let success = false;
-            
+            let errorLog = "";
+
             for(const model of models) {
                 try {
                     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
@@ -119,20 +117,27 @@
                         body: JSON.stringify({ contents: [{ parts: [{ text: personas[curRole].prompt + "\n질문: " + t }] }] })
                     });
                     const d = await res.json();
-                    if(d.error) throw new Error(d.error.message);
+                    
+                    if(d.error) {
+                        // 에러가 있다면 로그에 기록하고 다음 모델 시도
+                        errorLog += `[${model}] ${d.error.message} (Code: ${d.error.code})<br>`;
+                        throw new Error(d.error.message);
+                    }
                     
                     document.getElementById(lid).remove();
                     c.innerHTML+=`<div class="bubble ai"><strong>[${curRole}]</strong><br>${d.candidates[0].content.parts[0].text.replace(/\n/g,'<br>')}</div>`;
                     success = true;
-                    break; // 성공하면 반복 종료
+                    break;
                 } catch(e) {
-                    console.log(`Failed with ${model}: ${e.message}`);
+                    // 네트워크 에러 등 기록
+                    if(!errorLog.includes(model)) errorLog += `[${model}] ${e.message}<br>`;
                 }
             }
 
             if(!success) {
                 document.getElementById(lid).remove();
-                c.innerHTML+=`<div class="bubble sys-err">⛔ 모든 엔진 실패.<br>키가 만료되었거나 권한이 없습니다.<br>하단 [RESET KEY]를 눌러 키를 다시 입력해보세요.</div>`;
+                // [핵심] 실패 원인을 화면에 그대로 출력
+                c.innerHTML+=`<div class="bubble sys-err">⛔ <strong>오류 진단 결과:</strong><br><br>${errorLog}<br>이 화면을 캡처해서 보여주세요.</div>`;
             }
             c.scrollTop=c.scrollHeight;
         }
