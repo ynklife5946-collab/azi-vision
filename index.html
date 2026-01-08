@@ -3,31 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SYNAPSE v17.0 - AZI VISION</title>
+    <title>SYNAPSE v18.0 - STABLE PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;900&family=Noto+Sans+KR:wght@300;500;700;900&display=swap" rel="stylesheet">
-    
     <style>
-        :root {
-            --bg-deep: #050507; --bg-glass: rgba(20, 20, 22, 0.9);
-            --cyan: #00f2ff; --gold: #fbbf24; --danger: #ff2a6d; --blue: #0077ff;
-            --safe-bottom: 90px;
-        }
+        :root { --bg-deep: #050507; --cyan: #00f2ff; --gold: #fbbf24; --danger: #ff2a6d; --blue: #0077ff; --safe-bottom: 90px; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body {
-            background: var(--bg-deep); color: #fff; font-family: 'Noto Sans KR', sans-serif;
-            margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 10%, #111 0%, #000 70%);
-        }
-
-        /* BOOT SCREEN */
+        body { background: var(--bg-deep); color: #fff; font-family: 'Noto Sans KR', sans-serif; margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; background-image: radial-gradient(circle at 50% 10%, #111 0%, #000 70%); }
         #boot-layer { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .loader-bar { width: 200px; height: 4px; background: #222; border-radius: 2px; overflow: hidden; margin-top: 20px; }
         .loader-progress { width: 0%; height: 100%; background: var(--cyan); transition: width 0.1s; box-shadow: 0 0 15px var(--cyan); }
         .boot-text { font-family: 'Exo 2'; font-weight: 900; letter-spacing: 3px; color: var(--cyan); font-size: 2rem; }
-
-        /* LAYOUT */
         .container { max-width: 600px; margin: 0 auto; padding: 20px; padding-bottom: var(--safe-bottom); }
         .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
         .brand h1 { font-family: 'Exo 2'; font-size: 1.8rem; font-weight: 900; line-height: 1; margin: 0; }
@@ -35,117 +22,62 @@
         .status-badge { font-size: 0.7rem; color: #0f0; border: 1px solid #0f0; padding: 3px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
         .blink-dot { width: 6px; height: 6px; background: #0f0; border-radius: 50%; animation: blink 1.5s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-
-        /* CARDS */
         .director-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 30px; }
-        .card {
-            background: #141416; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px;
-            height: 150px; display: flex; flex-direction: column; justify-content: space-between; position: relative;
-            transition: 0.2s; cursor: pointer;
-        }
+        .card { background: #141416; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; height: 150px; display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: 0.2s; cursor: pointer; }
         .card:active { transform: scale(0.98); border-color: var(--card-color); }
         .card::before { content:''; position: absolute; top:0; left:0; width:100%; height:3px; background:var(--card-color); opacity:0.7; }
         .card-title { font-family: 'Exo 2'; font-size: 1.5rem; font-weight: 800; }
         .card-icon { font-size: 1.2rem; color: var(--card-color); float: right; }
         .card-desc { font-size: 0.8rem; color: #ccc; font-weight: 500; line-height: 1.4; }
-        
         .role-coo { --card-color: var(--blue); } .role-cmo { --card-color: var(--danger); }
         .role-cso { --card-color: var(--cyan); } .role-cfo { --card-color: var(--gold); }
-
-        /* CCTV & SHORTCUTS */
         .sec-title { color: var(--cyan); font-weight: 800; font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
         .sec-line { height: 1px; background: rgba(255,255,255,0.1); flex: 1; }
         .cctv-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px; }
         .cam { aspect-ratio: 16/9; background: #000; border-radius: 8px; border: 1px solid #333; position: relative; overflow: hidden; }
         .cam img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: grayscale(1); }
         .cam-ui { position: absolute; top: 5px; left: 5px; right: 5px; display: flex; justify-content: space-between; color: #fff; font-size: 8px; font-weight: 700; }
-        
         .sc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 30px; }
         .sc-btn { background: #1a1a1c; border: 1px solid #333; border-radius: 12px; height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
         .sc-btn:active { background: #333; }
         .sc-icon { font-size: 1.2rem; } .sc-txt { font-size: 0.65rem; color: #aaa; font-weight: 700; }
-
-        /* MODAL */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; flex-direction: column; }
         .modal.active { display: flex; animation: slideUp 0.3s; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
         .modal-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #111; }
         .modal-title { font-family: 'Exo 2'; font-size: 1.4rem; font-weight: 900; }
         .close-btn { font-size: 1.5rem; color: #666; padding: 5px; }
-
         .chat-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         .bubble { padding: 12px 16px; border-radius: 12px; max-width: 85%; line-height: 1.5; font-size: 0.95rem; }
         .ai { background: rgba(255,255,255,0.05); align-self: flex-start; border-left: 3px solid var(--cyan); color: #ddd; }
         .user { background: var(--blue); align-self: flex-end; color: #fff; border-bottom-right-radius: 2px; }
         .sys-err { background: rgba(255, 42, 109, 0.1); border: 1px solid var(--danger); color: var(--danger); align-self: center; font-size: 0.8rem; text-align: center; width: 90%; }
-
         .input-area { padding: 15px; background: #111; border-top: 1px solid #333; display: flex; gap: 10px; }
         .chat-input { flex: 1; background: #000; border: 1px solid #444; border-radius: 10px; padding: 12px; color: #fff; font-size: 1rem; }
         .send-btn { width: 50px; background: var(--cyan); border-radius: 10px; border: none; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
-
-        /* AUTH POPUP */
         #auth-pop { position: fixed; inset: 0; background: #000; z-index: 3000; display: flex; align-items: center; justify-content: center; }
         .auth-box { width: 85%; max-width: 350px; background: #111; border: 1px solid var(--cyan); padding: 25px; border-radius: 15px; text-align: center; }
         .auth-inp { width: 100%; padding: 12px; margin: 15px 0; background: #222; border: 1px solid #444; color: #fff; text-align: center; border-radius: 8px; }
-        
-        /* DOCK */
-        .dock { position: fixed; bottom: 0; width: 100%; height: var(--safe-bottom); background: var(--bg-glass); border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; backdrop-filter: blur(10px); }
+        .dock { position: fixed; bottom: 0; width: 100%; height: var(--safe-bottom); background: rgba(20,20,22,0.9); border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; backdrop-filter: blur(10px); }
         .dock-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #666; width: 60px; }
         .dock-btn i { font-size: 1.4rem; } .dock-btn span { font-size: 0.6rem; font-weight: 700; }
         .dock-btn:active { color: var(--cyan); transform: scale(0.9); }
-
     </style>
 </head>
 <body>
-
-    <div id="boot-layer">
-        <div class="boot-text">SYNAPSE</div>
-        <div class="loader-bar"><div class="loader-progress" id="prog"></div></div>
-        <div style="margin-top:10px; font-size:0.7rem; color:#666;" id="boot-msg">SYSTEM INITIALIZING...</div>
-    </div>
-
-    <div id="auth-pop" style="display:none;">
-        <div class="auth-box">
-            <h2 style="color:var(--cyan); font-weight:800; margin-bottom:10px;">SECURITY CHECK</h2>
-            <p style="font-size:0.8rem; color:#aaa;">구글 API 키를 입력하십시오.<br>(최초 1회만 인증)</p>
-            <input type="password" id="key-input" class="auth-inp" placeholder="API KEY HERE">
-            <button onclick="saveKey()" style="width:100%; padding:12px; background:var(--cyan); border:none; border-radius:8px; font-weight:800;">ACCESS</button>
-        </div>
-    </div>
-
+    <div id="boot-layer"><div class="boot-text">SYNAPSE</div><div class="loader-bar"><div class="loader-progress" id="prog"></div></div><div style="margin-top:10px; font-size:0.7rem; color:#666;" id="boot-msg">SYSTEM INITIALIZING...</div></div>
+    <div id="auth-pop" style="display:none;"><div class="auth-box"><h2 style="color:var(--cyan); font-weight:800; margin-bottom:10px;">SECURITY CHECK</h2><p style="font-size:0.8rem; color:#aaa;">구글 API 키를 입력하십시오.<br>(최초 1회만 인증)</p><input type="password" id="key-input" class="auth-inp" placeholder="API KEY HERE"><button onclick="saveKey()" style="width:100%; padding:12px; background:var(--cyan); border:none; border-radius:8px; font-weight:800;">ACCESS</button></div></div>
     <div class="container" id="main-ui" style="opacity:0; transition:opacity 1s;">
-        <div class="header">
-            <div class="brand"><h1>AZI-VISION</h1><span>CHAIRMAN CONTROL UNIT</span></div>
-            <div class="status-badge"><div class="blink-dot"></div> ONLINE v17.0</div>
-        </div>
-
+        <div class="header"><div class="brand"><h1>AZI-VISION</h1><span>CHAIRMAN CONTROL UNIT</span></div><div class="status-badge"><div class="blink-dot"></div> ONLINE v18.0</div></div>
         <div class="sec-title"><i class="fas fa-users"></i> EXECUTIVE BOARD <div class="sec-line"></div></div>
         <div class="director-grid">
-            <div class="card role-coo" onclick="openChat('COO')">
-                <div><span class="card-title" style="color:var(--blue)">COO</span><i class="fas fa-shipping-fast card-icon"></i></div>
-                <div class="card-desc">운영/배송<br>현황 보고</div>
-            </div>
-            <div class="card role-cmo" onclick="openChat('CMO')">
-                <div><span class="card-title" style="color:var(--danger)">CMO</span><i class="fas fa-bullhorn card-icon"></i></div>
-                <div class="card-desc">마케팅/매출<br>전략 수립</div>
-            </div>
-            <div class="card role-cso" onclick="openChat('CSO')">
-                <div><span class="card-title" style="color:var(--cyan)">CSO</span><i class="fas fa-chess-queen card-icon"></i></div>
-                <div class="card-desc">경쟁사/리스크<br>시장 분석</div>
-            </div>
-            <div class="card role-cfo" onclick="openChat('CFO')">
-                <div><span class="card-title" style="color:var(--gold)">CFO</span><i class="fas fa-chart-pie card-icon"></i></div>
-                <div class="card-desc">자금/비용<br>손익 관리</div>
-            </div>
+            <div class="card role-coo" onclick="openChat('COO')"><div><span class="card-title" style="color:var(--blue)">COO</span><i class="fas fa-shipping-fast card-icon"></i></div><div class="card-desc">운영/배송<br>현황 보고</div></div>
+            <div class="card role-cmo" onclick="openChat('CMO')"><div><span class="card-title" style="color:var(--danger)">CMO</span><i class="fas fa-bullhorn card-icon"></i></div><div class="card-desc">마케팅/매출<br>전략 수립</div></div>
+            <div class="card role-cso" onclick="openChat('CSO')"><div><span class="card-title" style="color:var(--cyan)">CSO</span><i class="fas fa-chess-queen card-icon"></i></div><div class="card-desc">경쟁사/리스크<br>시장 분석</div></div>
+            <div class="card role-cfo" onclick="openChat('CFO')"><div><span class="card-title" style="color:var(--gold)">CFO</span><i class="fas fa-chart-pie card-icon"></i></div><div class="card-desc">자금/비용<br>손익 관리</div></div>
         </div>
-
         <div class="sec-title"><i class="fas fa-video"></i> LIVE FEEDS <div class="sec-line"></div></div>
-        <div class="cctv-box">
-            <div class="cam"><img src="https://picsum.photos/seed/a1/300/200"><div class="cam-ui"><span>CAM 01</span><span>REC</span></div></div>
-            <div class="cam"><img src="https://picsum.photos/seed/a2/300/200"><div class="cam-ui"><span>CAM 02</span><span>REC</span></div></div>
-        </div>
-
+        <div class="cctv-box"><div class="cam"><img src="https://picsum.photos/seed/a1/300/200"><div class="cam-ui"><span>CAM 01</span><span>REC</span></div></div><div class="cam"><img src="https://picsum.photos/seed/a2/300/200"><div class="cam-ui"><span>CAM 02</span><span>REC</span></div></div></div>
         <div class="sec-title"><i class="fas fa-bolt"></i> QUICK LINK <div class="sec-line"></div></div>
         <div class="sc-grid">
             <div class="sc-btn" onclick="window.open('https://naver.com')"><i class="fas fa-search sc-icon" style="color:#2db400"></i><span class="sc-txt">NAVER</span></div>
@@ -154,146 +86,39 @@
             <div class="sc-btn" onclick="alert('은행')"><i class="fas fa-university sc-icon" style="color:var(--gold)"></i><span class="sc-txt">BANK</span></div>
         </div>
     </div>
-
-    <div class="dock">
-        <div class="dock-btn" onclick="location.reload()"><i class="fas fa-home"></i><span>HOME</span></div>
-        <div class="dock-btn" onclick="resetKey()"><i class="fas fa-key"></i><span>RESET KEY</span></div>
-        <div class="dock-btn" style="opacity:0.3"><i class="fas fa-cog"></i><span>SET</span></div>
-    </div>
-
-    <div id="chat-modal" class="modal">
-        <div class="modal-header">
-            <div><span class="modal-title" id="chat-role-name">ROLE</span></div>
-            <i class="fas fa-times close-btn" onclick="closeChat()"></i>
-        </div>
-        <div class="chat-area" id="chat-history"></div>
-        
-        <div style="padding:0 15px 10px 15px; overflow-x:auto; white-space:nowrap; display:flex; gap:8px;" id="quick-btns"></div>
-
-        <div class="input-area">
-            <input type="text" id="user-msg" class="chat-input" placeholder="지시사항 입력..." onkeypress="if(event.key==='Enter') sendMsg()">
-            <button onclick="sendMsg()" class="send-btn"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
-
+    <div class="dock"><div class="dock-btn" onclick="location.reload()"><i class="fas fa-home"></i><span>HOME</span></div><div class="dock-btn" onclick="resetKey()"><i class="fas fa-key"></i><span>RESET KEY</span></div><div class="dock-btn" style="opacity:0.3"><i class="fas fa-cog"></i><span>SET</span></div></div>
+    <div id="chat-modal" class="modal"><div class="modal-header"><div><span class="modal-title" id="chat-role-name">ROLE</span></div><i class="fas fa-times close-btn" onclick="closeChat()"></i></div><div class="chat-area" id="chat-history"></div><div style="padding:0 15px 10px 15px; overflow-x:auto; white-space:nowrap; display:flex; gap:8px;" id="quick-btns"></div><div class="input-area"><input type="text" id="user-msg" class="chat-input" placeholder="지시사항 입력..." onkeypress="if(event.key==='Enter') sendMsg()"><button onclick="sendMsg()" class="send-btn"><i class="fas fa-paper-plane"></i></button></div></div>
     <script>
-        // --- DATA ---
         const personas = {
-            COO: { name: "운영이사", color: "#0077ff", prompt: "당신은 COO입니다. 배송, CS, 재고 문제를 해결하는 구체적 방안을 보고하세요.", acts: ["배송 현황", "재고 점검", "CS 이슈"] },
-            CMO: { name: "마케팅이사", color: "#ff2a6d", prompt: "당신은 CMO입니다. 매출 증대와 광고 효율을 높일 전략을 제안하세요.", acts: ["매출 분석", "광고 기획", "경쟁사 동향"] },
-            CSO: { name: "전략이사", color: "#00f2ff", prompt: "당신은 CSO입니다. 리스크를 진단하고 미래 사업 기회를 포착하여 보고하세요.", acts: ["시장 리스크", "신사업 기회", "약점 분석"] },
-            CFO: { name: "재무이사", color: "#fbbf24", prompt: "당신은 CFO입니다. 자금 흐름과 비용 절감 방안을 냉철하게 분석하세요.", acts: ["자금 현황", "비용 절감", "손익 분석"] }
+            COO: { name: "운영이사", color: "#0077ff", prompt: "당신은 COO입니다. 운영 문제를 해결하는 방안을 보고하세요.", acts: ["배송 현황", "재고 점검", "CS 이슈"] },
+            CMO: { name: "마케팅이사", color: "#ff2a6d", prompt: "당신은 CMO입니다. 매출 증대 전략을 제안하세요.", acts: ["매출 분석", "광고 기획", "경쟁사 동향"] },
+            CSO: { name: "전략이사", color: "#00f2ff", prompt: "당신은 CSO입니다. 리스크를 진단하고 미래 기회를 보고하세요.", acts: ["시장 리스크", "신사업 기회", "약점 분석"] },
+            CFO: { name: "재무이사", color: "#fbbf24", prompt: "당신은 CFO입니다. 자금과 비용을 냉철하게 분석하세요.", acts: ["자금 현황", "비용 절감", "손익 분석"] }
         };
-        let curRole = 'COO';
-        let apiKey = localStorage.getItem('v17_key');
-
-        // --- BOOT ---
-        window.onload = () => {
-            let p = 0;
-            const bar = document.getElementById('prog');
-            const t = setInterval(() => {
-                p += 5; bar.style.width = p + "%";
-                if(p>=100) {
-                    clearInterval(t);
-                    document.getElementById('boot-layer').style.display='none';
-                    if(!apiKey) document.getElementById('auth-pop').style.display='flex';
-                    else document.getElementById('main-ui').style.opacity=1;
-                }
-            }, 30);
-        };
-
-        function saveKey() {
-            const k = document.getElementById('key-input').value.trim();
-            if(k.length < 10) return alert("키가 너무 짧습니다.");
-            localStorage.setItem('v17_key', k);
-            apiKey = k;
-            document.getElementById('auth-pop').style.display='none';
-            document.getElementById('main-ui').style.opacity=1;
-        }
-
-        function resetKey() {
-            if(confirm("키를 재설정하시겠습니까?")) {
-                localStorage.removeItem('v17_key');
-                location.reload();
-            }
-        }
-
-        // --- CHAT LOGIC ---
-        function openChat(role) {
-            curRole = role;
-            const p = personas[role];
-            document.getElementById('chat-role-name').innerText = role;
-            document.getElementById('chat-role-name').style.color = p.color;
-            
-            const chat = document.getElementById('chat-history');
-            chat.innerHTML = `<div class="bubble ai"><strong>[${p.name}]</strong><br>의장님, ${role} 부문 보고 준비되었습니다.</div>`;
-            
-            // 추천 버튼 생성
-            const qBox = document.getElementById('quick-btns');
-            qBox.innerHTML = '';
-            p.acts.forEach(act => {
-                qBox.innerHTML += `<button onclick="quickAsk('${act}')" style="background:#333; color:#fff; border:1px solid #555; padding:8px 12px; border-radius:20px; font-size:0.8rem;">${act}</button>`;
-            });
-
-            document.getElementById('chat-modal').classList.add('active');
-        }
-
-        function closeChat() {
-            document.getElementById('chat-modal').classList.remove('active');
-        }
-
-        function quickAsk(msg) {
-            document.getElementById('user-msg').value = msg;
-            sendMsg();
-        }
-
-        async function sendMsg() {
-            const inp = document.getElementById('user-msg');
-            const chat = document.getElementById('chat-history');
-            const txt = inp.value.trim();
-            if(!txt) return;
-
-            // 1. 유저 메시지 표시
-            chat.innerHTML += `<div class="bubble user">${txt}</div>`;
-            inp.value = '';
-            chat.scrollTop = chat.scrollHeight;
-
-            // 2. 로딩 표시
-            const loadId = "load_" + Date.now();
-            chat.innerHTML += `<div id="${loadId}" class="bubble ai" style="opacity:0.7"><i class="fas fa-circle-notch fa-spin"></i> 분석 중...</div>`;
-            chat.scrollTop = chat.scrollHeight;
-
+        let curRole = 'COO'; let apiKey = localStorage.getItem('v18_key');
+        window.onload = () => { let p=0; const t=setInterval(()=>{ p+=5; document.getElementById('prog').style.width=p+"%"; if(p>=100){ clearInterval(t); document.getElementById('boot-layer').style.display='none'; if(!apiKey) document.getElementById('auth-pop').style.display='flex'; else document.getElementById('main-ui').style.opacity=1; } },30); };
+        function saveKey(){ const k=document.getElementById('key-input').value.trim(); if(k.length<10)return alert("키 확인 필요"); localStorage.setItem('v18_key',k); apiKey=k; document.getElementById('auth-pop').style.display='none'; document.getElementById('main-ui').style.opacity=1; }
+        function resetKey(){ if(confirm("키 재설정?")) { localStorage.removeItem('v18_key'); location.reload(); } }
+        function openChat(r){ curRole=r; const p=personas[r]; document.getElementById('chat-role-name').innerText=r; document.getElementById('chat-role-name').style.color=p.color; const c=document.getElementById('chat-history'); c.innerHTML=`<div class="bubble ai"><strong>[${p.name}]</strong><br>보고 준비되었습니다.</div>`; const q=document.getElementById('quick-btns'); q.innerHTML=''; p.acts.forEach(a=>{ q.innerHTML+=`<button onclick="quickAsk('${a}')" style="background:#333; color:#fff; border:1px solid #555; padding:8px 12px; border-radius:20px; font-size:0.8rem;">${a}</button>`; }); document.getElementById('chat-modal').classList.add('active'); }
+        function closeChat(){ document.getElementById('chat-modal').classList.remove('active'); }
+        function quickAsk(m){ document.getElementById('user-msg').value=m; sendMsg(); }
+        async function sendMsg(){
+            const i=document.getElementById('user-msg'); const c=document.getElementById('chat-history'); const t=i.value.trim(); if(!t)return;
+            c.innerHTML+=`<div class="bubble user">${t}</div>`; i.value=''; c.scrollTop=c.scrollHeight;
+            const lid="l"+Date.now(); c.innerHTML+=`<div id="${lid}" class="bubble ai" style="opacity:0.7"><i class="fas fa-circle-notch fa-spin"></i> 분석 중...</div>`; c.scrollTop=c.scrollHeight;
             try {
-                // [핵심 수정] v1 -> v1beta (Flash 모델 호환성 해결)
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: personas[curRole].prompt + "\n\n질문: " + txt + "\n답변:" }] }]
-                    })
+                // [FIX] Flash 모델 대신 안정적인 Pro 모델 사용
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: personas[curRole].prompt + "\n질문: " + t }] }] })
                 });
-
-                const data = await res.json();
-                document.getElementById(loadId).remove();
-
-                if(data.error) {
-                    throw new Error(data.error.message);
-                }
-
-                const reply = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
-                chat.innerHTML += `<div class="bubble ai"><strong>[${curRole} 보고]</strong><br>${reply}</div>`;
-
-            } catch (err) {
-                document.getElementById(loadId)?.remove();
-                chat.innerHTML += `<div class="bubble sys-err">
-                    <strong>🚫 보고 실패</strong><br>
-                    ${err.message}<br>
-                    (키를 잘못 입력했거나 구글 서버가 불안정합니다. RESET KEY를 해보세요)
-                </div>`;
-            }
-            chat.scrollTop = chat.scrollHeight;
+                const d = await res.json(); document.getElementById(lid).remove();
+                if(d.error) throw new Error(d.error.message);
+                c.innerHTML+=`<div class="bubble ai"><strong>[${curRole}]</strong><br>${d.candidates[0].content.parts[0].text.replace(/\n/g,'<br>')}</div>`;
+            } catch(e) {
+                document.getElementById(lid)?.remove();
+                c.innerHTML+=`<div class="bubble sys-err">⛔ 통신 실패: ${e.message}</div>`;
+            } c.scrollTop=c.scrollHeight;
         }
     </script>
 </body>
