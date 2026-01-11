@@ -2,116 +2,127 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SYNAPSE : NO EXCUSE</title>
+    <title>AZI VISION : SYSTEM V37</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
     <style>
-        /* [FINAL ENGINE] */
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
-        
-        :root {
-            --bg-core: #000000;
-            --bg-card: #121212;
-            --bg-panel: #1a1a1a;
-            --border: #333333;
-            --text-main: #ffffff;
-            --text-sub: #888888;
-            --neon-cyan: #00f3ff;
-            --neon-purple: #bc13fe;
-            --neon-red: #ff003c;
-            --neon-gold: #ffd700;
-            --neon-green: #00ff66;
-            --modal-overlay: rgba(0,0,0,0.92);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
 
-        body.white-mode {
-            --bg-core: #f5f5f7;
-            --bg-card: #ffffff;
-            --bg-panel: #e9ecef;
-            --border: #d1d5db;
-            --text-main: #111827;
-            --text-sub: #4b5563;
-            --neon-cyan: #0066ff;
-            --neon-purple: #6200ea;
-            --neon-red: #d32f2f;
-            --neon-gold: #f57c00;
-            --neon-green: #2e7d32;
+        /* === GLOBAL RESET === */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body { margin: 0; padding: 0; background-color: #000; color: #fff; font-family: 'Noto Sans KR', sans-serif; overflow-x: hidden; }
+
+        /* === LANDING PAGE CSS (건드리지 않음) === */
+        #landing-wrapper { width: 100%; min-height: 100vh; position: relative; z-index: 10; background: #000; }
+        .text-gradient { background: linear-gradient(to right, #00f3ff, #0066ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; cursor: pointer; position: relative; }
+        .glass-card::after { content: 'READ REPORT +'; position: absolute; bottom: 20px; right: 20px; font-size: 10px; font-weight: bold; color: #00f3ff; opacity: 0; transition: 0.3s; }
+        .glass-card:hover { border-color: #00f3ff; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); transform: translateY(-5px); }
+        .glass-card:hover::after { opacity: 1; }
+        #lp-detail-modal { display: none; position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        #lp-detail-modal.show { display: flex; opacity: 1; }
+        .lp-modal-content { width: 90%; max-width: 650px; background: #111; border: 1px solid #333; border-radius: 20px; padding: 30px; position: relative; box-shadow: 0 0 50px rgba(0, 243, 255, 0.15); max-height: 85vh; overflow-y: auto; }
+        .lp-modal-content::-webkit-scrollbar { width: 6px; } .lp-modal-content::-webkit-scrollbar-track { background: #111; } .lp-modal-content::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        .report-body h4 { color: #00f3ff; font-weight: 900; margin-top: 25px; margin-bottom: 10px; font-size: 16px; border-left: 3px solid #00f3ff; padding-left: 10px; }
+        .report-body p { color: #ccc; font-size: 14px; line-height: 1.7; margin-bottom: 15px; text-align: justify; }
+        .report-body ul { list-style: none; padding: 0; margin-bottom: 15px; }
+        .report-body li { color: #aaa; font-size: 14px; margin-bottom: 8px; padding-left: 15px; position: relative; }
+        .report-body li::before { content: '•'; color: #00f3ff; position: absolute; left: 0; }
+        .report-highlight { color: #fff; font-weight: bold; background: rgba(0, 243, 255, 0.1); padding: 0 4px; }
+        .stat-bar { height: 6px; background: #222; border-radius: 3px; overflow: hidden; margin-top: 5px; }
+        .stat-fill { height: 100%; background: linear-gradient(90deg, #00f3ff, #0066ff); width: 0%; transition: width 1s ease-out; }
+
+        /* === SYNAPS SYSTEM CSS (의장님 제공 코드 기반 + 짤림방지 + 스캔모션) === */
+        #synapse-wrapper { display: none; position: fixed; inset: 0; width: 100%; height: 100dvh; z-index: 99999; background: #000; overflow: hidden; }
+        #synapse-wrapper.active { display: block; }
+
+        #synapse-root {
+            /* 기존 변수 유지 */
+            --bg-core: #000000; --bg-card: #121212; --bg-panel: #1a1a1a; --border: #333333;
+            --text-main: #ffffff; --text-sub: #888888;
+            --neon-cyan: #00f3ff; --neon-purple: #bc13fe; --neon-red: #ff003c; --neon-gold: #ffd700; --neon-green: #00ff66;
+            --modal-overlay: rgba(0,0,0,0.92);
+            font-family: 'Noto Sans KR', sans-serif; width: 100%; height: 100%; position: relative; background: var(--bg-core); color: var(--text-main);
+        }
+        #synapse-root.white-mode {
+            --bg-core: #f5f5f7; --bg-card: #ffffff; --bg-panel: #e9ecef; --border: #d1d5db;
+            --text-main: #111827; --text-sub: #4b5563;
+            --neon-cyan: #0066ff; --neon-purple: #6200ea; --neon-red: #d32f2f; --neon-gold: #f57c00; --neon-green: #2e7d32;
             --modal-overlay: rgba(255,255,255,0.95);
         }
+        @media (min-width: 768px) {
+            #synapse-wrapper { background-image: radial-gradient(#1a1a1a 1px, transparent 1px); background-size: 20px 20px; display: none; justify-content: center; align-items: center; }
+            #synapse-wrapper.active { display: flex; }
+            #synapse-root { width: 420px !important; height: 85vh !important; max-height: 900px; border-radius: 30px; border: 1px solid #333; box-shadow: 0 0 60px rgba(0,0,0,0.8); overflow: hidden; }
+        }
 
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg-core); color: var(--text-main); font-family: 'Noto Sans KR', sans-serif; height: 100vh; overflow: hidden; }
-
-        /* [LAYOUT] */
+        /* [SYSTEM UI - 원본 유지] */
         .page { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg-core); opacity: 1; transition: opacity 0.2s; z-index: 10; }
         .page.hidden { opacity: 0; pointer-events: none; z-index: 0; }
-
-        /* [HEADER] */
-        header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); }
+        .syn-header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); }
         .top-row { display: flex; justify-content: space-between; align-items: flex-end; }
-        .logo-main { font-size: 32px; font-weight: 900; color: var(--neon-cyan); letter-spacing: -1px; line-height: 1; font-family: 'Exo 2'; font-style: italic; text-shadow: 0 0 10px rgba(0,243,255,0.3); }
+        /* 수정사항 1: SYNAPSE -> SYNAPS (HTML에서 변경) */
+        .logo-main { font-size: 32px; font-weight: 900; color: var(--neon-cyan); letter-spacing: -1px; line-height: 1; font-family: 'Exo 2'; font-style: italic; text-shadow: 0 0 10px rgba(0,243,255,0.3); cursor: pointer; }
         .logo-sub { font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 2px; margin-top: 5px; font-family: 'Roboto Mono'; }
         .clock-box { text-align: right; font-family: 'Roboto Mono'; }
         .time-big { font-size: 24px; font-weight: 700; color: var(--text-main); }
         .date-full { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
-
-        /* [TICKER] */
         .news-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: var(--bg-card); padding: 12px 0; border-bottom: 1px solid var(--border); margin-top: 15px; }
         .ticker-wrap { display: flex; width: max-content; animation: ticker 40s linear infinite; }
         .ticker-item { padding: 0 30px; font-size: 13px; color: var(--text-sub); font-weight: 500; }
         .ticker-item span { color: var(--neon-red); font-weight: 900; margin-right: 6px; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        /* [SCROLL AREA] */
         .main-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; }
         .sec-head { font-size: 11px; color: var(--text-sub); font-weight: 900; margin: 30px 0 10px; letter-spacing: 1px; font-family: 'Roboto Mono'; border-left: 3px solid var(--neon-cyan); padding-left: 8px; }
-
-        /* [CONTROL CARDS] */
         .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { 
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; height: 110px; 
-            display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; 
-            position: relative; overflow: hidden; transition: border-color 0.2s;
-        }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; height: 110px; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; position: relative; overflow: hidden; transition: border-color 0.2s; }
         .card:active { border-color: var(--neon-cyan); }
         .c-tit { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; letter-spacing: 0.5px; z-index: 2; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-        #card-score { background: var(--bg-card); }
+        
+        /* [수정사항 2: SCANNING MOTION CSS 추가] */
         #score-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 1; display: none; filter: contrast(1.1); }
+        .scan-line {
+            position: absolute; top: -20%; left: 0; width: 100%; height: 20%;
+            background: linear-gradient(to bottom, transparent, var(--neon-cyan), transparent);
+            opacity: 0.5; z-index: 3; display: none;
+            animation: scanMove 2s linear infinite;
+        }
+        .card.scanning .scan-line { display: block; }
+        .card.scanning { border: 1px solid var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
+        .card.scanning .c-tit { color: var(--neon-cyan) !important; animation: blinkText 1s infinite; }
+        @keyframes scanMove { 0% { top: -20%; } 100% { top: 120%; } }
+        @keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        /* [LIVE CHANNELS] */
         .cctv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .cctv { height: 90px; background: #000; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); }
         .cctv img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
         .rec { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); padding: 3px 6px; border-radius: 4px; font-size: 9px; color: white; font-weight: 900; display: flex; align-items: center; gap: 4px; z-index: 2; }
         .dot { width: 5px; height: 5px; background: var(--neon-red); border-radius: 50%; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* [SHORTCUTS] */
         .shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .s-btn { height: 90px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
         .s-btn:active { background: var(--bg-panel); transform: scale(0.98); }
         .s-ico { width: 26px; height: 26px; fill: var(--text-sub); }
         .s-lbl { font-size: 11px; color: var(--text-sub); font-weight: 700; }
-        body.ghost-active .s-ico { fill: var(--neon-cyan); }
-        body.ghost-active .s-lbl { color: var(--neon-cyan); }
-
-        /* [DOCK] */
-        .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 95px; background: var(--bg-core); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: flex-start; padding-top: 18px; z-index: 100; opacity: 0.98; }
+        #synapse-root.ghost-active .s-ico { fill: var(--neon-cyan); }
+        #synapse-root.ghost-active .s-lbl { color: var(--neon-cyan); }
+        .dock { position: absolute; bottom: 0; left: 0; width: 100%; height: 95px; background: var(--bg-core); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: flex-start; padding-top: 18px; z-index: 100; opacity: 0.98; }
         .d-btn { width: 60px; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0.5; color: var(--text-main); }
         .d-btn.active { opacity: 1; color: var(--neon-cyan); }
         .d-ico { width: 24px; height: 24px; fill: currentColor; }
         .d-lbl { font-size: 10px; font-weight: 700; }
         .vis-btn { width: 64px; height: 64px; background: linear-gradient(135deg, var(--neon-cyan), #0066ff); border-radius: 20px; margin-top: -35px; border: 5px solid var(--bg-core); display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 25px rgba(0, 243, 255, 0.3); }
         .vis-btn svg { width: 30px; height: 30px; fill: white; }
-
-        /* [MODAL COMMON] */
         .sub-head { padding: 30px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-core); position: sticky; top: 0; z-index: 20; }
         .sub-tit { font-size: 22px; font-weight: 900; color: var(--text-main); font-style: italic; }
         .close-btn { width: 100%; height: 55px; background: var(--text-main); color: var(--bg-core); border-radius: 12px; font-weight: 900; border: none; font-size: 16px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-
-        /* [CUSTOM MODAL SYSTEM - REPLACES SYSTEM ALERTS] */
-        #custom-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        #custom-modal { position: absolute; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         #custom-modal.show { display: flex; }
         .modal-box { width: 85%; max-width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .modal-tit { font-size: 18px; font-weight: 900; color: var(--text-main); margin-bottom: 10px; }
@@ -120,55 +131,26 @@
         .m-btn { flex: 1; height: 50px; border-radius: 12px; border: none; font-weight: 800; font-size: 14px; cursor: pointer; }
         .m-yes { background: var(--neon-cyan); color: #000; }
         .m-no { background: var(--bg-panel); color: var(--text-sub); border: 1px solid var(--border); }
-
-        /* [CUSTOM NUMBER PAD MODAL FOR BANK] */
-        #input-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; flex-direction: column; justify-content: flex-end; }
+        #input-modal { position: absolute; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; flex-direction: column; justify-content: flex-end; }
         #input-modal.show { display: flex; }
-        .input-box { background: var(--bg-card); border-top: 2px solid var(--neon-cyan); padding: 30px 20px; border-radius: 25px 25px 0 0; }
+        .input-box { background: var(--bg-card); border-top: 2px solid var(--neon-cyan); padding: 30px 20px; border-radius: 25px 25px 0 0; padding-bottom: calc(30px + env(safe-area-inset-bottom)); }
         .input-display { font-size: 32px; color: var(--text-main); text-align: right; margin-bottom: 20px; font-family: 'Roboto Mono'; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .num-btn { height: 60px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-size: 20px; font-weight: bold; }
-        .num-btn:active { background: var(--neon-cyan); color: black; }
         .num-ok { grid-column: span 3; background: var(--neon-cyan); color: black; margin-top: 10px; }
-
-        /* [ANALYSIS VIEW - FULL COVERAGE] */
-        #analysis-view { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh; 
-            background: var(--bg-card); z-index: 5000; 
-            border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0;
-            display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            box-shadow: 0 -10px 100px rgba(0,0,0,0.8);
-        }
+        #analysis-view { position: absolute; bottom: 0; left: 0; width: 100%; height: 92%; background: var(--bg-card); z-index: 5000; border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 -10px 100px rgba(0,0,0,0.8); }
         #analysis-view.show { transform: translateY(0); }
         .an-img-area { flex: 1; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); border-radius: 23px 23px 0 0; }
         #an-img-target { width: 100%; height: 100%; object-fit: contain; }
-        .an-data-area { height: 40%; padding: 25px; overflow-y: auto; background: var(--bg-core); }
+        .an-data-area { height: 40%; padding: 25px; padding-bottom: calc(25px + env(safe-area-inset-bottom)); overflow-y: auto; background: var(--bg-core); }
         .an-tit { font-size: 18px; font-weight: 900; color: var(--neon-cyan); margin-bottom: 20px; }
-        .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-
-        /* --- [CONTENTS] --- */
-        
-        /* CALCULATOR - FIXED VISIBILITY */
+        .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); }
         #calc-wrap { padding: 0; display: flex; flex-direction: column; height: 100%; }
         #calc-disp { background: var(--bg-panel); padding: 30px; text-align: right; font-size: 40px; border-radius: 16px; margin-bottom: 20px; font-family: 'Roboto Mono'; color: var(--text-main); border: 1px solid var(--border); min-height: 100px; display: flex; align-items: center; justify-content: flex-end; }
         .calc-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
         .cp-btn { padding: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border-radius: 14px; font-size: 22px; font-weight: bold; color: var(--text-main); border: 1px solid var(--border); cursor: pointer; }
-        .cp-btn:active { background: var(--neon-cyan); color: black; }
         .cp-act { color: var(--neon-cyan); }
         .cp-eq { grid-column: span 4; background: var(--neon-cyan); color: black; border: none; height: 60px; margin-bottom: 10px; }
-
-        /* CALENDAR */
-        .cal-nav { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
-        .cal-ym { font-size: 24px; font-weight: 900; color: var(--neon-cyan); font-family: 'Roboto Mono'; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
-        .cal-head { font-size: 12px; color: var(--text-sub); font-weight: bold; margin-bottom: 10px; }
-        .cal-cell { height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 14px; background: var(--bg-panel); color: var(--text-sub); border: 1px solid transparent; cursor: pointer; }
-        .cal-cell.today { border: 1px solid var(--neon-cyan); color: var(--text-main); }
-        .cal-cell.active { background: var(--neon-cyan); color: #000; font-weight: 900; }
-        #cal-memo { width: 100%; height: 150px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; margin-top: 25px; padding: 15px; color: var(--text-main); font-size: 15px; resize: none; }
-        .cal-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 12px; font-weight: 900; border: none; margin-top: 15px; font-size: 16px; }
-
-        /* BANK */
         .bank-disp { padding: 40px 20px; text-align: center; background: var(--bg-panel); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
         .bank-lbl { font-size: 12px; color: var(--text-sub); font-weight: 700; margin-bottom: 5px; }
         .bank-val { font-size: 40px; font-weight: 900; color: var(--neon-gold); font-family: 'Roboto Mono'; letter-spacing: -2px; }
@@ -177,8 +159,20 @@
         .b-btn.in { background: rgba(0, 255, 102, 0.1); border-color: var(--neon-green); color: var(--neon-green); }
         .b-btn.out { background: rgba(255, 60, 60, 0.1); border-color: var(--neon-red); color: var(--neon-red); }
         .b-reset { width: 100%; height: 55px; background: transparent; border: 1px solid var(--border); color: var(--text-sub); border-radius: 12px; margin-top: 20px; }
+        .cal-nav { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+        .cal-ym { font-size: 24px; font-weight: 900; color: var(--neon-cyan); font-family: 'Roboto Mono'; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .cal-head { font-size: 12px; color: var(--text-sub); font-weight: bold; margin-bottom: 10px; }
+        .cal-cell { height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 14px; background: var(--bg-panel); color: var(--text-sub); border: 1px solid transparent; cursor: pointer; }
+        .cal-cell.today { border: 1px solid var(--neon-cyan); color: var(--text-main); }
+        .cal-cell.active { background: var(--neon-cyan); color: #000; font-weight: 900; }
+        #cal-memo { width: 100%; height: 150px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; margin-top: 25px; padding: 15px; color: var(--text-main); font-size: 15px; resize: none; }
+        
+        /* [수정사항 3: 달력 버튼 그룹 CSS] */
+        .cal-btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .cal-save { flex: 2; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 12px; font-weight: 900; border: none; font-size: 16px; }
+        .cal-del { flex: 1; height: 60px; background: rgba(255, 60, 60, 0.1); border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 12px; font-weight: 900; font-size: 16px; }
 
-        /* SETTINGS */
         .st-header { background: rgba(0, 255, 102, 0.05); border: 1px solid var(--neon-green); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 30px; }
         .st-tit { color: var(--neon-green); font-weight: 900; font-size: 20px; margin-bottom: 5px; }
         .st-sub { color: var(--text-sub); font-size: 11px; }
@@ -188,8 +182,6 @@
         .st-inp { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 15px; padding: 5px 0; border-bottom: 1px solid var(--border); }
         .st-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 14px; font-weight: 900; border: none; margin-top: 30px; font-size: 16px; }
         .st-reset { width: 100%; height: 60px; background: rgba(255,60,60,0.1); border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 14px; font-weight: 900; margin-top: 15px; font-size: 16px; margin-bottom: 100px; }
-
-        /* ODDS & EDGE */
         .odds-table { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--text-sub); }
         .odds-table th { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); color: var(--neon-purple); }
         .odds-table td { padding: 15px 10px; border-bottom: 1px solid var(--border); color: var(--text-main); font-weight: 500; }
@@ -200,138 +192,324 @@
         .ec-rate { font-weight: 900; color: var(--neon-red); font-family: 'Roboto Mono'; }
         .ec-bar { width: 100%; height: 8px; background: var(--bg-card); border-radius: 4px; overflow: hidden; }
         .ec-fill { height: 100%; background: var(--neon-red); }
-
     </style>
 </head>
 <body>
-    <input type="file" id="cam-input" hidden accept="image/*">
-    
-    <div id="custom-modal">
-        <div class="modal-box">
-            <div class="modal-tit" id="m-tit">이 페이지 내용:</div>
-            <div class="modal-msg" id="modal-msg">MESSAGE</div>
-            <div class="modal-btns">
-                <button class="m-btn m-no" onclick="Modal.close()">취소</button>
-                <button class="m-btn m-yes" id="modal-ok">확인</button>
+
+    <div id="landing-wrapper">
+        <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800 top-0">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="text-2xl font-black italic tracking-tighter text-white font-[Exo_2]">
+                    AZI <span class="text-cyan-400">VISION</span>
+                </div>
+                <button onclick="enterSynaps()" class="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded text-black font-black text-sm hover:scale-105 transition shadow-lg shadow-cyan-500/30">
+                    SYSTEM ACCESS
+                </button>
             </div>
-        </div>
-    </div>
-
-    <div id="input-modal">
-        <div class="input-box">
-            <div class="input-display" id="inp-disp">0</div>
-            <div class="numpad">
-                <button class="num-btn" onclick="Input.add(1)">1</button><button class="num-btn" onclick="Input.add(2)">2</button><button class="num-btn" onclick="Input.add(3)">3</button>
-                <button class="num-btn" onclick="Input.add(4)">4</button><button class="num-btn" onclick="Input.add(5)">5</button><button class="num-btn" onclick="Input.add(6)">6</button>
-                <button class="num-btn" onclick="Input.add(7)">7</button><button class="num-btn" onclick="Input.add(8)">8</button><button class="num-btn" onclick="Input.add(9)">9</button>
-                <button class="num-btn" onclick="Input.clr()">C</button><button class="num-btn" onclick="Input.add(0)">0</button><button class="num-btn" onclick="Input.back()">←</button>
-                <button class="num-btn num-ok" onclick="Input.done()">=</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="analysis-view">
-        <button class="an-close-btn" onclick="Action.closeScore()">×</button>
-        <div class="an-img-area">
-            <img id="an-img-target" src="">
-        </div>
-        <div class="an-data-area">
-            <div class="an-tit">AI ANALYSIS</div>
-            <div style="font-family:'Roboto Mono'; font-size:13px; color:var(--text-sub); line-height:1.8;">
-                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
-                    <span>CONFIDENCE</span><span style="color:var(--neon-green);font-weight:bold;">99.1%</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
-                    <span>PREDICTION</span><span style="color:var(--neon-cyan);font-weight:bold;">WIN</span>
-                </div>
-                <div style="margin-top:15px; color:#666;">
-                    > Image captured.<br>> Processing data points...<br>> Result: HIGH PROBABILITY.
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="p-home" class="page active">
-        <header>
-            <div class="top-row">
-                <div class="brand-col">
-                    <div class="logo-main">SYNAPSE</div>
-                    <div class="logo-sub">V24 MASTER-OS</div>
-                </div>
-                <div class="clock-box">
-                    <div class="time-big" id="clock-time">00:00:00</div>
-                    <div class="date-full" id="clock-date">LOADING...</div>
-                </div>
-            </div>
-            <div class="news-ticker" onclick="window.open('https://www.google.com/search?q=스포츠뉴스')">
-                <div class="ticker-wrap">
-                    <div class="ticker-item"><span>[LIVE]</span> EPL: MAN CITY 2-2 LIV (82')</div>
-                    <div class="ticker-item"><span>[NBA]</span> LAKERS WIN OT (112-110)</div>
-                    <div class="ticker-item"><span>[MLB]</span> OHTANI 2 HR GAME</div>
-                    <div class="ticker-item"><span>[UFC]</span> MAIN EVENT CONFIRMED</div>
-                </div>
-            </div>
-        </header>
-
-        <div class="main-scroll">
-            <div class="sec-head">CONTROL UNIT</div>
-            <div class="exec-grid">
-                <div class="card" id="card-score" onclick="Action.score()">
-                    <img id="score-bg">
-                    <div class="c-tit" style="color:var(--neon-cyan)">SCORE</div>
-                </div>
-                <div class="card" onclick="App.open('ODDS')"><div class="c-tit" style="color:var(--neon-purple)">ODDS</div></div>
-                <div class="card" onclick="App.open('EDGE')"><div class="c-tit" style="color:var(--neon-red)">EDGE</div></div>
-                <div class="card" onclick="App.open('BANK')"><div class="c-tit" style="color:var(--neon-gold)">BANK</div></div>
-            </div>
-
-            <div class="sec-head">LIVE CHANNELS</div>
-            <div class="cctv-grid" id="tv-grid"></div>
-
-            <div class="sec-head">ANALYTICS HUB</div>
-            <div id="grid-box" class="shortcut-grid"></div>
-        </div>
-
-        <nav class="dock">
-            <div class="d-btn active" onclick="App.open('CALENDAR')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg><span class="d-lbl">SCHED</span></div>
-            <div class="d-btn" onclick="App.open('CALC')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5zM5 5h5v5H5V5zm0 7h5v5H5v-5zm7 5h5v5h-5v-5z"/></svg><span class="d-lbl">CALC</span></div>
-            <div class="vis-btn" onclick="document.getElementById('cam-input').click()"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
-            <div class="d-btn" onclick="Theme.toggle()"><svg class="d-ico" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg><span class="d-lbl">MODE</span></div>
-            <div class="d-btn" onclick="App.open('SETTINGS')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.5.42l-.38 2.65c-.61.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg><span class="d-lbl">SETUP</span></div>
         </nav>
+
+        <section class="relative pt-36 pb-20">
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1642543492481-44e81e3914a7?q=80&w=2070')] bg-cover bg-center opacity-20"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/90 to-transparent"></div>
+            <div class="container mx-auto px-6 relative z-10 text-center" data-aos="fade-up">
+                <div class="inline-block px-3 py-1 border border-cyan-500/50 rounded-full text-cyan-400 text-xs font-bold tracking-widest mb-6">
+                    SYNAPS AI ENGINE V3.7
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                    THE TRUTH OF <br><span class="text-gradient">PROBABILITY.</span>
+                </h1>
+                <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+                    AZI VISION은 단순한 예측이 아닙니다.<br>
+                    <span class="text-white font-bold">'바나나 커브(Banana Curve)'</span> 이론으로 입증된<br>
+                    93.7%의 통계적 우위를 선점하십시오.
+                </p>
+                <button onclick="enterSynaps()" class="px-10 py-4 bg-white text-black font-black rounded hover:bg-cyan-400 transition text-lg shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                    분석 데이터 확인
+                </button>
+            </div>
+        </section>
+
+        <section class="py-20 bg-black border-t border-gray-900">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl font-black mb-4">CORE TECHNOLOGY</h2>
+                    <p class="text-gray-500">카드를 클릭하여 상세 알고리즘(Research Paper)을 확인하십시오.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass-card p-8 rounded-2xl transition duration-300" onclick="LP.openDetail('banana')" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center mb-6 text-yellow-400 text-2xl"><i class="fa-solid fa-chart-area"></i></div>
+                        <h3 class="text-xl font-bold mb-3 text-white">바나나 커브 이론</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">데이터 분포가 바나나 형태의 곡선을 그릴 때 발생하는 '골든 존'을 포착하여 승률을 극대화합니다.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-2xl transition duration-300" onclick="LP.openDetail('quant')" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center mb-6 text-cyan-400 text-2xl"><i class="fa-solid fa-server"></i></div>
+                        <h3 class="text-xl font-bold mb-3 text-white">실시간 퀀트 엔진</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">전 세계 40개국 배당 흐름을 0.03초 단위로 추적하여 스마트 머니의 흐름을 읽어냅니다.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-2xl transition duration-300" onclick="LP.openDetail('risk')" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center mb-6 text-red-500 text-2xl"><i class="fa-solid fa-shield-virus"></i></div>
+                        <h3 class="text-xl font-bold mb-3 text-white">리스크 헷징 AI</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">켈리 기준(Kelly Criterion)을 개량한 독자 알고리즘으로 자본 손실을 방어합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-black border-t border-gray-800 py-12 text-center">
+            <div class="text-2xl font-black italic text-white font-[Exo_2] mb-2">AZI <span class="text-cyan-600">VISION</span></div>
+            <p class="text-gray-600 text-xs">© 2026 AZI VISION ANALYTICS. All rights reserved.</p>
+        </footer>
     </div>
 
-    <div id="p-sub" class="page hidden">
-        <header class="sub-head"><div class="sub-tit" id="st-tit">TITLE</div></header>
-        <div id="st-con" style="padding:20px; flex:1; overflow-y:auto; padding-bottom:100px;"></div>
-        <div style="position:fixed; bottom:20px; left:20px; right:20px; z-index:20;">
-            <button class="close-btn" onclick="history.back()">닫기 (CLOSE)</button>
+    <div id="lp-detail-modal">
+        <div class="lp-modal-content">
+            <div class="absolute top-4 right-4 text-gray-500 cursor-pointer text-xl" onclick="LP.closeDetail()"><i class="fa-solid fa-xmark"></i></div>
+            <div id="lp-modal-body"></div>
+        </div>
+    </div>
+
+    <div id="synapse-wrapper">
+        <div id="synapse-root">
+            <input type="file" id="cam-input" hidden accept="image/*">
+            
+            <div id="custom-modal">
+                <div class="modal-box">
+                    <div class="modal-tit" id="m-tit">SYSTEM ALERT</div>
+                    <div class="modal-msg" id="modal-msg">MESSAGE</div>
+                    <div class="modal-btns">
+                        <button class="m-btn m-no" onclick="Modal.close()">취소</button>
+                        <button class="m-btn m-yes" id="modal-ok">확인</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="input-modal">
+                <div class="input-box">
+                    <div class="input-display" id="inp-disp">0</div>
+                    <div class="numpad">
+                        <button class="num-btn" onclick="Input.add(1)">1</button><button class="num-btn" onclick="Input.add(2)">2</button><button class="num-btn" onclick="Input.add(3)">3</button>
+                        <button class="num-btn" onclick="Input.add(4)">4</button><button class="num-btn" onclick="Input.add(5)">5</button><button class="num-btn" onclick="Input.add(6)">6</button>
+                        <button class="num-btn" onclick="Input.add(7)">7</button><button class="num-btn" onclick="Input.add(8)">8</button><button class="num-btn" onclick="Input.add(9)">9</button>
+                        <button class="num-btn" onclick="Input.clr()">C</button><button class="num-btn" onclick="Input.add(0)">0</button><button class="num-btn" onclick="Input.back()">←</button>
+                        <button class="num-btn num-ok" onclick="Input.done()">=</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="analysis-view">
+                <button class="an-close-btn" onclick="Action.closeScore()">×</button>
+                <div class="an-img-area">
+                    <img id="an-img-target" src="">
+                </div>
+                <div class="an-data-area">
+                    <div class="an-tit">AI ANALYSIS</div>
+                    <div style="font-family:'Roboto Mono'; font-size:13px; color:var(--text-sub); line-height:1.8;">
+                        <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
+                            <span>CONFIDENCE</span><span style="color:var(--neon-green);font-weight:bold;">99.1%</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
+                            <span>PREDICTION</span><span style="color:var(--neon-cyan);font-weight:bold;">WIN</span>
+                        </div>
+                        <div style="margin-top:15px; color:#666;">
+                            > Image captured.<br>> Processing data points...<br>> Result: HIGH PROBABILITY.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="p-home" class="page active">
+                <header class="syn-header">
+                    <div class="top-row">
+                        <div class="brand-col">
+                            <div class="logo-main" onclick="exitSynaps()">SYNAPS</div>
+                            <div class="logo-sub">V37 FINAL-OS</div>
+                        </div>
+                        <div class="clock-box">
+                            <div class="time-big" id="clock-time">00:00:00</div>
+                            <div class="date-full" id="clock-date">LOADING...</div>
+                        </div>
+                    </div>
+                    <div class="news-ticker" onclick="window.open('https://www.google.com/search?q=스포츠뉴스')">
+                        <div class="ticker-wrap">
+                            <div class="ticker-item"><span>[LIVE]</span> EPL: MAN CITY 2-2 LIV (82')</div>
+                            <div class="ticker-item"><span>[NBA]</span> LAKERS WIN OT (112-110)</div>
+                            <div class="ticker-item"><span>[MLB]</span> OHTANI 2 HR GAME</div>
+                            <div class="ticker-item"><span>[UFC]</span> MAIN EVENT CONFIRMED</div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="main-scroll">
+                    <div class="sec-head">CONTROL UNIT</div>
+                    <div class="exec-grid">
+                        <div class="card" id="card-score" onclick="Action.score()">
+                            <div class="scan-line"></div>
+                            <img id="score-bg">
+                            <div class="c-tit" id="score-tit" style="color:var(--neon-cyan)">SCORE</div>
+                        </div>
+                        <div class="card" onclick="App.open('ODDS')"><div class="c-tit" style="color:var(--neon-purple)">ODDS</div></div>
+                        <div class="card" onclick="App.open('EDGE')"><div class="c-tit" style="color:var(--neon-red)">EDGE</div></div>
+                        <div class="card" onclick="App.open('BANK')"><div class="c-tit" style="color:var(--neon-gold)">BANK</div></div>
+                    </div>
+
+                    <div class="sec-head">LIVE CHANNELS</div>
+                    <div class="cctv-grid" id="tv-grid"></div>
+
+                    <div class="sec-head">ANALYTICS HUB</div>
+                    <div id="grid-box" class="shortcut-grid"></div>
+                </div>
+
+                <nav class="dock">
+                    <div class="d-btn active" onclick="App.open('CALENDAR')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg><span class="d-lbl">SCHED</span></div>
+                    <div class="d-btn" onclick="App.open('CALC')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5zM5 5h5v5H5V5zm0 7h5v5H5v-5zm7 5h5v5h-5v-5z"/></svg><span class="d-lbl">CALC</span></div>
+                    <div class="vis-btn" onclick="document.getElementById('cam-input').click()"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+                    <div class="d-btn" onclick="Theme.toggle()"><svg class="d-ico" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg><span class="d-lbl">MODE</span></div>
+                    <div class="d-btn" onclick="App.open('SETTINGS')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.5.42l-.38 2.65c-.61.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg><span class="d-lbl">SETUP</span></div>
+                </nav>
+            </div>
+
+            <div id="p-sub" class="page hidden">
+                <header class="sub-head"><div class="sub-tit" id="st-tit">TITLE</div></header>
+                <div id="st-con" style="padding:20px; flex:1; overflow-y:auto; padding-bottom:100px;"></div>
+                <div style="position:fixed; bottom:20px; left:20px; right:20px; z-index:20;">
+                    <button class="close-btn" onclick="history.back()">닫기 (CLOSE)</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // DATA
-        const DefaultDB = {
-            normal: [
-                {n:'FLASHSCORE',u:'https://www.flashscore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'},
-                {n:'ODDSPORTAL',u:'https://www.oddsportal.com',i:'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4'},
-                {n:'WHOSCORED',u:'https://www.whoscored.com',i:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2'},
-                {n:'SOFASCORE',u:'https://www.sofascore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5z'},
-                {n:'COVERS',u:'https://www.covers.com',i:'M4 10h3v7H4zM10.5 10h3v7h-3zM17 10h3v7h-3z'},
-                {n:'OLBG',u:'https://www.olbg.com',i:'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0'},
-                {n:'NAVER',u:'https://sports.news.naver.com',i:'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5'},
-                {n:'YOUTUBE',u:'https://www.youtube.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2'}
-            ],
-            secret: Array(8).fill({n:'VIP LINK',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}),
-            tv: [
-                {n:'FOOTBALL',u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&q=80'},
-                {n:'BASKETBALL',u:'https://images.unsplash.com/photo-1546519638-68e109498ad0?w=400&q=80'},
-                {n:'BASEBALL',u:'https://images.unsplash.com/photo-1508344928928-7165b67de128?w=400&q=80'}
-            ]
+        // [A. LANDING PAGE RICH CONTENT & LOGIC]
+        const LP = {
+            data: {
+                banana: {
+                    tit: "바나나 커브 이론",
+                    sub: "대중 심리의 역설과 시장의 비효율성",
+                    desc: `
+                        <div class="report-body">
+                            <h4>1. 개요 (Abstract)</h4>
+                            <p>스포츠 결과는 통계적으로 정규분포(Normal Distribution)를 따르지만, 스포츠 베팅 시장의 배당률(Odds)은 결코 자연적인 확률을 반영하지 않습니다. '바나나 커브 이론'은 대중의 쏠림 현상과 실제 승리 확률 사이의 괴리가 극대화되는 특정 구간이 시각적으로 바나나 형태의 U자형 곡선을 그리는 현상을 통칭합니다. AZI VISION은 이 비선형적 구간을 포착하여, 인간의 직관이 닿지 않는 <span class="report-highlight">93.7%의 승리 구간(Golden Zone)</span>을 규명해냈습니다.</p>
+                            <h4>2. 바나나 커브의 메커니즘</h4>
+                            <ul>
+                                <li><b>구간 A (소외 구간):</b> 대중의 관심이 극도로 낮은 틈새시장. 정보 비대칭성 존재.</li>
+                                <li><b>구간 B (함몰 구간):</b> 대중 투표율 40~70%. 개미 투자자가 가장 많이 몰리며 수익률이 급락하는 구간.</li>
+                                <li><b>구간 C (골든 존):</b> 대중의 확신이 90% 이상 쏠렸으나, 실제 데이터와 스마트 머니는 반대를 가리키는 임계점.</li>
+                            </ul>
+                            <h4>3. 결론: 데이터를 신뢰하라</h4>
+                            <p>당신이 보고 있는 배당판의 숫자는 북메이커가 만든 환상입니다. SYNAPS BLACK 시스템을 통해 그 환상을 걷어내고, 바나나 커브가 가리키는 진실의 숫자를 마주하십시오. <b>DATA NEVER LIES.</b></p>
+                        </div>
+                    `,
+                    stats: [ { l: "Golden Zone 적중률", p: "93.7%" }, { l: "ROI (투자 수익률)", p: "215%" }, { l: "데이터 신뢰도", p: "99.9%" } ]
+                },
+                quant: {
+                    tit: "실시간 퀀트 엔진",
+                    sub: "0.03초의 초격차 알고리즘",
+                    desc: `
+                        <div class="report-body">
+                            <h4>1. 개요 (Executive Summary)</h4>
+                            <p>금융 시장에서 '퀀트(Quant)'는 수학적 모델을 통해 시장의 초과 수익을 추구하는 방식입니다. AZI VISION의 '실시간 퀀트 엔진(RTQE V3.7)'은 이 개념을 스포츠 시장에 이식하여, 전 세계 40개국 2,800여 개 북메이커 서버의 배당 흐름을 실시간으로 크롤링하고 <span class="report-highlight">가격의 오류</span>를 찾아냅니다.</p>
+                            <h4>2. 스마트 머니 트래커</h4>
+                            <p>스포츠 베팅 시장은 공정하지 않습니다. 전체 자금의 90%는 대중이 움직이지만, 시장의 방향은 상위 1%의 거대 자본(Smart Money)이 결정합니다. 우리 엔진은 특정 팀에 악재가 없음에도 배당이 급락하는 '이상 징후'를 포착하여 세력의 개입을 읽어냅니다.</p>
+                            <h4>3. 레이턴시 아비트라지 (Latency)</h4>
+                            <p>A사이트가 정보를 반영하여 배당을 낮추는 10초의 틈을 타, 아직 배당이 높은 B사이트를 0.03초 만에 찾아냅니다. 남들이 뉴스를 보고 접속했을 때, 우리의 사용자는 이미 <span class="report-highlight">최고점 배당</span>에 진입해 있습니다.</p>
+                        </div>
+                    `,
+                    stats: [ { l: "처리 속도 (TPS)", p: "40,000+" }, { l: "글로벌 커버리지", p: "100%" }, { l: "시장 감지 속도", p: "0.03s" } ]
+                },
+                risk: {
+                    tit: "리스크 헷징 AI",
+                    sub: "자본 최적화 솔루션",
+                    desc: `
+                        <div class="report-body">
+                            <h4>1. 개요 (Overview)</h4>
+                            <p>아마추어는 '얼마를 딸 것인가'를 고민하지만, 프로는 '얼마를 잃지 않을 것인가'를 설계합니다. AZI VISION의 리스크 헷징 AI는 사용자의 자본, 시장 변동성, 예측 확신도를 계산하여 <span class="report-highlight">수학적으로 절대 파산할 수 없는 최적의 베팅 금액</span>을 산출합니다.</p>
+                            <h4>2. 켈리 기준의 진화</h4>
+                            <p>노벨 경제학상을 수상한 켈리 기준(Kelly Criterion)을 현대 스포츠 시장에 맞게 개량한 '동적 부분 켈리 모델'을 사용합니다. 승률이 높아도 시장 불확실성이 크다면 베팅 금액을 강제로 축소시켜 자산을 방어합니다.</p>
+                            <h4>3. 결론: 투자가로의 전환</h4>
+                            <p>우리는 승리를 약속하지 않습니다. 그것은 사기꾼의 언어입니다. 우리는 '결코 무너지지 않는 자산 방어선'을 약속합니다. 공격은 관중을 얻지만, 수비는 우승을 얻습니다. 당신의 자산에 방탄조끼를 입히십시오.</p>
+                        </div>
+                    `,
+                    stats: [ { l: "자산 방어율", p: "98.2%" }, { l: "최적화 효율", p: "High" }, { l: "파산 확률", p: "0%" } ]
+                }
+            },
+            openDetail: (key) => {
+                const d = LP.data[key];
+                let statHTML = '';
+                d.stats.forEach(s => {
+                    statHTML += `<div class="mb-4"><div class="flex justify-between text-xs text-gray-400 mb-1"><span>${s.l}</span><span class="text-cyan-400 font-bold">${s.p}</span></div><div class="stat-bar"><div class="stat-fill" style="width:0%" data-w="${s.p.replace('%','').replace('+','').replace('High','95').replace('s','')}"></div></div></div>`;
+                });
+                document.getElementById('lp-modal-body').innerHTML = `<div class="text-cyan-400 text-xs font-bold tracking-widest mb-1">${d.sub}</div><h2 class="text-3xl font-black text-white mb-6 italic">${d.tit}</h2><div class="mb-8">${d.desc}</div><div class="bg-[#050505] p-5 rounded-xl border border-gray-800"><div class="text-xs font-bold text-gray-500 mb-4">PERFORMANCE METRICS</div>${statHTML}</div>`;
+                document.getElementById('lp-detail-modal').classList.add('show');
+                setTimeout(() => { document.querySelectorAll('.stat-fill').forEach(el => { let w = el.getAttribute('data-w'); if(w<1)w=99; else if(w>100)w=100; else if(isNaN(w))w=95; el.style.width = w + '%'; }); }, 100);
+            },
+            closeDetail: () => { document.getElementById('lp-detail-modal').classList.remove('show'); }
         };
-        let DB = JSON.parse(localStorage.getItem('SYNAPSE_DB')) || DefaultDB;
 
-        // --- [CUSTOM MODAL ENGINE] ---
+        // [B. SYSTEM TOGGLE]
+        function enterSynaps() {
+            document.getElementById('landing-wrapper').style.display = 'none';
+            document.getElementById('synapse-wrapper').classList.add('active');
+            if(!synapsInitialized) initSynaps();
+        }
+        function exitSynaps() {
+            document.getElementById('synapse-wrapper').classList.remove('active');
+            document.getElementById('landing-wrapper').style.display = 'block';
+        }
+        AOS.init({ duration: 800, once: true });
+
+        // [C. SYNAPS SYSTEM LOGIC (원본 이식 + 수정사항 적용)]
+        let synapsInitialized = false;
+
+        function initSynaps() {
+            synapsInitialized = true;
+            
+            const DefaultDB = {
+                normal: [
+                    {n:'FLASHSCORE',u:'https://www.flashscore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'},
+                    {n:'ODDSPORTAL',u:'https://www.oddsportal.com',i:'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4'},
+                    {n:'WHOSCORED',u:'https://www.whoscored.com',i:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2'},
+                    {n:'SOFASCORE',u:'https://www.sofascore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5z'},
+                    {n:'COVERS',u:'https://www.covers.com',i:'M4 10h3v7H4zM10.5 10h3v7h-3zM17 10h3v7h-3z'},
+                    {n:'OLBG',u:'https://www.olbg.com',i:'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0'},
+                    {n:'NAVER',u:'https://sports.news.naver.com',i:'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5'},
+                    {n:'YOUTUBE',u:'https://www.youtube.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2'}
+                ],
+                secret: Array(8).fill({n:'VIP LINK',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}),
+                tv: [
+                    {n:'FOOTBALL',u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&q=80'},
+                    {n:'BASKETBALL',u:'https://images.unsplash.com/photo-1546519638-68e109498ad0?w=400&q=80'},
+                    {n:'BASEBALL',u:'https://images.unsplash.com/photo-1508344928928-7165b67de128?w=400&q=80'}
+                ]
+            };
+            window.DB = JSON.parse(localStorage.getItem('SYNAPSE_DB')) || DefaultDB;
+
+            Render.init();
+            
+            setInterval(() => {
+                const n=new Date();
+                document.getElementById('clock-time').innerHTML=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
+                document.getElementById('clock-date').innerText=`${n.getFullYear()}.${n.getMonth()+1}.${n.getDate()}`;
+            }, 1000);
+            
+            // [수정사항 2: CAMERA SCAN JS]
+            const cam = document.getElementById('cam-input');
+            cam.addEventListener('change', (e) => {
+                if(e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const bg = document.getElementById('score-bg');
+                        bg.src = ev.target.result;
+                        bg.style.display = 'block';
+                        // 스캔 애니메이션 발동
+                        document.getElementById('card-score').classList.add('scanning');
+                        document.getElementById('score-tit').innerText = "ANALYZING...";
+                        Action.hasImg = true;
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+        }
+
         const Modal = {
             cb: null,
             show: (msg, callback) => {
@@ -346,8 +524,8 @@
         };
         document.getElementById('modal-ok').onclick = () => { if(Modal.cb) Modal.cb(); Modal.close(); };
 
-        const Theme = { toggle: () => document.body.classList.toggle('white-mode') };
-        const Ghost = { active: false, trigger: () => { if(navigator.vibrate) navigator.vibrate(50); Ghost.active = !Ghost.active; document.body.classList.toggle('ghost-active', Ghost.active); Render.shortcuts(); } };
+        const Theme = { toggle: () => document.getElementById('synapse-root').classList.toggle('white-mode') };
+        const Ghost = { active: false, trigger: () => { if(navigator.vibrate) navigator.vibrate(50); Ghost.active = !Ghost.active; document.getElementById('synapse-root').classList.toggle('ghost-active', Ghost.active); Render.shortcuts(); } };
 
         const Action = {
             hasImg: false,
@@ -362,10 +540,6 @@
             },
             closeScore: () => {
                 document.getElementById('analysis-view').classList.remove('show');
-                // RESET SCORE BOX
-                document.getElementById('score-bg').style.display = 'none';
-                document.getElementById('score-bg').src = '';
-                Action.hasImg = false;
                 history.back();
             }
         };
@@ -386,7 +560,8 @@
                     if(localStorage.getItem(`memo-${y}-${m}-${i}`)) cls+=' active';
                     h+=`<div class="${cls}" onclick="Calendar.pick(${y},${m},${i},this)">${i}</div>`;
                 }
-                h+=`</div><textarea id="cal-memo" placeholder="MEMO..."></textarea><button class="cal-save" onclick="Calendar.save()">SAVE DATA</button>`;
+                // [수정사항 3: 달력 삭제 버튼 추가]
+                h+=`</div><textarea id="cal-memo" placeholder="MEMO..."></textarea><div class="cal-btn-group"><button class="cal-save" onclick="Calendar.save()">SAVE</button><button class="cal-del" onclick="Calendar.del()">DELETE</button></div>`;
                 el.innerHTML = h;
             },
             mv: (n) => { Calendar.d.setMonth(Calendar.d.getMonth() + n); Calendar.render(document.getElementById('st-con')); },
@@ -403,24 +578,26 @@
                 } else {
                     Modal.show('날짜를 선택하세요.', null);
                 }
+            },
+            del: () => {
+                if(Calendar.sel) {
+                    localStorage.removeItem(Calendar.sel);
+                    document.getElementById('cal-memo').value = '';
+                    Calendar.render(document.getElementById('st-con')); // 갱신
+                    Modal.show('삭제되었습니다.', null);
+                }
             }
         };
 
         const Input = {
-            curr: '0',
-            sign: 1,
-            cb: null,
+            curr: '0', sign: 1, cb: null,
             open: (s) => { Input.curr='0'; Input.sign=s; Input.update(); document.getElementById('input-modal').classList.add('show'); },
             add: (n) => { if(Input.curr.length>10)return; Input.curr = Input.curr=='0'? String(n) : Input.curr+n; Input.update(); },
             clr: () => { Input.curr='0'; Input.update(); },
             back: () => { Input.curr = Input.curr.length>1 ? Input.curr.slice(0,-1) : '0'; Input.update(); },
             update: () => { document.getElementById('inp-disp').innerText = "₩ " + parseInt(Input.curr).toLocaleString(); },
             done: () => { 
-                if(Input.curr!='0') { 
-                    Bank.bal += parseInt(Input.curr) * Input.sign; 
-                    localStorage.setItem('SYN_BANK', Bank.bal); 
-                    App.open('BANK'); 
-                }
+                if(Input.curr!='0') { Bank.bal += parseInt(Input.curr) * Input.sign; localStorage.setItem('SYN_BANK', Bank.bal); App.open('BANK'); }
                 document.getElementById('input-modal').classList.remove('show');
             }
         };
@@ -456,7 +633,6 @@
         };
 
         const Calculator = { html:`<div id="calc-wrap"><div id="calc-disp">0</div><div class="calc-pad">`+['7','8','9','/','4','5','6','*','1','2','3','-','C','0','.','+','='].map(k=>`<div class="cp-btn ${['/','*','-','+','C'].includes(k)?'cp-act':''} ${k=='='?'cp-eq':''}" onclick="Calculator.c('${k}')">${k}</div>`).join('')+`</div></div>`, c:(k)=>{ const r=document.getElementById('calc-disp'); if(k=='C')r.innerText='0'; else if(k=='=')try{r.innerText=eval(r.innerText)}catch{r.innerText='ERR'} else r.innerText=r.innerText=='0'?k:r.innerText+k; } };
-
         const Odds = { render: () => `<table class="odds-table"><thead><tr><th>GAME</th><th>1</th><th>X</th><th>2</th></tr></thead><tbody><tr><td>CITY vs LIV</td><td class="down">2.10</td><td>3.40</td><td class="up">2.90</td></tr><tr><td>LAL vs GSW</td><td class="up">1.85</td><td>-</td><td class="down">1.95</td></tr></tbody></table>` };
         const Edge = { render: () => `<div class="edge-card"><div class="ec-head"><span class="ec-team">LAKERS WIN</span><span class="ec-rate">82%</span></div><div class="ec-bar"><div class="ec-fill" style="width:82%"></div></div></div>` };
 
@@ -473,19 +649,17 @@
                 else c.innerHTML=`<div style="padding:20px;">CONNECTING...</div>`;
             }
         };
-        window.onpopstate = () => { document.getElementById('p-sub').classList.add('hidden'); document.getElementById('analysis-view').classList.remove('show'); Render.init(); };
+        window.onpopstate = () => { document.getElementById('p-sub').classList.add('hidden'); document.getElementById('analysis-view').classList.remove('show'); };
 
         const Render = {
             init: () => { Render.shortcuts(); Render.tv(); },
             shortcuts: () => {
                 const box=document.getElementById('grid-box'), list=Ghost.active?DB.secret:DB.normal; let h='';
                 list.forEach((i,x)=>{ if(x<8) { 
-                    // NO DEFAULT #
                     let u=i.u; if(u && !u.startsWith('http'))u='https://'+u; 
                     const act=u?`window.open('${u}')`:`Modal.show('설정에서 주소를 입력하세요', ()=>App.open('SETTINGS'))`; 
                     h+=`<div class="s-btn" onclick="${act}"><svg class="s-ico" viewBox="0 0 24 24"><path d="${i.i}"/></svg><span class="s-lbl">${i.n}</span></div>`; 
                 }});
-                // 9TH BOX - CAMOUFLAGED AS COMPASS
                 h+=`<div class="s-btn" onclick="Ghost.trigger()"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span class="s-lbl" style="${Ghost.active?'color:var(--neon-cyan)':'color:var(--text-sub)'}">COMPASS</span></div>`;
                 box.innerHTML=h;
             },
@@ -498,29 +672,6 @@
                 }); 
                 document.getElementById('tv-grid').innerHTML=h; 
             }
-        };
-
-        window.onload = function() {
-            Render.init();
-            setInterval(() => {
-                const n=new Date();
-                document.getElementById('clock-time').innerHTML=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
-                document.getElementById('clock-date').innerText=`${n.getFullYear()}.${n.getMonth()+1}.${n.getDate()}`;
-            }, 1000);
-            
-            const cam = document.getElementById('cam-input');
-            cam.addEventListener('change', (e) => {
-                if(e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        const bg = document.getElementById('score-bg');
-                        bg.src = ev.target.result;
-                        bg.style.display = 'block';
-                        Action.hasImg = true;
-                    }
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            });
         };
     </script>
 </body>
