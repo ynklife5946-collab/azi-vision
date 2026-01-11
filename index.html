@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SYNAPSE : FINAL DIAGNOSIS</title>
+    <title>AZI VISION : FINAL</title>
     <style>
-        /* [ORIGINAL DESIGN RETAINED - ENGINE DIAGNOSIS MODE] */
+        /* [ORIGINAL DESIGN PRESERVED] */
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
         
         :root {
@@ -26,7 +26,7 @@
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         
-        /* [FIX: SCROLL UNLOCKED] */
+        /* [SCROLL FIX APPLIED] */
         body { 
             margin: 0; background: var(--bg-core); color: var(--text-main); 
             font-family: 'Noto Sans KR', sans-serif; height: 100vh; overflow: hidden; 
@@ -49,7 +49,6 @@
         .ticker-item span { color: var(--neon-red); font-weight: 900; margin-right: 6px; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* [FIX: SMOOTH SCROLLING ENABLED] */
         .main-scroll { 
             flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; 
             -webkit-overflow-scrolling: touch; 
@@ -237,7 +236,7 @@
             <div class="top-row">
                 <div class="brand-col">
                     <div class="logo-main">SYNAPSE</div>
-                    <div class="logo-sub">V24.5 (BETA PATCH)</div>
+                    <div class="logo-sub">V24 MASTER-OS</div>
                 </div>
                 <div class="clock-box">
                     <div class="time-big" id="clock-time">00:00:00</div>
@@ -351,7 +350,6 @@
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: "image/jpeg", data: imgBase64.split(',')[1] } }] }],
-                            // [CRITICAL FIX: Safety Settings Force-Disabled]
                             safetySettings: [
                                 { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
                                 { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
@@ -374,15 +372,7 @@
                     }
                     
                 } catch (e) {
-                    // [DIAGNOSIS MODE] Show exact error on screen
-                    resArea.innerHTML = `<div style="color:var(--neon-red); padding:10px; border:1px solid var(--neon-red); font-size:12px;">
-                        [SYSTEM ERROR]<br>
-                        ${e.message}<br><br>
-                        * 400: 요청 형식 오류<br>
-                        * 403: API 키 권한 없음/결제 문제<br>
-                        * 404: 모델명 불일치 (v1beta 확인)<br>
-                        * 429: 사용량 초과
-                    </div>`;
+                    resArea.innerHTML = `<div style="color:var(--neon-red); padding:10px; border:1px solid var(--neon-red);">[SYSTEM ERROR]<br>${e.message}<br><br>키를 확인하거나 결제 상태를 점검하세요.</div>`;
                 }
             }
         };
@@ -411,6 +401,7 @@
                 if(Action.hasImg) {
                     document.getElementById('an-img-target').src = document.getElementById('score-bg').src;
                     document.getElementById('analysis-view').classList.add('show');
+                    // [FIXED: Trigger AI Analysis Automatically]
                     Gemini.analyze(document.getElementById('score-bg').src);
                 } else {
                     App.open('VISION');
@@ -418,8 +409,10 @@
             },
             closeScore: () => {
                 document.getElementById('analysis-view').classList.remove('show');
+                // RESET SCORE BOX
                 document.getElementById('score-bg').style.display = 'none';
                 document.getElementById('score-bg').src = '';
+                // Remove Scanning Class
                 document.getElementById('card-score').classList.remove('scanning');
                 Action.hasImg = false;
                 history.back();
@@ -494,6 +487,7 @@
             render: (el) => {
                 const m = Ghost.active?'secret':'normal';
                 let h = `<div class="st-header"><div class="st-tit">CHAIRMAN ACCESS</div><div class="st-sub">ALL SYSTEMS NORMAL</div></div>`;
+                // [FIXED: Added API KEY Input]
                 h += `<div class="st-label" style="color:var(--neon-cyan)">AI ENGINE API KEY</div><div class="st-item"><input id="api-key" value="${localStorage.getItem('API_KEY')||''}" style="width:100%;border:none;background:transparent;color:var(--text-main);font-family:monospace;" placeholder="PASTE YOUR GOOGLE API KEY HERE"></div>`;
                 
                 h += `<div class="st-label">FAMILY LINKS [${m}]</div><div class="st-list">`;
