@@ -88,7 +88,7 @@
             position: absolute; top: -20%; left: 0; width: 100%; height: 20%;
             background: linear-gradient(to bottom, transparent, var(--neon-cyan), transparent);
             opacity: 0.5; z-index: 3; display: none;
-            animation: scanMove 2s linear infinite;
+            animation: scanMove 3s linear infinite;
         }
         .card.scanning .scan-line { display: block; }
         .card.scanning { border: 1px solid var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
@@ -472,7 +472,7 @@
         document.getElementById('modal-ok').onclick = () => { if(Modal.cb) Modal.cb(); Modal.close(); };
 
         const Theme = { toggle: () => document.getElementById('synapse-root').classList.toggle('white-mode') };
-        const Ghost = { active: false, trigger: () => { if(navigator.vibrate) navigator.vibrate(50); Ghost.active = !Ghost.active; document.getElementById('synapse-root').classList.toggle('ghost-active', Ghost.active); Render.shortcuts(); } };
+        const Ghost = { active: false, trigger: () => { if(navigator.vibrate) navigator.vibrate(50); Ghost.active = !Ghost.active; document.body.classList.toggle('ghost-active', Ghost.active); Render.shortcuts(); } };
 
         const Action = {
             hasImg: false,
@@ -536,7 +536,10 @@
             render: (el) => {
                 const m = Ghost.active?'secret':'normal';
                 let h = `<div class="st-header"><div class="st-tit">CHAIRMAN ACCESS</div></div>
-                <div style="margin-bottom:20px;"><div class="st-label">AI ENGINE API KEY</div><input id="api-key" type="password" value="${localStorage.getItem('API_KEY')||''}" style="width:100%; padding:15px; background:#222; border:1px solid #444; color:white; border-radius:12px; font-family:monospace;" placeholder="ENTER GEMINI KEY..."></div>
+                <div style="margin-bottom:20px;">
+                    <div class="st-label" style="color:var(--neon-cyan)">AI ENGINE API KEY</div>
+                    <input id="api-key" type="password" value="${localStorage.getItem('API_KEY')||''}" style="width:100%; padding:15px; background:#222; border:1px solid #444; color:white; border-radius:12px; font-family:monospace;" placeholder="ENTER GEMINI KEY...">
+                </div>
                 <div class="st-label">FAMILY LINKS [${m}]</div>`;
                 DB[m].forEach((i,x)=>{ h+=`<div class="st-item"><div class="st-idx">${x+1}</div><div class="st-inp"><input id="n${x}" value="${i.n}" style="width:30%;border:none;background:transparent;color:var(--neon-cyan);"><input id="u${x}" value="${i.u}" style="width:65%;border:none;background:transparent;color:var(--text-main);" placeholder="URL"></div></div>` });
                 h += `<button class="st-save" onclick="Settings.save()">저장하기 (SAVE)</button><button class="st-reset" onclick="Settings.reset()">초기화 (RESET)</button>`;
