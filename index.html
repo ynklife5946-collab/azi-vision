@@ -17,10 +17,10 @@
 
         /* === GLOBAL RESET === */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { margin: 0; padding: 0; background-color: #000; color: #fff; font-family: 'Noto Sans KR', sans-serif; overflow-x: hidden; }
+        body { margin: 0; padding: 0; background-color: #000; color: #fff; font-family: 'Noto Sans KR', sans-serif; overflow-x: hidden; overscroll-behavior-y: none; }
 
         /* === LANDING PAGE CSS === */
-        #landing-wrapper { width: 100%; min-height: 100vh; position: relative; z-index: 10; background: #000; }
+        #landing-wrapper { width: 100%; min-height: 100vh; position: relative; z-index: 10; background: #000; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .text-gradient { background: linear-gradient(to right, #00f3ff, #0066ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; cursor: pointer; position: relative; }
         .glass-card::after { content: 'READ REPORT +'; position: absolute; bottom: 20px; right: 20px; font-size: 10px; font-weight: bold; color: #00f3ff; opacity: 0; transition: 0.3s; }
@@ -28,7 +28,7 @@
         .glass-card:hover::after { opacity: 1; }
         #lp-detail-modal { display: none; position: fixed; inset: 0; z-index: 9000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
         #lp-detail-modal.show { display: flex; opacity: 1; }
-        .lp-modal-content { width: 90%; max-width: 650px; background: #111; border: 1px solid #333; border-radius: 20px; padding: 30px; position: relative; box-shadow: 0 0 50px rgba(0, 243, 255, 0.15); max-height: 85vh; overflow-y: auto; }
+        .lp-modal-content { width: 90%; max-width: 650px; background: #111; border: 1px solid #333; border-radius: 20px; padding: 30px; position: relative; box-shadow: 0 0 50px rgba(0, 243, 255, 0.15); max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .report-body h4 { color: #00f3ff; font-weight: 900; margin-top: 25px; margin-bottom: 10px; font-size: 16px; border-left: 3px solid #00f3ff; padding-left: 10px; }
         .report-body p { color: #ccc; font-size: 14px; line-height: 1.7; margin-bottom: 15px; text-align: justify; }
         .report-body ul { list-style: none; padding: 0; margin-bottom: 15px; }
@@ -75,7 +75,10 @@
         .ticker-item span { color: var(--neon-red); font-weight: 900; margin-right: 6px; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         
-        .main-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; }
+        .main-scroll { 
+            flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; 
+            -webkit-overflow-scrolling: touch; /* 부드러운 스크롤 */
+        }
         .sec-head { font-size: 11px; color: var(--text-sub); font-weight: 900; margin: 30px 0 10px; letter-spacing: 1px; font-family: 'Roboto Mono'; border-left: 3px solid var(--neon-cyan); padding-left: 8px; }
         
         .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -140,11 +143,26 @@
         .num-btn { height: 60px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-size: 20px; font-weight: bold; }
         .num-ok { grid-column: span 3; background: var(--neon-cyan); color: black; margin-top: 10px; }
         
-        #analysis-view { position: absolute; bottom: 0; left: 0; width: 100%; height: 92%; background: var(--bg-card); z-index: 5000; border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 -10px 100px rgba(0,0,0,0.8); }
+        #analysis-view { 
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 92%; 
+            background: var(--bg-card); z-index: 5000; 
+            border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0; 
+            display: flex; flex-direction: column; transform: translateY(100%); 
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            box-shadow: 0 -10px 100px rgba(0,0,0,0.8); 
+        }
         #analysis-view.show { transform: translateY(0); }
         .an-img-area { flex: 1; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); border-radius: 23px 23px 0 0; }
         #an-img-target { width: 100%; height: 100%; object-fit: contain; }
-        .an-data-area { height: 40%; padding: 25px; padding-bottom: calc(25px + env(safe-area-inset-bottom)); overflow-y: auto; background: var(--bg-core); }
+        
+        /* [스크롤 수정 핵심] */
+        .an-data-area { 
+            height: 40%; padding: 25px; padding-bottom: calc(25px + env(safe-area-inset-bottom)); 
+            overflow-y: auto; background: var(--bg-core);
+            -webkit-overflow-scrolling: touch; /* 부드러운 스크롤 강제 */
+            overscroll-behavior: contain;
+        }
+        
         .an-tit { font-size: 18px; font-weight: 900; color: var(--neon-cyan); margin-bottom: 20px; }
         .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); }
         
@@ -473,7 +491,7 @@
         document.getElementById('modal-ok').onclick = () => { if(Modal.cb) Modal.cb(); Modal.close(); };
 
         const Theme = { toggle: () => document.getElementById('synapse-root').classList.toggle('white-mode') };
-        const Ghost = { active: false, trigger: () => { if(navigator.vibrate) navigator.vibrate(50); Ghost.active = !Ghost.active; document.getElementById('synapse-root').classList.toggle('ghost-active', Ghost.active); Render.shortcuts(); } };
+        const Ghost = { active: false, trigger: () => { if(navigator.vibrate) navigator.vibrate(50); Ghost.active = !Ghost.active; document.body.classList.toggle('ghost-active', Ghost.active); Render.shortcuts(); } };
 
         const Action = {
             hasImg: false,
@@ -501,7 +519,7 @@
             d: new Date(),
             render: (el) => {
                 const y = Calendar.d.getFullYear(), m = Calendar.d.getMonth(), fDay = new Date(y, m, 1).getDay(), lDate = new Date(y, m+1, 0).getDate(), today = new Date();
-                let h = `<div class="cal-nav"><div onclick="Calendar.mv(-1)">&lt;</div><div class="cal-ym">${y}.${String(m+1).padStart(2,'0')}</div><div onclick="Calendar.mv(1)">&gt;</div></div><div class="cal-grid"><div class="cal-head">S</div><div class="cal-head">M</div><div class="cal-head">T</div><div class="cal-head">W</div><div class="cal-head">T</div><div class="cal-head">F</div><div class="cal-head">S</div>`;
+                let h = `<div class="cal-nav"><div onclick="Calendar.mv(-1)" style="cursor:pointer">&lt;</div><div class="cal-ym">${y}.${String(m+1).padStart(2,'0')}</div><div onclick="Calendar.mv(1)" style="cursor:pointer">&gt;</div></div><div class="cal-grid"><div class="cal-head">S</div><div class="cal-head">M</div><div class="cal-head">T</div><div class="cal-head">W</div><div class="cal-head">T</div><div class="cal-head">F</div><div class="cal-head">S</div>`;
                 for(let i=0; i<fDay; i++) h+=`<div></div>`;
                 for(let i=1; i<=lDate; i++) {
                     let cls='cal-cell'; if(y===today.getFullYear() && m===today.getMonth() && i===today.getDate()) cls+=' today';
