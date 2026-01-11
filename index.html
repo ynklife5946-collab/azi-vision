@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>AZI VISION : FINAL</title>
+    <title>SYNAPSE : FINAL MASTER</title>
     <style>
-        /* [ORIGINAL DESIGN PRESERVED] */
+        /* [ORIGINAL DESIGN PRESERVED - FINAL FIXES APPLIED] */
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
         
         :root {
@@ -26,16 +26,29 @@
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         
-        /* [SCROLL FIX APPLIED] */
+        /* [FIX 1: BACKGROUND & SCROLL] 
+           화면이 하얗게 깨지는 현상 방지 및 스크롤 잠김 해결 */
+        html { background: var(--bg-core); height: 100%; }
         body { 
             margin: 0; background: var(--bg-core); color: var(--text-main); 
-            font-family: 'Noto Sans KR', sans-serif; height: 100vh; overflow: hidden; 
+            font-family: 'Noto Sans KR', sans-serif; 
+            min-height: 100vh; /* 화면 꽉 채움 */
+            overflow-y: auto; /* 스크롤 허용 */
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .page { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg-core); opacity: 1; transition: opacity 0.2s; z-index: 10; }
-        .page.hidden { opacity: 0; pointer-events: none; z-index: 0; }
+        /* [LAYOUT] */
+        .page { 
+            display: flex; flex-direction: column; 
+            min-height: 100vh; /* 페이지 높이 확보 */
+            background: var(--bg-core); 
+            transition: opacity 0.2s; 
+            padding-bottom: 100px; /* 독바 공간 확보 */
+        }
+        .page.hidden { display: none; }
 
-        header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); }
+        header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); background: var(--bg-core); }
         .top-row { display: flex; justify-content: space-between; align-items: flex-end; }
         .logo-main { font-size: 32px; font-weight: 900; color: var(--neon-cyan); letter-spacing: -1px; line-height: 1; font-family: 'Exo 2'; font-style: italic; text-shadow: 0 0 10px rgba(0,243,255,0.3); }
         .logo-sub { font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 2px; margin-top: 5px; font-family: 'Roboto Mono'; }
@@ -49,10 +62,7 @@
         .ticker-item span { color: var(--neon-red); font-weight: 900; margin-right: 6px; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        .main-scroll { 
-            flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; 
-            -webkit-overflow-scrolling: touch; 
-        }
+        .main-scroll { padding: 20px; }
         .sec-head { font-size: 11px; color: var(--text-sub); font-weight: 900; margin: 30px 0 10px; letter-spacing: 1px; font-family: 'Roboto Mono'; border-left: 3px solid var(--neon-cyan); padding-left: 8px; }
 
         .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -74,10 +84,7 @@
         }
         .card.scanning .scan-line { opacity: 1; animation: scanSlow 3s linear infinite; }
         @keyframes scanSlow { 
-            0% { top: 0; opacity: 0; } 
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; } 
+            0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } 
         }
 
         .cctv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
@@ -140,7 +147,6 @@
         .an-tit { font-size: 18px; font-weight: 900; color: var(--neon-cyan); margin-bottom: 20px; }
         .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
-        /* --- [CONTENTS] --- */
         #calc-wrap { padding: 0; display: flex; flex-direction: column; height: 100%; }
         #calc-disp { background: var(--bg-panel); padding: 30px; text-align: right; font-size: 40px; border-radius: 16px; margin-bottom: 20px; font-family: 'Roboto Mono'; color: var(--text-main); border: 1px solid var(--border); min-height: 100px; display: flex; align-items: center; justify-content: flex-end; }
         .calc-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
@@ -236,7 +242,7 @@
             <div class="top-row">
                 <div class="brand-col">
                     <div class="logo-main">SYNAPSE</div>
-                    <div class="logo-sub">V24 MASTER-OS</div>
+                    <div class="logo-sub">V24 FINAL FIX</div>
                 </div>
                 <div class="clock-box">
                     <div class="time-big" id="clock-time">00:00:00</div>
@@ -303,17 +309,7 @@
                 {n:'NAVER',u:'https://sports.news.naver.com',i:'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5'},
                 {n:'YOUTUBE',u:'https://www.youtube.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2'}
             ],
-            // REVERTED TO EMPTY SLOTS AS REQUESTED
-            secret: [
-                {n:'VIP LINK 1',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 2',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 3',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 4',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 5',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 6',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 7',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 8',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}
-            ],
+            secret: Array(8).fill({n:'VIP LINK',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}),
             tv: [
                 {n:'FOOTBALL',u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&q=80'},
                 {n:'BASKETBALL',u:'https://images.unsplash.com/photo-1546519638-68e109498ad0?w=400&q=80'},
@@ -322,7 +318,10 @@
         };
         let DB = JSON.parse(localStorage.getItem('SYNAPSE_DB')) || DefaultDB;
 
-        // [FIXED: GEMINI AI ENGINE - v1beta for gemini-1.5-flash]
+        // [FIXED: GEMINI AI ENGINE]
+        // 1. 모델명 'gemini-1.5-flash'
+        // 2. API 경로 'v1beta' (CRITICAL FIX for Not Found Error)
+        // 3. safetySettings BLOCK_NONE
         const Gemini = {
             analyze: async (imgBase64) => {
                 const resArea = document.getElementById('ai-result');
@@ -344,7 +343,7 @@
                 [출력 형식] HTML 태그 사용. <h4 style='color:#00f3ff'>소제목</h4>, <p>내용</p>, <div style='color:red'>EV: +12.5%</div> 등.`;
 
                 try {
-                    // [CRITICAL FIX: v1beta endpoint used for gemini-1.5-flash compatibility]
+                    // [CRITICAL FIX: v1beta for gemini-1.5-flash]
                     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -362,7 +361,8 @@
                     const data = await response.json();
                     
                     if(data.error) {
-                        throw new Error(`[CODE ${data.error.code}] ${data.error.message}`);
+                        // Display exact error from Google
+                        throw new Error(`[${data.error.code}] ${data.error.message}`);
                     }
                     
                     if(data.candidates && data.candidates[0].content) {
@@ -372,7 +372,7 @@
                     }
                     
                 } catch (e) {
-                    resArea.innerHTML = `<div style="color:var(--neon-red); padding:10px; border:1px solid var(--neon-red);">[SYSTEM ERROR]<br>${e.message}<br><br>키를 확인하거나 결제 상태를 점검하세요.</div>`;
+                    resArea.innerHTML = `<div style="color:var(--neon-red); padding:10px; border:1px solid var(--neon-red); font-size:12px;">[SYSTEM ERROR]<br>${e.message}</div>`;
                 }
             }
         };
@@ -401,7 +401,6 @@
                 if(Action.hasImg) {
                     document.getElementById('an-img-target').src = document.getElementById('score-bg').src;
                     document.getElementById('analysis-view').classList.add('show');
-                    // [FIXED: Trigger AI Analysis Automatically]
                     Gemini.analyze(document.getElementById('score-bg').src);
                 } else {
                     App.open('VISION');
@@ -409,10 +408,8 @@
             },
             closeScore: () => {
                 document.getElementById('analysis-view').classList.remove('show');
-                // RESET SCORE BOX
                 document.getElementById('score-bg').style.display = 'none';
                 document.getElementById('score-bg').src = '';
-                // Remove Scanning Class
                 document.getElementById('card-score').classList.remove('scanning');
                 Action.hasImg = false;
                 history.back();
@@ -487,7 +484,6 @@
             render: (el) => {
                 const m = Ghost.active?'secret':'normal';
                 let h = `<div class="st-header"><div class="st-tit">CHAIRMAN ACCESS</div><div class="st-sub">ALL SYSTEMS NORMAL</div></div>`;
-                // [FIXED: Added API KEY Input]
                 h += `<div class="st-label" style="color:var(--neon-cyan)">AI ENGINE API KEY</div><div class="st-item"><input id="api-key" value="${localStorage.getItem('API_KEY')||''}" style="width:100%;border:none;background:transparent;color:var(--text-main);font-family:monospace;" placeholder="PASTE YOUR GOOGLE API KEY HERE"></div>`;
                 
                 h += `<div class="st-label">FAMILY LINKS [${m}]</div><div class="st-list">`;
