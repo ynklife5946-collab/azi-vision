@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>SYNAPSE : NO EXCUSE</title>
     <style>
-        /* [FINAL ENGINE V24] */
+        /* [FINAL ENGINE] */
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
         
         :root {
@@ -76,23 +76,8 @@
         }
         .card:active { border-color: var(--neon-cyan); }
         .c-tit { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; letter-spacing: 0.5px; z-index: 2; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-        
         #card-score { background: var(--bg-card); }
         #score-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 1; display: none; filter: contrast(1.1); }
-        
-        /* [SLOW SCAN LINE - 3 SECONDS] */
-        .scan-line { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 2px; 
-            background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); 
-            opacity: 0; pointer-events: none; z-index: 5;
-        }
-        .card.scanning .scan-line { opacity: 1; animation: scanSlow 3s linear infinite; }
-        @keyframes scanSlow { 
-            0% { top: 0; opacity: 0; } 
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; } 
-        }
 
         /* [LIVE CHANNELS] */
         .cctv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
@@ -125,7 +110,7 @@
         .sub-tit { font-size: 22px; font-weight: 900; color: var(--text-main); font-style: italic; }
         .close-btn { width: 100%; height: 55px; background: var(--text-main); color: var(--bg-core); border-radius: 12px; font-weight: 900; border: none; font-size: 16px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-        /* [CUSTOM MODAL SYSTEM] */
+        /* [CUSTOM MODAL SYSTEM - REPLACES SYSTEM ALERTS] */
         #custom-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         #custom-modal.show { display: flex; }
         .modal-box { width: 85%; max-width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
@@ -136,7 +121,7 @@
         .m-yes { background: var(--neon-cyan); color: #000; }
         .m-no { background: var(--bg-panel); color: var(--text-sub); border: 1px solid var(--border); }
 
-        /* [CUSTOM NUMBER PAD MODAL] */
+        /* [CUSTOM NUMBER PAD MODAL FOR BANK] */
         #input-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; flex-direction: column; justify-content: flex-end; }
         #input-modal.show { display: flex; }
         .input-box { background: var(--bg-card); border-top: 2px solid var(--neon-cyan); padding: 30px 20px; border-radius: 25px 25px 0 0; }
@@ -146,7 +131,7 @@
         .num-btn:active { background: var(--neon-cyan); color: black; }
         .num-ok { grid-column: span 3; background: var(--neon-cyan); color: black; margin-top: 10px; }
 
-        /* [ANALYSIS VIEW] */
+        /* [ANALYSIS VIEW - FULL COVERAGE] */
         #analysis-view { 
             position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh; 
             background: var(--bg-card); z-index: 5000; 
@@ -162,6 +147,8 @@
         .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
         /* --- [CONTENTS] --- */
+        
+        /* CALCULATOR - FIXED VISIBILITY */
         #calc-wrap { padding: 0; display: flex; flex-direction: column; height: 100%; }
         #calc-disp { background: var(--bg-panel); padding: 30px; text-align: right; font-size: 40px; border-radius: 16px; margin-bottom: 20px; font-family: 'Roboto Mono'; color: var(--text-main); border: 1px solid var(--border); min-height: 100px; display: flex; align-items: center; justify-content: flex-end; }
         .calc-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
@@ -170,6 +157,7 @@
         .cp-act { color: var(--neon-cyan); }
         .cp-eq { grid-column: span 4; background: var(--neon-cyan); color: black; border: none; height: 60px; margin-bottom: 10px; }
 
+        /* CALENDAR */
         .cal-nav { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
         .cal-ym { font-size: 24px; font-weight: 900; color: var(--neon-cyan); font-family: 'Roboto Mono'; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
@@ -180,6 +168,7 @@
         #cal-memo { width: 100%; height: 150px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; margin-top: 25px; padding: 15px; color: var(--text-main); font-size: 15px; resize: none; }
         .cal-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 12px; font-weight: 900; border: none; margin-top: 15px; font-size: 16px; }
 
+        /* BANK */
         .bank-disp { padding: 40px 20px; text-align: center; background: var(--bg-panel); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
         .bank-lbl { font-size: 12px; color: var(--text-sub); font-weight: 700; margin-bottom: 5px; }
         .bank-val { font-size: 40px; font-weight: 900; color: var(--neon-gold); font-family: 'Roboto Mono'; letter-spacing: -2px; }
@@ -189,6 +178,7 @@
         .b-btn.out { background: rgba(255, 60, 60, 0.1); border-color: var(--neon-red); color: var(--neon-red); }
         .b-reset { width: 100%; height: 55px; background: transparent; border: 1px solid var(--border); color: var(--text-sub); border-radius: 12px; margin-top: 20px; }
 
+        /* SETTINGS */
         .st-header { background: rgba(0, 255, 102, 0.05); border: 1px solid var(--neon-green); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 30px; }
         .st-tit { color: var(--neon-green); font-weight: 900; font-size: 20px; margin-bottom: 5px; }
         .st-sub { color: var(--text-sub); font-size: 11px; }
@@ -199,6 +189,7 @@
         .st-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 14px; font-weight: 900; border: none; margin-top: 30px; font-size: 16px; }
         .st-reset { width: 100%; height: 60px; background: rgba(255,60,60,0.1); border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 14px; font-weight: 900; margin-top: 15px; font-size: 16px; margin-bottom: 100px; }
 
+        /* ODDS & EDGE */
         .odds-table { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--text-sub); }
         .odds-table th { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); color: var(--neon-purple); }
         .odds-table td { padding: 15px 10px; border-bottom: 1px solid var(--border); color: var(--text-main); font-weight: 500; }
@@ -286,9 +277,8 @@
             <div class="sec-head">CONTROL UNIT</div>
             <div class="exec-grid">
                 <div class="card" id="card-score" onclick="Action.score()">
-                    <div class="scan-line"></div>
                     <img id="score-bg">
-                    <div class="c-tit" style="color:var(--neon-cyan)">VISION</div>
+                    <div class="c-tit" style="color:var(--neon-cyan)">SCORE</div>
                 </div>
                 <div class="card" onclick="App.open('ODDS')"><div class="c-tit" style="color:var(--neon-purple)">ODDS</div></div>
                 <div class="card" onclick="App.open('EDGE')"><div class="c-tit" style="color:var(--neon-red)">EDGE</div></div>
@@ -320,7 +310,7 @@
     </div>
 
     <script>
-        // DATA - FIXED GHOST DB (PLACEHOLDERS)
+        // DATA
         const DefaultDB = {
             normal: [
                 {n:'FLASHSCORE',u:'https://www.flashscore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'},
@@ -332,17 +322,7 @@
                 {n:'NAVER',u:'https://sports.news.naver.com',i:'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5'},
                 {n:'YOUTUBE',u:'https://www.youtube.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2'}
             ],
-            // REVERTED TO EMPTY SLOTS AS REQUESTED
-            secret: [
-                {n:'VIP LINK 1',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 2',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 3',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 4',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 5',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 6',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 7',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 8',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}
-            ],
+            secret: Array(8).fill({n:'VIP LINK',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}),
             tv: [
                 {n:'FOOTBALL',u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&q=80'},
                 {n:'BASKETBALL',u:'https://images.unsplash.com/photo-1546519638-68e109498ad0?w=400&q=80'},
@@ -377,7 +357,7 @@
                     document.getElementById('analysis-view').classList.add('show');
                     history.pushState({modal:true}, null, "");
                 } else {
-                    App.open('VISION');
+                    App.open('SCORE');
                 }
             },
             closeScore: () => {
@@ -490,10 +470,6 @@
                 else if(m=='CALC') c.innerHTML=Calculator.html;
                 else if(m=='ODDS') c.innerHTML=Odds.render();
                 else if(m=='EDGE') c.innerHTML=Edge.render();
-                else if(m=='VISION') {
-                     // VISION CARD CLICKED -> NO ACTION NEEDED IF IMAGE NOT LOADED, OR SHOW DEFAULT
-                     c.innerHTML=`<div style="padding:20px;">VISION MODULE ACTIVE.<br>UPLOAD IMAGE TO SCAN.</div>`;
-                }
                 else c.innerHTML=`<div style="padding:20px;">CONNECTING...</div>`;
             }
         };
@@ -504,12 +480,12 @@
             shortcuts: () => {
                 const box=document.getElementById('grid-box'), list=Ghost.active?DB.secret:DB.normal; let h='';
                 list.forEach((i,x)=>{ if(x<8) { 
-                    // HTTPS AUTO-FIX LOGIC PRESERVED
+                    // NO DEFAULT #
                     let u=i.u; if(u && !u.startsWith('http'))u='https://'+u; 
                     const act=u?`window.open('${u}')`:`Modal.show('설정에서 주소를 입력하세요', ()=>App.open('SETTINGS'))`; 
                     h+=`<div class="s-btn" onclick="${act}"><svg class="s-ico" viewBox="0 0 24 24"><path d="${i.i}"/></svg><span class="s-lbl">${i.n}</span></div>`; 
                 }});
-                // 9TH BOX
+                // 9TH BOX - CAMOUFLAGED AS COMPASS
                 h+=`<div class="s-btn" onclick="Ghost.trigger()"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span class="s-lbl" style="${Ghost.active?'color:var(--neon-cyan)':'color:var(--text-sub)'}">COMPASS</span></div>`;
                 box.innerHTML=h;
             },
@@ -537,19 +513,10 @@
                 if(e.target.files[0]) {
                     const reader = new FileReader();
                     reader.onload = (ev) => {
-                        const bg = document.getElementById('score-bg'), card = document.getElementById('card-score');
+                        const bg = document.getElementById('score-bg');
                         bg.src = ev.target.result;
                         bg.style.display = 'block';
                         Action.hasImg = true;
-                        
-                        // ADD SCAN CLASS
-                        card.classList.add('scanning');
-                        
-                        // STOP SCANNING AFTER 3 SECONDS
-                        setTimeout(() => { 
-                            card.classList.remove('scanning'); 
-                            Action.score(); 
-                        }, 3000);
                     }
                     reader.readAsDataURL(e.target.files[0]);
                 }
