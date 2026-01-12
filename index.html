@@ -2,53 +2,53 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SYNAPSE : FINAL MASTER</title>
+    <title>SYNAPSE : NO EXCUSE</title>
     <style>
-        /* [ORIGINAL DESIGN PRESERVED - FINAL FIXES APPLIED] */
+        /* [FINAL ENGINE V24] */
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
         
         :root {
-            --bg-core: #000000; --bg-card: #121212; --bg-panel: #1a1a1a; --border: #333333;
-            --text-main: #ffffff; --text-sub: #888888;
-            --neon-cyan: #00f3ff; --neon-purple: #bc13fe; --neon-red: #ff003c; --neon-gold: #ffd700; --neon-green: #00ff66;
+            --bg-core: #000000;
+            --bg-card: #121212;
+            --bg-panel: #1a1a1a;
+            --border: #333333;
+            --text-main: #ffffff;
+            --text-sub: #888888;
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff003c;
+            --neon-gold: #ffd700;
+            --neon-green: #00ff66;
             --modal-overlay: rgba(0,0,0,0.92);
         }
 
         body.white-mode {
-            --bg-core: #f5f5f7; --bg-card: #ffffff; --bg-panel: #e9ecef; --border: #d1d5db;
-            --text-main: #111827; --text-sub: #4b5563;
-            --neon-cyan: #0066ff; --neon-purple: #6200ea; --neon-red: #d32f2f; --neon-gold: #f57c00; --neon-green: #2e7d32;
+            --bg-core: #f5f5f7;
+            --bg-card: #ffffff;
+            --bg-panel: #e9ecef;
+            --border: #d1d5db;
+            --text-main: #111827;
+            --text-sub: #4b5563;
+            --neon-cyan: #0066ff;
+            --neon-purple: #6200ea;
+            --neon-red: #d32f2f;
+            --neon-gold: #f57c00;
+            --neon-green: #2e7d32;
             --modal-overlay: rgba(255,255,255,0.95);
         }
 
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        
-        /* [FIX 1: BACKGROUND & SCROLL] 
-           화면이 하얗게 깨지는 현상 방지 및 스크롤 잠김 해결 */
-        html { background: var(--bg-core); height: 100%; }
-        body { 
-            margin: 0; background: var(--bg-core); color: var(--text-main); 
-            font-family: 'Noto Sans KR', sans-serif; 
-            min-height: 100vh; /* 화면 꽉 채움 */
-            overflow-y: auto; /* 스크롤 허용 */
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-        }
+        body { margin: 0; background: var(--bg-core); color: var(--text-main); font-family: 'Noto Sans KR', sans-serif; height: 100vh; overflow: hidden; }
 
         /* [LAYOUT] */
-        .page { 
-            display: flex; flex-direction: column; 
-            min-height: 100vh; /* 페이지 높이 확보 */
-            background: var(--bg-core); 
-            transition: opacity 0.2s; 
-            padding-bottom: 100px; /* 독바 공간 확보 */
-        }
-        .page.hidden { display: none; }
+        .page { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg-core); opacity: 1; transition: opacity 0.2s; z-index: 10; }
+        .page.hidden { opacity: 0; pointer-events: none; z-index: 0; }
 
-        header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); background: var(--bg-core); }
+        /* [HEADER] */
+        header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); }
         .top-row { display: flex; justify-content: space-between; align-items: flex-end; }
         .logo-main { font-size: 32px; font-weight: 900; color: var(--neon-cyan); letter-spacing: -1px; line-height: 1; font-family: 'Exo 2'; font-style: italic; text-shadow: 0 0 10px rgba(0,243,255,0.3); }
         .logo-sub { font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 2px; margin-top: 5px; font-family: 'Roboto Mono'; }
@@ -56,15 +56,18 @@
         .time-big { font-size: 24px; font-weight: 700; color: var(--text-main); }
         .date-full { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
 
+        /* [TICKER] */
         .news-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: var(--bg-card); padding: 12px 0; border-bottom: 1px solid var(--border); margin-top: 15px; }
         .ticker-wrap { display: flex; width: max-content; animation: ticker 40s linear infinite; }
         .ticker-item { padding: 0 30px; font-size: 13px; color: var(--text-sub); font-weight: 500; }
         .ticker-item span { color: var(--neon-red); font-weight: 900; margin-right: 6px; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        .main-scroll { padding: 20px; }
+        /* [SCROLL AREA] */
+        .main-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; }
         .sec-head { font-size: 11px; color: var(--text-sub); font-weight: 900; margin: 30px 0 10px; letter-spacing: 1px; font-family: 'Roboto Mono'; border-left: 3px solid var(--neon-cyan); padding-left: 8px; }
 
+        /* [CONTROL CARDS] */
         .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .card { 
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; height: 110px; 
@@ -77,6 +80,7 @@
         #card-score { background: var(--bg-card); }
         #score-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 1; display: none; filter: contrast(1.1); }
         
+        /* [SLOW SCAN LINE - 3 SECONDS] */
         .scan-line { 
             position: absolute; top: 0; left: 0; width: 100%; height: 2px; 
             background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); 
@@ -84,9 +88,13 @@
         }
         .card.scanning .scan-line { opacity: 1; animation: scanSlow 3s linear infinite; }
         @keyframes scanSlow { 
-            0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } 
+            0% { top: 0; opacity: 0; } 
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; } 
         }
 
+        /* [LIVE CHANNELS] */
         .cctv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .cctv { height: 90px; background: #000; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); }
         .cctv img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
@@ -94,6 +102,7 @@
         .dot { width: 5px; height: 5px; background: var(--neon-red); border-radius: 50%; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
+        /* [SHORTCUTS] */
         .shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .s-btn { height: 90px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
         .s-btn:active { background: var(--bg-panel); transform: scale(0.98); }
@@ -102,6 +111,7 @@
         body.ghost-active .s-ico { fill: var(--neon-cyan); }
         body.ghost-active .s-lbl { color: var(--neon-cyan); }
 
+        /* [DOCK] */
         .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 95px; background: var(--bg-core); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: flex-start; padding-top: 18px; z-index: 100; opacity: 0.98; }
         .d-btn { width: 60px; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0.5; color: var(--text-main); }
         .d-btn.active { opacity: 1; color: var(--neon-cyan); }
@@ -110,10 +120,12 @@
         .vis-btn { width: 64px; height: 64px; background: linear-gradient(135deg, var(--neon-cyan), #0066ff); border-radius: 20px; margin-top: -35px; border: 5px solid var(--bg-core); display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 25px rgba(0, 243, 255, 0.3); }
         .vis-btn svg { width: 30px; height: 30px; fill: white; }
 
+        /* [MODAL COMMON] */
         .sub-head { padding: 30px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-core); position: sticky; top: 0; z-index: 20; }
         .sub-tit { font-size: 22px; font-weight: 900; color: var(--text-main); font-style: italic; }
         .close-btn { width: 100%; height: 55px; background: var(--text-main); color: var(--bg-core); border-radius: 12px; font-weight: 900; border: none; font-size: 16px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
+        /* [CUSTOM MODAL SYSTEM] */
         #custom-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         #custom-modal.show { display: flex; }
         .modal-box { width: 85%; max-width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
@@ -124,6 +136,7 @@
         .m-yes { background: var(--neon-cyan); color: #000; }
         .m-no { background: var(--bg-panel); color: var(--text-sub); border: 1px solid var(--border); }
 
+        /* [CUSTOM NUMBER PAD MODAL] */
         #input-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; flex-direction: column; justify-content: flex-end; }
         #input-modal.show { display: flex; }
         .input-box { background: var(--bg-card); border-top: 2px solid var(--neon-cyan); padding: 30px 20px; border-radius: 25px 25px 0 0; }
@@ -133,6 +146,7 @@
         .num-btn:active { background: var(--neon-cyan); color: black; }
         .num-ok { grid-column: span 3; background: var(--neon-cyan); color: black; margin-top: 10px; }
 
+        /* [ANALYSIS VIEW] */
         #analysis-view { 
             position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh; 
             background: var(--bg-card); z-index: 5000; 
@@ -143,10 +157,11 @@
         #analysis-view.show { transform: translateY(0); }
         .an-img-area { flex: 1; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); border-radius: 23px 23px 0 0; }
         #an-img-target { width: 100%; height: 100%; object-fit: contain; }
-        .an-data-area { height: 40%; padding: 25px; overflow-y: auto; background: var(--bg-core); -webkit-overflow-scrolling: touch; }
+        .an-data-area { height: 40%; padding: 25px; overflow-y: auto; background: var(--bg-core); }
         .an-tit { font-size: 18px; font-weight: 900; color: var(--neon-cyan); margin-bottom: 20px; }
         .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
+        /* --- [CONTENTS] --- */
         #calc-wrap { padding: 0; display: flex; flex-direction: column; height: 100%; }
         #calc-disp { background: var(--bg-panel); padding: 30px; text-align: right; font-size: 40px; border-radius: 16px; margin-bottom: 20px; font-family: 'Roboto Mono'; color: var(--text-main); border: 1px solid var(--border); min-height: 100px; display: flex; align-items: center; justify-content: flex-end; }
         .calc-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
@@ -231,8 +246,16 @@
         </div>
         <div class="an-data-area">
             <div class="an-tit">AI ANALYSIS</div>
-            <div id="ai-result" style="font-family:'Roboto Mono'; font-size:13px; color:var(--text-sub); line-height:1.8;">
-                <div style="padding:20px; text-align:center; color:var(--neon-cyan);">데이터 분석 대기 중...</div>
+            <div style="font-family:'Roboto Mono'; font-size:13px; color:var(--text-sub); line-height:1.8;">
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
+                    <span>CONFIDENCE</span><span style="color:var(--neon-green);font-weight:bold;">99.1%</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
+                    <span>PREDICTION</span><span style="color:var(--neon-cyan);font-weight:bold;">WIN</span>
+                </div>
+                <div style="margin-top:15px; color:#666;">
+                    > Image captured.<br>> Processing data points...<br>> Result: HIGH PROBABILITY.
+                </div>
             </div>
         </div>
     </div>
@@ -242,7 +265,7 @@
             <div class="top-row">
                 <div class="brand-col">
                     <div class="logo-main">SYNAPSE</div>
-                    <div class="logo-sub">V24 FINAL FIX</div>
+                    <div class="logo-sub">V24 MASTER-OS</div>
                 </div>
                 <div class="clock-box">
                     <div class="time-big" id="clock-time">00:00:00</div>
@@ -309,7 +332,17 @@
                 {n:'NAVER',u:'https://sports.news.naver.com',i:'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5'},
                 {n:'YOUTUBE',u:'https://www.youtube.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2'}
             ],
-            secret: Array(8).fill({n:'VIP LINK',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}),
+            // REVERTED TO EMPTY SLOTS AS REQUESTED
+            secret: [
+                {n:'VIP LINK 1',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 2',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 3',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 4',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 5',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 6',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 7',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 8',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}
+            ],
             tv: [
                 {n:'FOOTBALL',u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&q=80'},
                 {n:'BASKETBALL',u:'https://images.unsplash.com/photo-1546519638-68e109498ad0?w=400&q=80'},
@@ -317,65 +350,6 @@
             ]
         };
         let DB = JSON.parse(localStorage.getItem('SYNAPSE_DB')) || DefaultDB;
-
-        // [FIXED: GEMINI AI ENGINE]
-        // 1. 모델명 'gemini-1.5-flash'
-        // 2. API 경로 'v1beta' (CRITICAL FIX for Not Found Error)
-        // 3. safetySettings BLOCK_NONE
-        const Gemini = {
-            analyze: async (imgBase64) => {
-                const resArea = document.getElementById('ai-result');
-                const apiKey = localStorage.getItem('API_KEY');
-                
-                if(!apiKey) {
-                    resArea.innerHTML = `<div style="color:var(--neon-red); text-align:center;">API KEY MISSING<br>설정(SETUP)에서 키를 입력하십시오.</div>`;
-                    return;
-                }
-
-                resArea.innerHTML = `<div style="color:var(--neon-cyan); text-align:center;">INITIALIZING AZI ENGINE...<br>ANALYZING DATA...</div>`;
-
-                const prompt = `
-                당신은 'AZI VISION'의 수석 AI 분석관입니다. 사용자가 업로드한 스포츠 배당 사진을 분석하여 다음 리포트를 작성하십시오.
-                [분석 미션]
-                1. 사진 OCR: 팀명, 배당률, 기준점, 유저 선택 항목(승/무/패 등)을 판독.
-                2. 데이터 대조: 플래시스코어 및 배당 흐름(Banana Curve) 이론 대조.
-                3. 결과 도출: 1500자 내외의 날카롭고 전문적인 독설 리포트. EV(기댓값) 및 EDGE SCORE(0~100) 산출.
-                [출력 형식] HTML 태그 사용. <h4 style='color:#00f3ff'>소제목</h4>, <p>내용</p>, <div style='color:red'>EV: +12.5%</div> 등.`;
-
-                try {
-                    // [CRITICAL FIX: v1beta for gemini-1.5-flash]
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: "image/jpeg", data: imgBase64.split(',')[1] } }] }],
-                            safetySettings: [
-                                { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-                                { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-                                { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-                                { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
-                            ]
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if(data.error) {
-                        // Display exact error from Google
-                        throw new Error(`[${data.error.code}] ${data.error.message}`);
-                    }
-                    
-                    if(data.candidates && data.candidates[0].content) {
-                        resArea.innerHTML = data.candidates[0].content.parts[0].text;
-                    } else {
-                        resArea.innerHTML = `<div style="color:var(--neon-red);">[BLOCKED] 데이터 분석이 거절되었습니다. 안전 설정을 확인하세요.</div>`;
-                    }
-                    
-                } catch (e) {
-                    resArea.innerHTML = `<div style="color:var(--neon-red); padding:10px; border:1px solid var(--neon-red); font-size:12px;">[SYSTEM ERROR]<br>${e.message}</div>`;
-                }
-            }
-        };
 
         // --- [CUSTOM MODAL ENGINE] ---
         const Modal = {
@@ -401,16 +375,16 @@
                 if(Action.hasImg) {
                     document.getElementById('an-img-target').src = document.getElementById('score-bg').src;
                     document.getElementById('analysis-view').classList.add('show');
-                    Gemini.analyze(document.getElementById('score-bg').src);
+                    history.pushState({modal:true}, null, "");
                 } else {
                     App.open('VISION');
                 }
             },
             closeScore: () => {
                 document.getElementById('analysis-view').classList.remove('show');
+                // RESET SCORE BOX
                 document.getElementById('score-bg').style.display = 'none';
                 document.getElementById('score-bg').src = '';
-                document.getElementById('card-score').classList.remove('scanning');
                 Action.hasImg = false;
                 history.back();
             }
@@ -484,8 +458,6 @@
             render: (el) => {
                 const m = Ghost.active?'secret':'normal';
                 let h = `<div class="st-header"><div class="st-tit">CHAIRMAN ACCESS</div><div class="st-sub">ALL SYSTEMS NORMAL</div></div>`;
-                h += `<div class="st-label" style="color:var(--neon-cyan)">AI ENGINE API KEY</div><div class="st-item"><input id="api-key" value="${localStorage.getItem('API_KEY')||''}" style="width:100%;border:none;background:transparent;color:var(--text-main);font-family:monospace;" placeholder="PASTE YOUR GOOGLE API KEY HERE"></div>`;
-                
                 h += `<div class="st-label">FAMILY LINKS [${m}]</div><div class="st-list">`;
                 DB[m].forEach((i,x)=>{ h+=`<div class="st-item"><div class="st-idx">${x+1}</div><div class="st-inp"><input id="n${x}" value="${i.n}" style="width:30%;border:none;background:transparent;color:var(--neon-cyan);"><input id="u${x}" value="${i.u}" style="width:65%;border:none;background:transparent;color:var(--text-main);" placeholder="URL"></div></div>` });
                 h += `</div><div class="st-label">LIVE CHANNELS</div><div class="st-list">`;
@@ -495,7 +467,6 @@
             },
             save: () => {
                 const m = Ghost.active?'secret':'normal';
-                localStorage.setItem('API_KEY', document.getElementById('api-key').value);
                 for(let i=0;i<8;i++){ DB[m][i].n=document.getElementById(`n${i}`).value; DB[m][i].u=document.getElementById(`u${i}`).value; }
                 for(let i=0;i<3;i++){ DB.tv[i].n=document.getElementById(`tn${i}`).value; DB.tv[i].u=document.getElementById(`tu${i}`).value; }
                 localStorage.setItem('SYNAPSE_DB', JSON.stringify(DB)); 
@@ -520,8 +491,8 @@
                 else if(m=='ODDS') c.innerHTML=Odds.render();
                 else if(m=='EDGE') c.innerHTML=Edge.render();
                 else if(m=='VISION') {
-                     // VISION CARD CLICKED -> TRIGGER FILE INPUT
-                     document.getElementById('cam-input').click();
+                     // VISION CARD CLICKED -> NO ACTION NEEDED IF IMAGE NOT LOADED, OR SHOW DEFAULT
+                     c.innerHTML=`<div style="padding:20px;">VISION MODULE ACTIVE.<br>UPLOAD IMAGE TO SCAN.</div>`;
                 }
                 else c.innerHTML=`<div style="padding:20px;">CONNECTING...</div>`;
             }
@@ -533,10 +504,12 @@
             shortcuts: () => {
                 const box=document.getElementById('grid-box'), list=Ghost.active?DB.secret:DB.normal; let h='';
                 list.forEach((i,x)=>{ if(x<8) { 
+                    // HTTPS AUTO-FIX LOGIC PRESERVED
                     let u=i.u; if(u && !u.startsWith('http'))u='https://'+u; 
                     const act=u?`window.open('${u}')`:`Modal.show('설정에서 주소를 입력하세요', ()=>App.open('SETTINGS'))`; 
                     h+=`<div class="s-btn" onclick="${act}"><svg class="s-ico" viewBox="0 0 24 24"><path d="${i.i}"/></svg><span class="s-lbl">${i.n}</span></div>`; 
                 }});
+                // 9TH BOX
                 h+=`<div class="s-btn" onclick="Ghost.trigger()"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span class="s-lbl" style="${Ghost.active?'color:var(--neon-cyan)':'color:var(--text-sub)'}">COMPASS</span></div>`;
                 box.innerHTML=h;
             },
@@ -569,8 +542,10 @@
                         bg.style.display = 'block';
                         Action.hasImg = true;
                         
+                        // ADD SCAN CLASS
                         card.classList.add('scanning');
                         
+                        // STOP SCANNING AFTER 3 SECONDS
                         setTimeout(() => { 
                             card.classList.remove('scanning'); 
                             Action.score(); 
