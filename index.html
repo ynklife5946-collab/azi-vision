@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AZI-VISION : 내면의 영혼</title>
+    <title>AZI-VISION</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         :root { --bg: #050508; --card: #12121a; --accent: #00f2ff; --text: #f1f5f9; --sub: #94a3b8; --border: #1a1a25; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body { 
-            background: var(--bg); color: var(--text); font-family: 'Pretendard', -apple-system, sans-serif; line-height: 1.7; word-break: keep-all; 
+            background: var(--bg); color: var(--text); font-family: 'Pretendard', -apple-system, sans-serif; line-height: 1.9; word-break: keep-all; 
             background-image: linear-gradient(to right, rgba(0, 242, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
             background-size: 25px 25px; 
         }
@@ -18,48 +18,50 @@
         .app.active { display: flex !important; }
         header { text-align: center; padding: 60px 25px 30px; }
         .logo-top { color: var(--accent); font-weight: 800; letter-spacing: 5px; font-size: 0.9rem; margin-bottom: 25px; display: block; text-transform: uppercase; }
-        h1 { font-size: 1.5rem; font-weight: 700; line-height: 1.4; margin-bottom: 25px; letter-spacing: -1px; }
+        h1 { font-size: 1.45rem; font-weight: 700; line-height: 1.5; margin-bottom: 25px; letter-spacing: -1px; text-align: center; }
         .formula-box { background: #000; padding: 30px 15px; border-radius: 20px; border: 1px solid var(--border); margin: 25px 0; font-size: 1rem; color: #fff; }
-        .btn-main { background: var(--accent); color: #000; border: none; width: 90%; padding: 22px; font-size: 1.15rem; font-weight: 900; border-radius: 20px; margin: 25px auto; cursor: pointer; display: block; box-shadow: 0 0 25px rgba(0, 242, 255, 0.3); text-align: center; text-decoration: none; }
+        .btn-main { background: var(--accent); color: #000; border: none; width: 90%; padding: 22px; font-size: 1.1rem; font-weight: 900; border-radius: 20px; margin: 25px auto; cursor: pointer; display: block; box-shadow: 0 0 25px rgba(0, 242, 255, 0.3); text-align: center; text-decoration: none; }
         section { padding: 20px; flex: 1; }
         .pillar-card { background: var(--card); border-radius: 24px; border: 1px solid var(--border); padding: 30px; margin-bottom: 25px; text-align: left; }
         .p-head { color: var(--accent); font-weight: 800; font-size: 1.05rem; margin-bottom: 12px; display: block; }
-        .p-body { font-size: 0.9rem; color: var(--sub); line-height: 1.7; text-align: left; margin-bottom: 20px; }
+        .p-body { font-size: 0.9rem; color: var(--sub); line-height: 1.8; text-align: left; margin-bottom: 20px; }
         .progress-ui { color: var(--accent); font-weight: 900; font-size: 0.85rem; letter-spacing: 3px; margin-bottom: 30px; text-align: center; }
         .q-text { font-size: 1.3rem; font-weight: 700; text-align: center; margin-bottom: 40px; color: #fff; line-height: 1.5; }
         .opt-btn { display: block; width: 100%; padding: 18px 20px; margin-bottom: 15px; background: #1a1a25; border: 1px solid var(--border); color: var(--text); border-radius: 18px; font-size: 0.95rem; cursor: pointer; text-align: left; transition: 0.2s; line-height: 1.5; }
         .opt-btn.active { background: var(--accent) !important; color: #000 !important; font-weight: 800; border-color: var(--accent); }
         .report-card { background: var(--card); border-radius: 24px; border: 1px solid var(--border); padding: 25px; margin-bottom: 20px; text-align: left; }
-        .report-card b { color: var(--accent); font-weight: 800; font-size: 1rem; margin-bottom: 12px; display: block; }
-        .report-card p { font-size: 0.95rem; color: var(--text); line-height: 1.8; text-align: left; }
+        .report-card b { color: var(--accent); font-weight: 800; font-size: 1rem; margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        .report-card p { font-size: 0.95rem; color: var(--text); line-height: 1.9; text-align: left; }
         .rel-cyan { color: var(--accent); font-weight: 700; }
         .btn-prev { background: transparent; color: var(--sub); border: 1px solid var(--border); padding: 10px 20px; font-size: 0.8rem; border-radius: 30px; cursor: pointer; margin-top: 20px; display: block; margin-left: auto; margin-right: auto; }
-        footer { padding: 60px 20px; text-align: center; color: #333; font-size: 0.7rem; border-top: 1px solid #111; }
+        footer { padding: 60px 20px; text-align: center; color: #333; font-size: 0.7rem; border-top: 1px solid #111; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
 <div class="app" id="view-init">
     <header>
-        <span class="logo-top">AZI VISION</span>
+        <span class="logo-top">PURCHASE VERIFIED</span>
         <h1>내면의 영혼 분석을<br>시작합니다</h1>
         <div class="formula-box">$$M = \int (P_{time} \times E_{env}) \cdot S_{root} \, dt$$</div>
         <p style="color:var(--accent); font-weight:600; font-size:0.9rem;">"우리 분석은 이렇게 합니다. 그러나 결과는 최대한 쉽게 풀어드리니 걱정마세요."</p>
     </header>
     <section>
         <div class="pillar-card">
-            <span class="p-head">시냅스 온 운영 가이드</span>
-            <p class="p-body">아래 [초대 링크 생성]을 눌러 상대방에게 전달하세요. 상대방은 분석 리포트를 절대 볼 수 없으며, 체크가 완료되면 당신에게만 결과 열쇠가 전송되는 방식이에요.</p>
+            <span class="p-head">1. Chronopsychology</span>
+            <p class="p-body">인간의 감정은 호르몬 분비량의 24시간 주기에 따라 파동을 그립니다. 정서적으로 가장 취약해지는 시간대를 포착하여 소통의 주파수를 제안합니다.</p>
+            <span class="p-head">2. Analytical Psychology</span>
+            <p class="p-body">사회적 가면인 '페르소나'와 억눌린 내면인 '그림자' 사이의 갈등 에너지를 연산하여 말 뒤에 숨겨진 뿌리 깊은 동기를 스스로 깨닫게 합니다.</p>
         </div>
-        <button class="btn-main" onclick="copyInvite()">초대 링크 생성 →</button>
+        <button class="btn-main" onclick="copyInvite()">CREATE INVITE LINK →</button>
     </section>
 </div>
 
 <div class="app" id="view-landing">
     <header>
-        <span class="logo-top">AZI VISION</span>
+        <span class="logo-top">AZI-VISION</span>
         <h1>당신을 깊이 알고 싶어 하는 한 사람으로부터<br>영혼의 초대장이 도착했습니다.</h1>
-        <button class="btn-main" onclick="switchView('view-filter')">내면의 영혼 →</button>
+        <button class="btn-main" onclick="switchView('view-filter')">OPEN INVITATION →</button>
     </header>
 </div>
 
@@ -69,7 +71,7 @@
         <button class="opt-btn" onclick="setRel('연인', this)">연인</button>
         <button class="opt-btn" onclick="setRel('부모/자식', this)">부모/자식</button>
         <button class="opt-btn" onclick="setRel('친구/지인', this)">친구/지인</button>
-        <button class="btn-main" style="margin-top:50px;" onclick="startSurvey()">다음 단계로 →</button>
+        <button class="btn-main" style="margin-top:50px;" onclick="startSurvey()">NEXT STEP →</button>
     </section>
 </div>
 
@@ -77,7 +79,7 @@
     <section>
         <div id="p-bar" class="progress-ui">SYNAPSE 01 / 30</div>
         <div id="q-box"></div>
-        <button class="btn-prev" onclick="prev()">< 뒤로 가기</button>
+        <button class="btn-prev" onclick="prev()">BACK</button>
     </section>
 </div>
 
@@ -85,12 +87,12 @@
     <header>
         <span class="logo-top">AUTHENTICATION</span>
         <div class="formula-box" id="seal-txt" style="font-weight:900;">영혼 봉인 중... 0%</div>
-        <button id="btn-send" class="btn-main" style="display:none;" onclick="sendKey()">상대방에게 보내기 →</button>
+        <button id="btn-send" class="btn-main" style="display:none;" onclick="sendKey()">SEND KEY TO PARTNER →</button>
     </header>
 </div>
 
 <div class="app" id="view-report">
-    <section>
+    <section id="report-content">
         <header><span class="logo-top">THE FINAL BLUEPRINT</span><h1>최종 분석 리포트</h1></header>
         <div class="report-card"><canvas id="radar"></canvas></div>
         <div id="p-res"></div>
@@ -99,20 +101,22 @@
             <div style="background:#000; padding:20px; border-radius:15px; margin:20px 0; border:1px solid var(--border);">
                 $$EV = \int ( \sum S_i \cdot W_i ) dt$$
             </div>
-            <p style="font-size:0.85rem; color:var(--sub); text-align:left;">이 기록은 단순한 분석이 아닙니다. 9해 3132경의 확률을 뚫고 만난 소중한 인연의 내면을 온전히 마주하는 시간입니다. 상대방의 설계도를 이해했다면, 이제 그들을 더 깊이 아끼고 사랑하십시오.</p>
+            <p style="font-size:0.85rem; color:var(--sub); text-align:left;">상대방의 설계도를 이해했다면, 이제 그들을 더 깊이 아끼고 사랑하십시오. 당신의 진심 어린 배려가 세상에서 가장 아름다운 관계를 만들어낼 것입니다.</p>
         </div>
     </section>
-    <footer>© AZI VISION.</footer>
+    <footer>© AZI-VISION. ALL RIGHTS RESERVED.</footer>
 </div>
 
 <script>
     let relName = '연인'; let step = 0; let userChoices = [];
     const questions = ["1. 낯선 장소에서 당신의 감각이 가장 먼저 반응하는 요소는 무엇인가요?", "2. 조용한 카페에서 본능적으로 당신의 발걸음이 향하는 곳은 어디인가요?", "3. 영화를 관람할 때, 당신의 몰입을 방해하는 가장 큰 요소는 무엇인가요?", "4. 고된 하루를 마친 후, 현관문 앞에 섰을 때 가장 먼저 드는 생각은?", "5. 하루 중 시간이 가장 느리게 흐른다고 느끼는 순간은 언제인가요?", "6. 비 내리는 창밖을 볼 때, 당신의 시선이 가장 오래 머무는 곳은?", "7. 아주 지친 날, 당신의 뇌가 가장 간절히 원하는 감각적 신호는?", "8. 갑작스러운 약속 취소 소식을 들었을 때, 당신의 첫 감정은 무엇인가요?", "9. 서점에서 당신의 발걸음이 가장 오래 멈추는 코너는 어디인가요?", "10. 당신의 방에 단 하나의 그림을 걸 수 있다면 무엇을 고를까요?", "11. 엘리베이터에 모르는 사람과 탔을 때, 당신의 시선은 주로 어디에 머무나요?", "12. 누군가 당신에게 무리한 부탁을 했을 때, 당신의 마음에서 일어나는 첫 반응은?", "13. 가상의 가면무도회에 간다면, 당신이 쓰고 싶은 가면의 재질은?", "14. 산책 중 갈림길이 나왔을 때, 당신의 발걸음은 어디로 향하나요?", "15. 주문한 음료가 잘못 나왔을 때, 당신의 첫 대응은 무엇인가요?", "16. 완벽한 휴식을 취하고 있는 당신의 방, 조명은 어떤 상태인가요?", "17. 오래된 일기장을 발견했습니다. 당신이 가장 먼저 찾아볼 페이지는 어디인가요?", "18. 누군가 당신의 비밀을 알고 있다고 속삭인다면, 당신의 반응은?", "19. 당신의 책상 위에 놓인 물건들의 정돈 상태는 보통 어떠한가요?", "20. 축하받을 일이 생겼을 때, 당신이 가장 원하는 축하의 방식은?", "21. 길가에 핀 꽃을 보았을 때, 당신의 머릿속에 가장 먼저 드는 생각은?", "22. 예상치 못한 보너스가 생겼다면, 당신은 어디에 먼저 쓰고 싶나요?", "23. 당신에게 '가장 편안한 신발'은 어떤 느낌인가요?", "24. 누군가 당신의 가치관을 비판한다면 어떻게 대응하시겠습니까?", "25. 가방 속에 절대 빠지면 안 되는 물건 하나를 고른다면?", "26. 거울 속에 비친 자신의 모습 중 가장 마음에 드는 부분은?", "27. 당신이 가장 견디기 힘든 침묵의 장소는 어디인가요?", "28. 당신에게 '성공'이란 어떤 이미지에 가장 가깝나요?", "29. 타인과의 대화에서 당신이 가장 중요하게 생각하는 가치는?", "30. 마지막 해답, 당신의 영혼을 지키는 '마스터 키'는 어떤 모양일까요?"];
-    const optsArr = [["공간의 온도", "빛의 밝기", "주변의 소음", "공간의 냄새", "사물의 질서"], ["벽 등진 구석", "창가 자리", "중앙 테이블", "어두운 안쪽", "출입구 근처"], ["옆 사람의 소음", "화면의 번쩍임", "답답한 공기", "지루한 서사", "의자의 불편함"], ["아무도 없는 정적", "누군가의 환대", "내일의 남은 일", "맛있는 음식", "침대에 눕는 상상"], ["오전 11시경", "오후 2시경", "오후 5시 15분경", "밤 9시경", "새벽 2시경"], ["물방울", "사람들", "색감", "구름", "빗소리"], ["규칙적인 자연 소리", "완벽 정적", "잔잔한 음악", "책 읽는 소리", "백색 소음"], ["해방감", "허전함", "서운함", "압박감", "설렘"], ["실용서", "에세이", "소설", "역사서", "예술서"], ["사막 풍경", "도심 야경", "숲속 오두막", "추상화", "심연 바다"], ["층수 표시판", "문에 비친 내 모습", "바닥의 흠집", "휴대폰 화면", "벽면 광고판"], ["거절 방법 고민", "본능적인 짜증", "이득과 실 계산", "일단 수락 후 후회", "나약함 자책"], ["단단한 금속", "부드러운 가죽", "깃털", "무표정한 도자기", "레이스"], ["안전한 넓은 길", "풍경이 예쁜 길", "새로운 길", "가장 빠른 길", "향기로운 길"], ["그냥 마신다", "정중히 재요청", "참다가 후회", "불쾌함 표출", "대신 부탁"], ["환한 형광등", "따뜻한 주황빛 스탠드", "자연광", "은은한 촛불", "모니터 빛"], ["행복한 순간", "아픈 고백", "나 자신과의 약속", "연인과의 추억", "순서대로"], ["극심한 불안", "방어적 태도", "냉정한 분석", "평판 걱정", "농담 회피"], ["완벽한 정돈", "나만의 규칙", "혼란 상태", "미니멀 상태", "장식 가득"], ["화려한 박수", "조용한 식사", "정성스런 편지", "실질적인 선물", "따뜻한 포옹"], ["순수한 감탄", "이름 호기심", "시들 것에 대한 슬픔", "선물 받고 싶은 맘", "무덤덤한 인식"], ["고가의 물건", "지인과의 식사", "미래를 위한 저축", "자기 계발 투자", "특별한 경험"], ["단단한 운동화", "가벼운 슬리퍼", "적당한 로퍼", "자신감의 구두", "지면 체감 신발"], ["논리적 반박", "겉으로만 수긍", "상처받고 차단", "끝까지 추궁", "무관심한 회피"], ["이어폰", "수첩과 펜", "민트나 껌", "비상금", "향수나 립밤"], ["굳게 닫힌 입매", "눈동자", "단정한 실루엣", "신뢰 인상", "없음"], ["엘리베이터", "화난 연인 차", "면접장", "도서관", "밤길"], ["높은 풍경", "따뜻한 식사", "간섭 없는 공간", "도움을 주는 감사", "성장 과정"], ["명확한 결론", "정서적 교감", "예의와 격식", "솔직함", "침묵의 편함"], ["정교한 금열쇠", "무거운 무쇠열쇠", "반짝이는 수정", "형태 없는 빛", "디지털 보안키"]];
+    const optsArr = [["공간의 온도", "빛의 밝기", "주변의 소음", "공간의 냄새", "사물의 질서"], ["벽 등진 구석", "창가 자리", "중앙 테이블", "어두운 안쪽", "출입구 근처"], ["옆 사람의 소음", "화면의 번쩍임", "답답한 공기", "지루한 서사", "의자의 불편함"], ["아무도 없는 정적", "누군가의 환대", "내일의 남은 일", "맛있는 음식", "침대에 눕는 상상"], ["오전 11시경", "오후 2시경", "오후 5시 15분경", "밤 9시경", "새벽 2시경"], ["물방울", "사람들", "색감", "구름", "빗소리"], ["규칙적인 자연 소리", "완벽 정적", "잔잔한 음악", "책 읽는 소리", "백색 소음"], ["해방감", "허전함", "서운함", "압박감", "설렘"], ["실용서", "에세이", "소설", "역사서", "예술서"], ["사막 풍경", "도심 야경", "숲속 오두막", "추상화", "심연 바다"], ["층수 표시판", "문에 비친 내 모습", "바닥의 흠집", "휴대폰 화면", "벽면 광고판"], ["거절 방법 고민", "본능적인 짜증", "이득과 실 계산", "일단 수락 후 후회", "나약함 자책"], ["단단한 금속", "부드러운 가죽", "깃털", "무표정한 도자기", "레이스"], ["안전한 넓은 길", "풍경이 예쁜 길", "새로운 길", "가장 빠른 길", "향기로운 길"], ["그냥 마신다", "정중히 재요청", "참다가 후회", "불쾌함 표출", "대신 부탁"], ["환한 형광등", "주황빛 스탠드", "자연광", "은은한 촛불", "모니터 빛"], ["가장 행복했던 순간", "가장 슬펐던 고백", "나 자신에게 썼던 다짐", "연인과의 추억", "순서대로"], ["극심한 불안", "방어적 태도", "냉정한 분석", "평판 걱정", "농담으로 회피"], ["완벽한 정돈", "나만의 규칙", "혼란 상태", "미니멀 상태", "장식 가득"], ["화려한 박수", "조용한 식사", "정성스런 편지", "실질적인 선물", "따뜻한 포옹"], ["순수한 감탄", "이름 호기심", "시들 것에 대한 슬픔", "선물 받고 싶은 맘", "무덤덤한 인식"], ["고가의 물건", "지인과의 식사", "미래를 위한 저축", "자기 계발 투자", "특별한 경험"], ["단단한 운동화", "가벼운 슬리퍼", "적당한 로퍼", "자신감의 구두", "지면 체감 신발"], ["논리적 반박", "겉으로만 수긍", "상처받고 차단", "끝까지 추궁", "무관심한 회피"], ["이어폰", "수첩과 펜", "민트나 껌", "비상금", "향수나 립밤"], ["굳게 닫힌 입매", "눈동자", "단정한 실루엣", "신뢰 인상", "없음"], ["엘리베이터", "화난 연인 차", "면접장", "도서관", "밤길"], ["높은 풍경", "따뜻한 식사", "간섭 없는 공간", "도움을 주는 감사", "성장 과정"], ["명확한 결론", "정서적 교감", "예의와 격식", "솔직함", "침묵의 편함"], ["정교한 금열쇠", "무거운 무쇠열쇠", "반짝이는 수정", "형태 없는 빛", "디지털 보안키"]];
     const titles = ["Thermal Sensitivity Index", "Defensive Psychological Pillar", "Auditory Hypersensitivity", "Ego Reboot Necessity", "Noon Fatigue Index", "Detailed Particle Meditation", "Rhythm's Comfort", "Liberation from Constraint", "Logical Exploration", "Craving for Emptiness", "Psychological Control", "Sensitive Senses Warning", "Iron-clad Defense", "Guardian of Stability", "Energy Conservation", "Clear Reason Awakening", "Recollection of Positive Energy", "Exposure Fear", "Cognitive Clarity", "Existence Value Confirmation", "Instant Sensory Praise", "Material Reward Visualization", "Support Certainty", "Reason's Weapon", "Sound Blocking Barrier", "Silence Control Power", "Social Suffocation", "Achievement Orientation", "Logical Efficiency", "Noble Self-Esteem"];
+    
+    // 의장님이 승인하신 30가지 고해상도 리라이팅 (요약 절대 금지 준수)
     const results = [
-        "주변 온도가 단 1도만 어긋나도 {REL}의 신체적 긴장도는 급격히 올라가요. 이분은 환경의 온도에 따라 마음의 문이 열리고 닫히는 섬세한 분이랍니다. {REL}이 예민해 보인다면 논리적인 대화보다 먼저 따뜻한 차 한 잔이나 쾌적한 환경을 선물해 보세요. 당신의 그 작은 배려가 상대방의 굳게 닫힌 성벽을 허무는 가장 다정한 시작이 될 것이에요.",
-        "이분은 등 뒤로 누군가 지나다니는 환경에서는 본능적으로 긴장하며 에너지를 소모하는 타입이에요. 카페에 가면 벽을 등진 구석 자리를 가장 편안해한답니다. 당신이 먼저 그런 '요새' 같은 자리를 챙겨준다면, 그는 비로소 경계를 풀고 당신에게만 집중하며 마음속 깊은 이야기를 들려줄 것이에요.",
+        "주변 온도가 단 1도만 어긋나도 {REL}은 자신도 모르게 온몸의 신경이 팽팽하게 당겨지는 기분을 느껴요. 이분에게 적절한 온도는 단순히 '쾌적함'의 문제가 아니라, 외부 세계가 나를 안전하게 품어주고 있다는 정서적 허락과도 같답니다. {REL}이 이유 없이 날카로워 보인다면 그건 당신을 향한 불만이 아니라, 차가워진 환경에 몸이 먼저 비명을 지르고 있는 것일지 몰라요. 논리적인 대화로 해결하려 하기보다 먼저 따뜻한 차 한 잔을 건네거나 부드러운 담요로 그를 감싸 안주세요. 당신이 전하는 그 작은 온기가 상대방의 얼어붙은 성벽을 녹이고, 세상에서 가장 다정한 미소를 되찾아줄 것이에요.",
+        "카페나 낯선 공간에서 {REL}이 벽을 등진 구석 자리를 찾는 이유는, 등 뒤로 흐르는 타인의 시선과 움직임에 자신의 에너지가 소리 없이 깎여나가는 것을 막기 위한 본능적인 선택이에요. 사방이 트인 곳에서는 무의식중에 '방어 기제'를 켜두어야 하기에 당신과의 대화에 온전히 집중하기가 힘들답니다. 이분과 깊은 속마음을 나누고 싶다면, 항상 그가 마음 편히 등을 기댈 수 있는 자리를 먼저 양보해 주세요. 그 '요새' 같은 자리에서 보호받고 있다는 안도감을 느끼는 순간, {REL}은 비로소 무거운 갑옷을 벗고 당신에게만 보여주는 가장 투명하고 솔직한 자신을 꺼내 보일 것이에요.",
         "사소한 잡음도 {REL}의 몰입을 방해하는 날카로운 타격이 될 수 있어요. 함께 깊은 대화를 나누거나 몰입하고 싶다면 주변 환경이 잘 통제된 고요한 공간을 선택하는 게 좋아요. 당신이 만들어주는 그 정적의 보호막 안에서 상대는 비로소 세상을 잊고 당신과 온전히 연결됨을 느낀답니다.",
         "외부에서 에너지를 다 쓰고 돌아온 {REL}에게는 지금 '자아 재부팅' 시간이 절실해요. 현관문을 열고 들어왔을 때 질문을 던지기보다, 20분 정도는 아무 말 없이 조용히 쉴 수 있게 배려해 주세요. 그 고요한 축복 뒤에 그는 다시 당신의 다정한 파트너로 돌아올 것이에요.",
         "아침의 높은 집중력이 정오가 되기도 전에 빠르게 소진되어 급격히 지치는 기질이에요. {REL}이 이 시간대에 날카로워 보인다면 가벼운 간식이나 짧은 휴식을 권하며 분위기를 환기해 주세요. 이런 세밀한 살핌이 불필요한 마찰을 줄이고 관계의 질을 높이는 비결이랍니다.",
@@ -120,22 +124,22 @@
         "규칙적인 자연의 소리나 일정한 리듬 속에서 깊은 안정을 얻는 타입이에요. {REL}이 불안해 보인다면 차분한 박자의 음악을 틀어주거나 예측 가능한 상황을 만들어 주세요. 당신이 제공하는 그 일정한 삶의 리듬이 그에게는 가장 강력한 심리적 지지대가 되어줄 것이에요.",
         "타인의 리듬에 맞추느라 팽팽해졌던 긴장이 풀리는 순간 비로소 안식하는 분이에요. {REL}을 위해 약속 취소를 아쉬워하기보다 그가 얻은 자유로운 고독의 시간을 함께 축하해 주세요. 그 자유야말로 그가 당신을 더 깊이 사랑하게 만드는 마음의 토양이 된답니다.",
         "추상적인 위로보다는 명확한 근거와 논리가 담긴 대화에서 큰 신뢰를 느끼는 분이에요. {REL}과 대화할 때는 감정에만 호소하기보다 분명한 이유와 사실을 준비해 보세요. 당신의 명쾌함이 그에게는 세상에서 가장 든든하고 안전한 방어벽으로 느껴질 것이에요.",
-        "복잡한 연산을 멈추고 아무것도 없는 텅 빈 공간에서 호흡하고 싶어 하는 영혼이에요. 여백이 많아질수록 {REL}의 마음은 더 자유로워진답니다. 당신이 만들어주는 그 평화롭고 고요한 여백이 그에게는 세상 어디에도 없는 최고의 안식처가 되어줄 것이에요.",
+        "복잡한 연산을 멈추고 아무것도 없는 텅 빈 공간에서 호흡하고 싶어 하는 영혼이에요. 여백이 많아질수록 {REL}의 마음은 더 자유워진답니다. 당신이 만들어주는 그 평화롭고 고요한 여백이 그에게는 세상 어디에도 없는 최고의 안식처가 되어줄 것이에요.",
         "남은 시간을 계속 확인하며 상황을 통제해야만 안도감을 느끼는 타입이에요. {REL}에게 당신의 일정을 미리 상세하게 알려주는 다정함이 필요해요. 당신의 투명하고 정직한 정보 공유가 그에게는 가장 큰 사랑의 증거이자 신뢰의 기반이 된답니다.",
         "자신의 영역이 조금이라도 침범당하면 본능적으로 짜증이라는 방어 기제가 작동하는 민감한 분이에요. {REL}이 예민해질 때는 즉시 상황을 벗어나 에너지를 충전하도록 도와주세요. \"당신의 기분은 정당해요\"라고 그 감정을 있는 그대로 인정해 주는 것이 핵심이에요.",
         "외부의 상처로부터 자신을 지키기 위해 금속처럼 단단한 가면을 쓰고 있는 분이에요. 하지만 그 가면 아래에는 아주 맑고 여린 시냇물이 흐르고 있답니다. 당신의 따스한 햇살 같은 다정한 배려로 그가 무거운 가면을 조금씩 내려놓고 편히 쉴 수 있게 도와주세요.",
         "예측 가능한 안전한 범위 안에서 움직일 때 정서적 평온을 유지하는 수호자형이에요. {REL}의 삶이 평화로울수록 당신을 향한 사랑은 더욱 단단해진답니다. 이분에게는 갑작스러운 변화보다 일상의 안정감을 선물해 주는 것이 관계를 꽃피우는 가장 좋은 방법이에요.",
         "에너지를 효율적으로 아끼며 자신을 존중할 줄 아는 합리적인 자아를 지녔어요. {REL}의 이런 당당함이 큰 매력이지만, 때로는 상대의 실수에 넉넉하게 미소 지어주는 유연함도 필요하다는 걸 부드럽게 알려주세요. 당신의 조언이 그를 더욱 성숙하고 빛나게 해 줄 것이에요.",
         "주변이 선명하게 보여야 불안이 사라지고 사고가 명확해지는 기질이에요. {REL}의 정서가 흐트러져 보일 때는 공간의 조명을 밝고 화사하게 바꿔보세요. 빛의 선명함이 그의 혼란을 정돈해 주는 최고의 치료제가 되어 당신과의 대화도 더 매끄러워질 것이에요.",
-        "과거의 행복했던 기억을 꺼내어 현재의 메마른 감정을 적시는 능력이 탁월해요. {REL}이 힘들어할 때마다 함께했던 가장 아름다운 추억의 페이지를 다시 들려주세요. 그 찬란했던 기억이 상대방에게는 내일을 살아갈 가장 강력한 회복제가 된답니다.",
+        "과거의 행복했던 기억을 꺼내어 현재의 메마른 감정을 적시는 능력이 탁월해요. {REL}이 힘들 때마다 함께했던 가장 아름다운 추억의 페이지를 다시 들려주세요. 그 찬란했던 기억이 상대방에게는 내일을 살아갈 가장 강력한 회복제가 된답니다.",
         "자신의 취약한 점이 노출되었을 때 영혼 전체가 흔들리는 듯한 공포를 느끼는 분이에요. 이때 {REL}에게 필요한 건 자책이 아니라 당신이라는 완벽한 '안전기지'예요. 당신의 조건 없는 포용이 그의 무너진 성벽을 다시 세워줄 수 있는 유일한 힘이랍니다.",
         "물리적인 공간이 깨끗해야 마음의 질서도 함께 잡히는 분이에요. {REL}의 공간을 정돈해 주는 것은 단순히 청소하는 게 아니라 그의 마음을 어루만져 주는 것과 같아요. 깔끔한 환경에서 그의 뇌는 비로소 불필요한 연산을 멈추고 당신에게만 온전히 집중하게 될 것이에요.",
         "타인의 명확하고 화려한 인정을 통해 자신의 존재 가치를 확인받고 싶어 해요. {REL}에게 건네는 칭찬과 박수는 다시 달릴 수 있게 하는 무한한 연료와 같답니다. 그의 사소한 성취에도 아낌없이 환호해 주세요. 당신의 인정이 그의 영혼을 춤추게 할 것이에요.",
         "찰나의 아름다움을 필터 없이 수용하며 행복을 느끼는 순수한 영혼이에요. {REL}과 함께 길을 걷다 마주치는 작은 꽃이나 풍경에 같이 감탄해 주세요. 그 사소하고 다정한 감각의 공유가 그의 영혼을 매일 새로운 꽃으로 피어나게 하는 힘이 된답니다.",
         "고생한 자신에게 주는 눈에 보이는 보상을 통해 자존감을 회복하는 타입이에요. {REL}이 자신을 위해 고가의 물건을 사거나 선물을 하는 건 일종의 '생존 훈장' 같은 의식이에요. 그 보상을 함께 기뻐해 줄 때, 그는 비로소 당신을 자신의 가장 가까운 편으로 인식하게 된답니다.",
         "신체를 꽉 잡아주는 안정감이 심리적 안도로 이어지는 매우 감각적인 분이에요. {REL}을 위해 무엇보다 신체적 편안함을 먼저 챙겨주세요. 그가 머무는 모든 곳이 안락할 때 비로소 정서적 방벽이 부드럽게 무너지며 당신과 완벽하게 동기화될 준비를 마치게 될 것이에요.",
-        "내면 세계가 위협받을 때 날카로운 논리를 무기로 자신을 보호하려 해요. {REL}에게 논리는 단순한 고집이 아니라 생존 그 자체랍니다. 비판하기보다는 그의 이성이 지혜로운 선택으로 이어질 수 있게 조용히 지지해 주세요. 당신의 신뢰가 그의 가장 날카로운 무기를 부드럽게 바꿔줄 것이에요.",
-        "외부 소음을 차단하고 자신만의 세계로 숨어드는 시간을 통해 생존 에너지를 얻어요. {REL}이 혼자만의 시간을 원할 때는 그 정적을 침범하지 말고 충분히 보장해 주세요. 그 고독 끝에 그는 훨씬 더 따뜻하고 풍요로운 모습으로 당신의 손을 다시 잡게 될 것이에요.",
+        "{REL}은 갈등의 파도가 너무 크게 일렁일 때, 혹여나 소중한 관계를 망가뜨릴까 봐 잠시 '이성'이라는 단단한 울타리 뒤로 몸을 숨기곤 해요. 겉으로는 차분하고 냉담해 보이지만, 사실은 감정의 소용돌이 속에서 길을 잃지 않으려고 안간힘을 쓰고 있는 여린 상태인 것이죠. 이분의 차가운 반응은 상대를 거부하는 게 아니라, '상처받고 싶지 않다'는 스스로의 조심스러운 신호일 뿐이에요. 논리로 따지기보다 그저 곁에서 따뜻한 온기를 나누며 기다려 주세요. 그 울타리가 더 이상 필요 없을 만큼 안심하게 될 때, 누구보다 뜨거운 진심을 꺼내어 당신을 깊이 믿어줄 것이에요.",
+        "{REL}에게 이어폰을 끼거나 민트 한 알을 입에 무는 행위는 단순한 습관이 아니에요. 이는 외부 세계의 무차별적인 소음과 자극들로부터 잠시 자아를 격리시켜, 과부하된 마음의 회로를 보호하려는 이분만의 '고요한 의식'이랍니다. 이분이 혼자만의 감각에 집중하고 있다면, 억지로 말을 걸어 그 정적을 깨우기보다 그 고독할 권리를 기꺼이 지켜주세요. 당신이 보여주는 그 사소하고도 다정한 배려가 {REL}의 뇌에는 세상 그 무엇보다 든든한 구원의 데이터로 기록될 것이며, 다시 세상 밖으로 나와 당신의 손을 잡을 에너지를 만들어줄 것이에요.",
         "감정을 밖으로 쏟아내기보다 스스로 절제하며 침묵으로 사랑을 전하는 헌신적인 분이에요. {REL}의 굳게 닫힌 입매 뒤에 숨겨진 그 깊은 책임감을 읽어내 보세요. 당신의 진심 어린 이해가 그의 인내에 대한 세상에서 가장 값진 보상이 될 것이에요.",
         "좁은 공간에서 타인과 관계 맺지 못하는 정적을 질식할 듯한 불안으로 느끼는 민감한 영혼이에요. {REL}에게는 당신이 먼저 건네는 가벼운 말문이 숨을 쉬게 해주는 '산소'와 같아요. 당신의 목소리가 그를 불안의 감옥에서 자유롭게 해 줄 것이에요.",
         "모든 상황을 주도하며 역사에 남을 위대한 성취를 이루고 싶어 하는 야심가예요. {REL}의 거대한 꿈을 비웃지 말고 가장 든든한 전략적 조력자가 되어주세요. 그는 자신이 이룬 영광의 순간을 가장 먼저 당신과 나누고 싶어 할 것이에요.",
@@ -144,14 +148,14 @@
     ];
 
     function switchView(id) { document.querySelectorAll('.app').forEach(v => { v.classList.remove('active'); v.style.display='none'; }); const target = document.getElementById(id); if(target) { target.classList.add('active'); target.style.display='flex'; } window.scrollTo(0,0); if(window.MathJax) MathJax.typesetPromise(); }
-    function copyInvite() { const url = window.location.origin + window.location.pathname + "?mode=user"; navigator.clipboard.writeText(url).then(() => { alert("초대 링크가 복사되었어요! 카톡에 전달해 주세요."); }); }
+    function copyInvite() { const url = window.location.origin + window.location.pathname + "?mode=user"; navigator.clipboard.writeText(url).then(() => { alert("Invitation Link Copied!"); }); }
     function setRel(name, btn) { relName = name; document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
     function startSurvey() { switchView('view-survey'); renderQ(); }
     function renderQ() { const box = document.getElementById('q-box'); document.getElementById('p-bar').innerText = `SYNAPSE ${String(step + 1).padStart(2, '0')} / 30`; let html = `<div class="q-text">${questions[step]}</div>`; optsArr[step].forEach((o, i) => { html += `<button class="opt-btn" onclick="handleChoice(${i})">${o}</button>`; }); box.innerHTML = html; window.scrollTo(0,0); }
-    function handleChoice(idx) { userChoices.push(idx); step++; if(step === 15) { alert("절반의 심연을 통과하셨습니다."); renderQ(); } else if(step < 30) renderQ(); else { switchView('view-sealing'); runSeal(); } }
+    function handleChoice(idx) { userChoices.push(idx); step++; if(step === 15) { alert("You have passed halfway through the abyss."); renderQ(); } else if(step < 30) renderQ(); else { switchView('view-sealing'); runSeal(); } }
     function prev() { if (step > 0) { userChoices.pop(); step--; renderQ(); } }
-    function runSeal() { let p = 0; const txt = document.getElementById('seal-txt'); const iv = setInterval(() => { p += 5; txt.innerText = `영혼 봉인 중... ${p}%`; if(p >= 100) { clearInterval(iv); txt.innerText = "영혼 봉인 완료! 100%"; document.getElementById('btn-send').style.display='block'; } }, 80); }
-    function sendKey() { const url = window.location.origin + window.location.pathname + "?res=" + userChoices.join(',') + "&rel=" + encodeURIComponent(relName); navigator.clipboard.writeText(url).then(() => { alert("상대방에게 보낼 '열쇠'가 복사되었어요! 카톡에 전달해 주세요."); }); }
+    function runSeal() { let p = 0; const txt = document.getElementById('seal-txt'); const iv = setInterval(() => { p += 5; txt.innerText = `SEALING SOUL... ${p}%`; if(p >= 100) { clearInterval(iv); txt.innerText = "AUTHENTICATION COMPLETE! 100%"; document.getElementById('btn-send').style.display='block'; } }, 80); }
+    function sendKey() { const url = window.location.origin + window.location.pathname + "?res=" + userChoices.join(',') + "&rel=" + encodeURIComponent(relName); navigator.clipboard.writeText(url).then(() => { alert("The Soul Key has been copied!"); }); }
     function renderReport() {
         const box = document.getElementById('p-res'); box.innerHTML = '';
         results.forEach((txt, i) => {
