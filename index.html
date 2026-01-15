@@ -1,527 +1,86 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SYNAPSE : NO EXCUSE</title>
-    <style>
-        /* [FINAL ENGINE] */
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
-        
-        :root {
-            --bg-core: #000000;
-            --bg-card: #121212;
-            --bg-panel: #1a1a1a;
-            --border: #333333;
-            --text-main: #ffffff;
-            --text-sub: #888888;
-            --neon-cyan: #00f3ff;
-            --neon-purple: #bc13fe;
-            --neon-red: #ff003c;
-            --neon-gold: #ffd700;
-            --neon-green: #00ff66;
-            --modal-overlay: rgba(0,0,0,0.92);
-        }
+<div class="app" id="view-sealing">
+    <section style="text-align:center; padding-top:120px;">
+        <div class="logo">AUTHENTICATION</div>
+        <div class="formula-hero" id="seal-txt">데이터 봉인 준비 중...</div>
+        <button id="btn-send" class="btn-main" style="display:none; margin-top:60px;" onclick="sendKey()">그녀에게 열쇠 보내기 →</button>
+    </section>
+</div>
 
-        body.white-mode {
-            --bg-core: #f5f5f7;
-            --bg-card: #ffffff;
-            --bg-panel: #e9ecef;
-            --border: #d1d5db;
-            --text-main: #111827;
-            --text-sub: #4b5563;
-            --neon-cyan: #0066ff;
-            --neon-purple: #6200ea;
-            --neon-red: #d32f2f;
-            --neon-gold: #f57c00;
-            --neon-green: #2e7d32;
-            --modal-overlay: rgba(255,255,255,0.95);
-        }
-
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg-core); color: var(--text-main); font-family: 'Noto Sans KR', sans-serif; height: 100vh; overflow: hidden; }
-
-        /* [LAYOUT] */
-        .page { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg-core); opacity: 1; transition: opacity 0.2s; z-index: 10; }
-        .page.hidden { opacity: 0; pointer-events: none; z-index: 0; }
-
-        /* [HEADER] */
-        header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); }
-        .top-row { display: flex; justify-content: space-between; align-items: flex-end; }
-        .logo-main { font-size: 32px; font-weight: 900; color: var(--neon-cyan); letter-spacing: -1px; line-height: 1; font-family: 'Exo 2'; font-style: italic; text-shadow: 0 0 10px rgba(0,243,255,0.3); }
-        .logo-sub { font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 2px; margin-top: 5px; font-family: 'Roboto Mono'; }
-        .clock-box { text-align: right; font-family: 'Roboto Mono'; }
-        .time-big { font-size: 24px; font-weight: 700; color: var(--text-main); }
-        .date-full { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
-
-        /* [TICKER] */
-        .news-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: var(--bg-card); padding: 12px 0; border-bottom: 1px solid var(--border); margin-top: 15px; }
-        .ticker-wrap { display: flex; width: max-content; animation: ticker 40s linear infinite; }
-        .ticker-item { padding: 0 30px; font-size: 13px; color: var(--text-sub); font-weight: 500; }
-        .ticker-item span { color: var(--neon-red); font-weight: 900; margin-right: 6px; }
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        /* [SCROLL AREA] */
-        .main-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; }
-        .sec-head { font-size: 11px; color: var(--text-sub); font-weight: 900; margin: 30px 0 10px; letter-spacing: 1px; font-family: 'Roboto Mono'; border-left: 3px solid var(--neon-cyan); padding-left: 8px; }
-
-        /* [CONTROL CARDS] */
-        .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { 
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; height: 110px; 
-            display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; 
-            position: relative; overflow: hidden; transition: border-color 0.2s;
-        }
-        .card:active { border-color: var(--neon-cyan); }
-        .c-tit { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; letter-spacing: 0.5px; z-index: 2; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-        #card-score { background: var(--bg-card); }
-        #score-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 1; display: none; filter: contrast(1.1); }
-
-        /* [LIVE CHANNELS] */
-        .cctv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .cctv { height: 90px; background: #000; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); }
-        .cctv img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .rec { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); padding: 3px 6px; border-radius: 4px; font-size: 9px; color: white; font-weight: 900; display: flex; align-items: center; gap: 4px; z-index: 2; }
-        .dot { width: 5px; height: 5px; background: var(--neon-red); border-radius: 50%; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* [SHORTCUTS] */
-        .shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .s-btn { height: 90px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
-        .s-btn:active { background: var(--bg-panel); transform: scale(0.98); }
-        .s-ico { width: 26px; height: 26px; fill: var(--text-sub); }
-        .s-lbl { font-size: 11px; color: var(--text-sub); font-weight: 700; }
-        body.ghost-active .s-ico { fill: var(--neon-cyan); }
-        body.ghost-active .s-lbl { color: var(--neon-cyan); }
-
-        /* [DOCK] */
-        .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 95px; background: var(--bg-core); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: flex-start; padding-top: 18px; z-index: 100; opacity: 0.98; }
-        .d-btn { width: 60px; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0.5; color: var(--text-main); }
-        .d-btn.active { opacity: 1; color: var(--neon-cyan); }
-        .d-ico { width: 24px; height: 24px; fill: currentColor; }
-        .d-lbl { font-size: 10px; font-weight: 700; }
-        .vis-btn { width: 64px; height: 64px; background: linear-gradient(135deg, var(--neon-cyan), #0066ff); border-radius: 20px; margin-top: -35px; border: 5px solid var(--bg-core); display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 25px rgba(0, 243, 255, 0.3); }
-        .vis-btn svg { width: 30px; height: 30px; fill: white; }
-
-        /* [MODAL COMMON] */
-        .sub-head { padding: 30px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-core); position: sticky; top: 0; z-index: 20; }
-        .sub-tit { font-size: 22px; font-weight: 900; color: var(--text-main); font-style: italic; }
-        .close-btn { width: 100%; height: 55px; background: var(--text-main); color: var(--bg-core); border-radius: 12px; font-weight: 900; border: none; font-size: 16px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-
-        /* [CUSTOM MODAL SYSTEM - REPLACES SYSTEM ALERTS] */
-        #custom-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        #custom-modal.show { display: flex; }
-        .modal-box { width: 85%; max-width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .modal-tit { font-size: 18px; font-weight: 900; color: var(--text-main); margin-bottom: 10px; }
-        .modal-msg { font-size: 15px; color: var(--text-sub); margin-bottom: 25px; line-height: 1.5; font-weight: 500; }
-        .modal-btns { display: flex; gap: 10px; }
-        .m-btn { flex: 1; height: 50px; border-radius: 12px; border: none; font-weight: 800; font-size: 14px; cursor: pointer; }
-        .m-yes { background: var(--neon-cyan); color: #000; }
-        .m-no { background: var(--bg-panel); color: var(--text-sub); border: 1px solid var(--border); }
-
-        /* [CUSTOM NUMBER PAD MODAL FOR BANK] */
-        #input-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; flex-direction: column; justify-content: flex-end; }
-        #input-modal.show { display: flex; }
-        .input-box { background: var(--bg-card); border-top: 2px solid var(--neon-cyan); padding: 30px 20px; border-radius: 25px 25px 0 0; }
-        .input-display { font-size: 32px; color: var(--text-main); text-align: right; margin-bottom: 20px; font-family: 'Roboto Mono'; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .num-btn { height: 60px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-size: 20px; font-weight: bold; }
-        .num-btn:active { background: var(--neon-cyan); color: black; }
-        .num-ok { grid-column: span 3; background: var(--neon-cyan); color: black; margin-top: 10px; }
-
-        /* [ANALYSIS VIEW - FULL COVERAGE] */
-        #analysis-view { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh; 
-            background: var(--bg-card); z-index: 5000; 
-            border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0;
-            display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            box-shadow: 0 -10px 100px rgba(0,0,0,0.8);
-        }
-        #analysis-view.show { transform: translateY(0); }
-        .an-img-area { flex: 1; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); border-radius: 23px 23px 0 0; }
-        #an-img-target { width: 100%; height: 100%; object-fit: contain; }
-        .an-data-area { height: 40%; padding: 25px; overflow-y: auto; background: var(--bg-core); }
-        .an-tit { font-size: 18px; font-weight: 900; color: var(--neon-cyan); margin-bottom: 20px; }
-        .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-
-        /* --- [CONTENTS] --- */
-        
-        /* CALCULATOR - FIXED VISIBILITY */
-        #calc-wrap { padding: 0; display: flex; flex-direction: column; height: 100%; }
-        #calc-disp { background: var(--bg-panel); padding: 30px; text-align: right; font-size: 40px; border-radius: 16px; margin-bottom: 20px; font-family: 'Roboto Mono'; color: var(--text-main); border: 1px solid var(--border); min-height: 100px; display: flex; align-items: center; justify-content: flex-end; }
-        .calc-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
-        .cp-btn { padding: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border-radius: 14px; font-size: 22px; font-weight: bold; color: var(--text-main); border: 1px solid var(--border); cursor: pointer; }
-        .cp-btn:active { background: var(--neon-cyan); color: black; }
-        .cp-act { color: var(--neon-cyan); }
-        .cp-eq { grid-column: span 4; background: var(--neon-cyan); color: black; border: none; height: 60px; margin-bottom: 10px; }
-
-        /* CALENDAR */
-        .cal-nav { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
-        .cal-ym { font-size: 24px; font-weight: 900; color: var(--neon-cyan); font-family: 'Roboto Mono'; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
-        .cal-head { font-size: 12px; color: var(--text-sub); font-weight: bold; margin-bottom: 10px; }
-        .cal-cell { height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 14px; background: var(--bg-panel); color: var(--text-sub); border: 1px solid transparent; cursor: pointer; }
-        .cal-cell.today { border: 1px solid var(--neon-cyan); color: var(--text-main); }
-        .cal-cell.active { background: var(--neon-cyan); color: #000; font-weight: 900; }
-        #cal-memo { width: 100%; height: 150px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; margin-top: 25px; padding: 15px; color: var(--text-main); font-size: 15px; resize: none; }
-        .cal-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 12px; font-weight: 900; border: none; margin-top: 15px; font-size: 16px; }
-
-        /* BANK */
-        .bank-disp { padding: 40px 20px; text-align: center; background: var(--bg-panel); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .bank-lbl { font-size: 12px; color: var(--text-sub); font-weight: 700; margin-bottom: 5px; }
-        .bank-val { font-size: 40px; font-weight: 900; color: var(--neon-gold); font-family: 'Roboto Mono'; letter-spacing: -2px; }
-        .bank-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .b-btn { height: 65px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-card); font-weight: 800; color: var(--text-sub); font-size: 15px; }
-        .b-btn.in { background: rgba(0, 255, 102, 0.1); border-color: var(--neon-green); color: var(--neon-green); }
-        .b-btn.out { background: rgba(255, 60, 60, 0.1); border-color: var(--neon-red); color: var(--neon-red); }
-        .b-reset { width: 100%; height: 55px; background: transparent; border: 1px solid var(--border); color: var(--text-sub); border-radius: 12px; margin-top: 20px; }
-
-        /* SETTINGS */
-        .st-header { background: rgba(0, 255, 102, 0.05); border: 1px solid var(--neon-green); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 30px; }
-        .st-tit { color: var(--neon-green); font-weight: 900; font-size: 20px; margin-bottom: 5px; }
-        .st-sub { color: var(--text-sub); font-size: 11px; }
-        .st-label { color: var(--neon-gold); font-weight: 900; font-size: 13px; margin-bottom: 15px; display: block; border-left: 3px solid var(--neon-gold); padding-left: 10px; }
-        .st-item { display: flex; align-items: center; gap: 15px; background: var(--bg-panel); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .st-idx { width: 30px; font-weight: 900; color: var(--text-sub); font-family: 'Roboto Mono'; }
-        .st-inp { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 15px; padding: 5px 0; border-bottom: 1px solid var(--border); }
-        .st-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 14px; font-weight: 900; border: none; margin-top: 30px; font-size: 16px; }
-        .st-reset { width: 100%; height: 60px; background: rgba(255,60,60,0.1); border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 14px; font-weight: 900; margin-top: 15px; font-size: 16px; margin-bottom: 100px; }
-
-        /* ODDS & EDGE */
-        .odds-table { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--text-sub); }
-        .odds-table th { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); color: var(--neon-purple); }
-        .odds-table td { padding: 15px 10px; border-bottom: 1px solid var(--border); color: var(--text-main); font-weight: 500; }
-        .down { color: var(--neon-red); font-weight: bold; } .up { color: var(--neon-green); font-weight: bold; }
-        .edge-card { background: var(--bg-panel); border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid var(--border); }
-        .ec-head { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .ec-team { font-weight: 900; color: var(--text-main); font-size: 15px; }
-        .ec-rate { font-weight: 900; color: var(--neon-red); font-family: 'Roboto Mono'; }
-        .ec-bar { width: 100%; height: 8px; background: var(--bg-card); border-radius: 4px; overflow: hidden; }
-        .ec-fill { height: 100%; background: var(--neon-red); }
-
-    </style>
-</head>
-<body>
-    <input type="file" id="cam-input" hidden accept="image/*">
-    
-    <div id="custom-modal">
-        <div class="modal-box">
-            <div class="modal-tit" id="m-tit">이 페이지 내용:</div>
-            <div class="modal-msg" id="modal-msg">MESSAGE</div>
-            <div class="modal-btns">
-                <button class="m-btn m-no" onclick="Modal.close()">취소</button>
-                <button class="m-btn m-yes" id="modal-ok">확인</button>
-            </div>
+<div class="app" id="view-report">
+    <section id="report-content">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <div class="logo">THE FINAL BLUEPRINT</div>
+            <h2>내면의 영혼 리포트</h2>
         </div>
-    </div>
-
-    <div id="input-modal">
-        <div class="input-box">
-            <div class="input-display" id="inp-disp">0</div>
-            <div class="numpad">
-                <button class="num-btn" onclick="Input.add(1)">1</button><button class="num-btn" onclick="Input.add(2)">2</button><button class="num-btn" onclick="Input.add(3)">3</button>
-                <button class="num-btn" onclick="Input.add(4)">4</button><button class="num-btn" onclick="Input.add(5)">5</button><button class="num-btn" onclick="Input.add(6)">6</button>
-                <button class="num-btn" onclick="Input.add(7)">7</button><button class="num-btn" onclick="Input.add(8)">8</button><button class="num-btn" onclick="Input.add(9)">9</button>
-                <button class="num-btn" onclick="Input.clr()">C</button><button class="num-btn" onclick="Input.add(0)">0</button><button class="num-btn" onclick="Input.back()">←</button>
-                <button class="num-btn num-ok" onclick="Input.done()">=</button>
+        <div class="pillar-card"><canvas id="radar"></canvas></div>
+        <div id="p1-res"></div><div id="p2-res"></div><div id="p3-res"></div>
+        <div class="pillar-card" style="margin-top:40px; text-align:center;">
+            <span style="color: var(--accent); font-weight: 800; font-size: 0.95rem; letter-spacing:3px;">FINAL ENGINE</span>
+            <div style="background:#000; padding:20px; border-radius:15px; margin:20px 0; border:1px solid var(--border);">
+                $$EV_{Index} = \oint_{t=0}^{24} \left( \frac{\sum S_i \cdot W_i}{\sigma(Environment)} \right) dt$$
             </div>
+            <p class="p-body">의장님, 이 리포트는 9해 3132경 가지의 확률을 뚫고 포착한 유일한 정서적 주파수예요.</p>
         </div>
-    </div>
+    </section>
+    <footer>© SYNAPSE ON.</footer>
+</div>
 
-    <div id="analysis-view">
-        <button class="an-close-btn" onclick="Action.closeScore()">×</button>
-        <div class="an-img-area">
-            <img id="an-img-target" src="">
-        </div>
-        <div class="an-data-area">
-            <div class="an-tit">AI ANALYSIS</div>
-            <div style="font-family:'Roboto Mono'; font-size:13px; color:var(--text-sub); line-height:1.8;">
-                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
-                    <span>CONFIDENCE</span><span style="color:var(--neon-green);font-weight:bold;">99.1%</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
-                    <span>PREDICTION</span><span style="color:var(--neon-cyan);font-weight:bold;">WIN</span>
-                </div>
-                <div style="margin-top:15px; color:#666;">
-                    > Image captured.<br>> Processing data points...<br>> Result: HIGH PROBABILITY.
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="p-home" class="page active">
-        <header>
-            <div class="top-row">
-                <div class="brand-col">
-                    <div class="logo-main">SYNAPSE</div>
-                    <div class="logo-sub">V24 MASTER-OS</div>
-                </div>
-                <div class="clock-box">
-                    <div class="time-big" id="clock-time">00:00:00</div>
-                    <div class="date-full" id="clock-date">LOADING...</div>
-                </div>
-            </div>
-            <div class="news-ticker" onclick="window.open('https://www.google.com/search?q=스포츠뉴스')">
-                <div class="ticker-wrap">
-                    <div class="ticker-item"><span>[LIVE]</span> EPL: MAN CITY 2-2 LIV (82')</div>
-                    <div class="ticker-item"><span>[NBA]</span> LAKERS WIN OT (112-110)</div>
-                    <div class="ticker-item"><span>[MLB]</span> OHTANI 2 HR GAME</div>
-                    <div class="ticker-item"><span>[UFC]</span> MAIN EVENT CONFIRMED</div>
-                </div>
-            </div>
-        </header>
-
-        <div class="main-scroll">
-            <div class="sec-head">CONTROL UNIT</div>
-            <div class="exec-grid">
-                <div class="card" id="card-score" onclick="Action.score()">
-                    <img id="score-bg">
-                    <div class="c-tit" style="color:var(--neon-cyan)">SCORE</div>
-                </div>
-                <div class="card" onclick="App.open('ODDS')"><div class="c-tit" style="color:var(--neon-purple)">ODDS</div></div>
-                <div class="card" onclick="App.open('EDGE')"><div class="c-tit" style="color:var(--neon-red)">EDGE</div></div>
-                <div class="card" onclick="App.open('BANK')"><div class="c-tit" style="color:var(--neon-gold)">BANK</div></div>
-            </div>
-
-            <div class="sec-head">LIVE CHANNELS</div>
-            <div class="cctv-grid" id="tv-grid"></div>
-
-            <div class="sec-head">ANALYTICS HUB</div>
-            <div id="grid-box" class="shortcut-grid"></div>
-        </div>
-
-        <nav class="dock">
-            <div class="d-btn active" onclick="App.open('CALENDAR')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg><span class="d-lbl">SCHED</span></div>
-            <div class="d-btn" onclick="App.open('CALC')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5zM5 5h5v5H5V5zm0 7h5v5H5v-5zm7 5h5v5h-5v-5z"/></svg><span class="d-lbl">CALC</span></div>
-            <div class="vis-btn" onclick="document.getElementById('cam-input').click()"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
-            <div class="d-btn" onclick="Theme.toggle()"><svg class="d-ico" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg><span class="d-lbl">MODE</span></div>
-            <div class="d-btn" onclick="App.open('SETTINGS')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.5.42l-.38 2.65c-.61.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg><span class="d-lbl">SETUP</span></div>
-        </nav>
-    </div>
-
-    <div id="p-sub" class="page hidden">
-        <header class="sub-head"><div class="sub-tit" id="st-tit">TITLE</div></header>
-        <div id="st-con" style="padding:20px; flex:1; overflow-y:auto; padding-bottom:100px;"></div>
-        <div style="position:fixed; bottom:20px; left:20px; right:20px; z-index:20;">
-            <button class="close-btn" onclick="history.back()">닫기 (CLOSE)</button>
-        </div>
-    </div>
-
-    <script>
-        // DATA
-        const DefaultDB = {
-            normal: [
-                {n:'FLASHSCORE',u:'https://www.flashscore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'},
-                {n:'ODDSPORTAL',u:'https://www.oddsportal.com',i:'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4'},
-                {n:'WHOSCORED',u:'https://www.whoscored.com',i:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2'},
-                {n:'SOFASCORE',u:'https://www.sofascore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5z'},
-                {n:'COVERS',u:'https://www.covers.com',i:'M4 10h3v7H4zM10.5 10h3v7h-3zM17 10h3v7h-3z'},
-                {n:'OLBG',u:'https://www.olbg.com',i:'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0'},
-                {n:'NAVER',u:'https://sports.news.naver.com',i:'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5'},
-                {n:'YOUTUBE',u:'https://www.youtube.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2'}
-            ],
-            secret: Array(8).fill({n:'VIP LINK',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}),
-            tv: [
-                {n:'FOOTBALL',u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&q=80'},
-                {n:'BASKETBALL',u:'https://images.unsplash.com/photo-1546519638-68e109498ad0?w=400&q=80'},
-                {n:'BASEBALL',u:'https://images.unsplash.com/photo-1508344928928-7165b67de128?w=400&q=80'}
-            ]
-        };
-        let DB = JSON.parse(localStorage.getItem('SYNAPSE_DB')) || DefaultDB;
-
-        // --- [CUSTOM MODAL ENGINE] ---
-        const Modal = {
-            cb: null,
-            show: (msg, callback) => {
-                document.getElementById('modal-msg').innerText = msg;
-                document.getElementById('custom-modal').classList.add('show');
-                Modal.cb = callback;
-            },
-            close: () => {
-                document.getElementById('custom-modal').classList.remove('show');
-                Modal.cb = null;
-            }
-        };
-        document.getElementById('modal-ok').onclick = () => { if(Modal.cb) Modal.cb(); Modal.close(); };
-
-        const Theme = { toggle: () => document.body.classList.toggle('white-mode') };
-        const Ghost = { active: false, trigger: () => { if(navigator.vibrate) navigator.vibrate(50); Ghost.active = !Ghost.active; document.body.classList.toggle('ghost-active', Ghost.active); Render.shortcuts(); } };
-
-        const Action = {
-            hasImg: false,
-            score: () => {
-                if(Action.hasImg) {
-                    document.getElementById('an-img-target').src = document.getElementById('score-bg').src;
-                    document.getElementById('analysis-view').classList.add('show');
-                    history.pushState({modal:true}, null, "");
-                } else {
-                    App.open('SCORE');
-                }
-            },
-            closeScore: () => {
-                document.getElementById('analysis-view').classList.remove('show');
-                // RESET SCORE BOX
-                document.getElementById('score-bg').style.display = 'none';
-                document.getElementById('score-bg').src = '';
-                Action.hasImg = false;
-                history.back();
-            }
-        };
-
-        const Calendar = {
-            d: new Date(),
-            render: (el) => {
-                const y = Calendar.d.getFullYear();
-                const m = Calendar.d.getMonth();
-                const fDay = new Date(y, m, 1).getDay();
-                const lDate = new Date(y, m+1, 0).getDate();
-                const today = new Date();
-                let h = `<div class="cal-nav"><div onclick="Calendar.mv(-1)" style="cursor:pointer">&lt;</div><div class="cal-ym">${y}.${String(m+1).padStart(2,'0')}</div><div onclick="Calendar.mv(1)" style="cursor:pointer">&gt;</div></div><div class="cal-grid"><div class="cal-head">S</div><div class="cal-head">M</div><div class="cal-head">T</div><div class="cal-head">W</div><div class="cal-head">T</div><div class="cal-head">F</div><div class="cal-head">S</div>`;
-                for(let i=0; i<fDay; i++) h+=`<div></div>`;
-                for(let i=1; i<=lDate; i++) {
-                    let cls='cal-cell';
-                    if(y===today.getFullYear() && m===today.getMonth() && i===today.getDate()) cls+=' today';
-                    if(localStorage.getItem(`memo-${y}-${m}-${i}`)) cls+=' active';
-                    h+=`<div class="${cls}" onclick="Calendar.pick(${y},${m},${i},this)">${i}</div>`;
-                }
-                h+=`</div><textarea id="cal-memo" placeholder="MEMO..."></textarea><button class="cal-save" onclick="Calendar.save()">SAVE DATA</button>`;
-                el.innerHTML = h;
-            },
-            mv: (n) => { Calendar.d.setMonth(Calendar.d.getMonth() + n); Calendar.render(document.getElementById('st-con')); },
-            pick: (y,m,d,el) => { 
-                Calendar.sel = `memo-${y}-${m}-${d}`; 
-                document.querySelectorAll('.cal-cell').forEach(e=>e.classList.remove('active'));
-                el.classList.add('active');
-                document.getElementById('cal-memo').value = localStorage.getItem(Calendar.sel) || '';
-            },
-            save: () => {
-                if(Calendar.sel) {
-                    localStorage.setItem(Calendar.sel, document.getElementById('cal-memo').value);
-                    Modal.show('저장되었습니다.', null);
-                } else {
-                    Modal.show('날짜를 선택하세요.', null);
-                }
-            }
-        };
-
-        const Input = {
-            curr: '0',
-            sign: 1,
-            cb: null,
-            open: (s) => { Input.curr='0'; Input.sign=s; Input.update(); document.getElementById('input-modal').classList.add('show'); },
-            add: (n) => { if(Input.curr.length>10)return; Input.curr = Input.curr=='0'? String(n) : Input.curr+n; Input.update(); },
-            clr: () => { Input.curr='0'; Input.update(); },
-            back: () => { Input.curr = Input.curr.length>1 ? Input.curr.slice(0,-1) : '0'; Input.update(); },
-            update: () => { document.getElementById('inp-disp').innerText = "₩ " + parseInt(Input.curr).toLocaleString(); },
-            done: () => { 
-                if(Input.curr!='0') { 
-                    Bank.bal += parseInt(Input.curr) * Input.sign; 
-                    localStorage.setItem('SYN_BANK', Bank.bal); 
-                    App.open('BANK'); 
-                }
-                document.getElementById('input-modal').classList.remove('show');
-            }
-        };
-
-        const Bank = {
-            bal: parseInt(localStorage.getItem('SYN_BANK')) || 0,
-            render: () => `
-                <div class="bank-disp"><div class="bank-lbl">CURRENT BALANCE</div><div class="bank-val">₩ ${Bank.bal.toLocaleString()}</div></div>
-                <div class="bank-btns"><button class="b-btn in" onclick="Input.open(1)">수입 (IN)</button><button class="b-btn out" onclick="Input.open(-1)">지출 (OUT)</button></div>
-                <button class="b-reset" onclick="Bank.reset()">장부 초기화 (RESET)</button>`,
-            reset: () => { Modal.show('정말로 모든 장부 데이터를 삭제하시겠습니까?', () => { Bank.bal=0; localStorage.setItem('SYN_BANK',0); App.open('BANK'); }); }
-        };
-
-        const Settings = {
-            render: (el) => {
-                const m = Ghost.active?'secret':'normal';
-                let h = `<div class="st-header"><div class="st-tit">CHAIRMAN ACCESS</div><div class="st-sub">ALL SYSTEMS NORMAL</div></div>`;
-                h += `<div class="st-label">FAMILY LINKS [${m}]</div><div class="st-list">`;
-                DB[m].forEach((i,x)=>{ h+=`<div class="st-item"><div class="st-idx">${x+1}</div><div class="st-inp"><input id="n${x}" value="${i.n}" style="width:30%;border:none;background:transparent;color:var(--neon-cyan);"><input id="u${x}" value="${i.u}" style="width:65%;border:none;background:transparent;color:var(--text-main);" placeholder="URL"></div></div>` });
-                h += `</div><div class="st-label">LIVE CHANNELS</div><div class="st-list">`;
-                DB.tv.forEach((i,x)=>{ h+=`<div class="st-item"><div class="st-idx">TV${x+1}</div><div class="st-inp"><input id="tn${x}" value="${i.n}" style="width:30%;border:none;background:transparent;color:var(--neon-cyan);"><input id="tu${x}" value="${i.u}" style="width:65%;border:none;background:transparent;color:var(--text-main);" placeholder="Live URL"></div></div>` });
-                h += `</div><button class="st-save" onclick="Settings.save()">저장하기 (SAVE)</button><button class="st-reset" onclick="Settings.reset()">초기화 (RESET)</button>`;
-                el.innerHTML = h;
-            },
-            save: () => {
-                const m = Ghost.active?'secret':'normal';
-                for(let i=0;i<8;i++){ DB[m][i].n=document.getElementById(`n${i}`).value; DB[m][i].u=document.getElementById(`u${i}`).value; }
-                for(let i=0;i<3;i++){ DB.tv[i].n=document.getElementById(`tn${i}`).value; DB.tv[i].u=document.getElementById(`tu${i}`).value; }
-                localStorage.setItem('SYNAPSE_DB', JSON.stringify(DB)); 
-                Modal.show('저장되었습니다.', () => history.back());
-            },
-            reset: () => { Modal.show('초기화 하시겠습니까?', () => { localStorage.removeItem('SYNAPSE_DB'); location.reload(); }); }
-        };
-
-        const Calculator = { html:`<div id="calc-wrap"><div id="calc-disp">0</div><div class="calc-pad">`+['7','8','9','/','4','5','6','*','1','2','3','-','C','0','.','+','='].map(k=>`<div class="cp-btn ${['/','*','-','+','C'].includes(k)?'cp-act':''} ${k=='='?'cp-eq':''}" onclick="Calculator.c('${k}')">${k}</div>`).join('')+`</div></div>`, c:(k)=>{ const r=document.getElementById('calc-disp'); if(k=='C')r.innerText='0'; else if(k=='=')try{r.innerText=eval(r.innerText)}catch{r.innerText='ERR'} else r.innerText=r.innerText=='0'?k:r.innerText+k; } };
-
-        const Odds = { render: () => `<table class="odds-table"><thead><tr><th>GAME</th><th>1</th><th>X</th><th>2</th></tr></thead><tbody><tr><td>CITY vs LIV</td><td class="down">2.10</td><td>3.40</td><td class="up">2.90</td></tr><tr><td>LAL vs GSW</td><td class="up">1.85</td><td>-</td><td class="down">1.95</td></tr></tbody></table>` };
-        const Edge = { render: () => `<div class="edge-card"><div class="ec-head"><span class="ec-team">LAKERS WIN</span><span class="ec-rate">82%</span></div><div class="ec-bar"><div class="ec-fill" style="width:82%"></div></div></div>` };
-
-        const App = {
-            open: (m) => {
-                const p=document.getElementById('p-sub'), c=document.getElementById('st-con');
-                document.getElementById('st-tit').innerText = m; p.classList.remove('hidden'); history.pushState({modal:true},null,"");
-                if(m=='BANK') c.innerHTML=Bank.render(); 
-                else if(m=='SETTINGS') Settings.render(c); 
-                else if(m=='CALENDAR') Calendar.render(c); 
-                else if(m=='CALC') c.innerHTML=Calculator.html;
-                else if(m=='ODDS') c.innerHTML=Odds.render();
-                else if(m=='EDGE') c.innerHTML=Edge.render();
-                else c.innerHTML=`<div style="padding:20px;">CONNECTING...</div>`;
-            }
-        };
-        window.onpopstate = () => { document.getElementById('p-sub').classList.add('hidden'); document.getElementById('analysis-view').classList.remove('show'); Render.init(); };
-
-        const Render = {
-            init: () => { Render.shortcuts(); Render.tv(); },
-            shortcuts: () => {
-                const box=document.getElementById('grid-box'), list=Ghost.active?DB.secret:DB.normal; let h='';
-                list.forEach((i,x)=>{ if(x<8) { 
-                    // NO DEFAULT #
-                    let u=i.u; if(u && !u.startsWith('http'))u='https://'+u; 
-                    const act=u?`window.open('${u}')`:`Modal.show('설정에서 주소를 입력하세요', ()=>App.open('SETTINGS'))`; 
-                    h+=`<div class="s-btn" onclick="${act}"><svg class="s-ico" viewBox="0 0 24 24"><path d="${i.i}"/></svg><span class="s-lbl">${i.n}</span></div>`; 
-                }});
-                // 9TH BOX - CAMOUFLAGED AS COMPASS
-                h+=`<div class="s-btn" onclick="Ghost.trigger()"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span class="s-lbl" style="${Ghost.active?'color:var(--neon-cyan)':'color:var(--text-sub)'}">COMPASS</span></div>`;
-                box.innerHTML=h;
-            },
-            tv: () => { 
-                let h=''; 
-                DB.tv.forEach(t => {
-                    let u = t.u; if(u && !u.startsWith('http')) u='https://'+u;
-                    const act = u ? `window.open('${u}')` : `Modal.show('라이브 주소가 없습니다', ()=>App.open('SETTINGS'))`;
-                    h+=`<div class="cctv" onclick="${act}"><img src="${t.u}"><div class="rec"><div class="dot"></div>${t.n}</div></div>`;
-                }); 
-                document.getElementById('tv-grid').innerHTML=h; 
-            }
-        };
-
-        window.onload = function() {
-            Render.init();
-            setInterval(() => {
-                const n=new Date();
-                document.getElementById('clock-time').innerHTML=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
-                document.getElementById('clock-date').innerText=`${n.getFullYear()}.${n.getMonth()+1}.${n.getDate()}`;
-            }, 1000);
-            
-            const cam = document.getElementById('cam-input');
-            cam.addEventListener('change', (e) => {
-                if(e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        const bg = document.getElementById('score-bg');
-                        bg.src = ev.target.result;
-                        bg.style.display = 'block';
-                        Action.hasImg = true;
-                    }
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            });
-        };
-    </script>
+<script>
+    function switchView(id) {
+        document.querySelectorAll('.app').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0,0); if(window.MathJax) MathJax.typeset();
+    }
+    function copyInviteLink() {
+        const url = window.location.origin + window.location.pathname + "?mode=user";
+        const t = document.createElement("textarea"); document.body.appendChild(t); t.value = url; t.select(); document.execCommand("copy"); document.body.removeChild(t);
+        alert("남자친구 초대 링크가 복사되었어요! 카톡에 전달해 주세요.");
+    }
+    function setRel(type, btn) {
+        relation = type; document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+    }
+    function startSurvey() { switchView('view-survey'); renderQ(); }
+    function renderQ() {
+        const q = DB[step]; const box = document.getElementById('view-survey');
+        box.innerHTML = `<section><div class="progress-ui">SYNAPSE ${step+1}/30</div><div class="pillar-card"><div class="q-text">${q.q}</div><div id="opts"></div></div></section>`;
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button'); b.className = 'opt-btn'; b.innerText = o;
+            b.onclick = () => { answers.push(i); step++; 
+                if(step === 15) switchView('view-bridge');
+                else if(step < 30) renderQ(); 
+                else { switchView('view-sealing'); runSeal(); }
+            };
+            document.getElementById('opts').appendChild(b);
+        });
+    }
+    function runSeal() {
+        let p = 0; const txt = document.getElementById('seal-txt');
+        const iv = setInterval(() => { p += 5; txt.innerText = `영혼 봉인 중... ${p}%`;
+            if(p >= 100) { clearInterval(iv); document.getElementById('btn-send').style.display='block'; }
+        }, 100);
+    }
+    function sendKey() {
+        const url = window.location.origin + window.location.pathname + "?res=" + answers.join(',') + "&rel=" + relation;
+        const t = document.createElement("textarea"); document.body.appendChild(t); t.value = url; t.select(); document.execCommand("copy"); document.body.removeChild(t);
+        alert("그녀에게 보낼 열쇠가 복사되었어요! 카톡에 전달해 주세요.");
+    }
+    function renderReport() {
+        const p1 = document.getElementById('p1-res'); const p2 = document.getElementById('p2-res'); const p3 = document.getElementById('p3-res');
+        DB.forEach((item, i) => {
+            let txt = item.res[answers[i]]; if(relation === 'lover') txt = txt.replace(/당신/g, "그").replace(/상대/g, "당신");
+            const h = `<div class="r-item"><b>ITEM ${i+1}. ${item.tag}</b><p>${txt}</p></div>`;
+            if(i < 10) p1.innerHTML += h; else if(i < 20) p2.innerHTML += h; else p3.innerHTML += h;
+        });
+        new Chart(document.getElementById('radar'), {
+            type: 'radar', data: { labels: ['주동성', '방어기제', '공명도', '안정기지', '응집력'], datasets: [{ data: [85, 72, 90, 68, 88], borderColor: '#00f2ff', backgroundColor: 'rgba(0, 242, 255, 0.2)' }] },
+            options: { scales: { r: { grid: { color: '#2d2d3d' }, ticks: { display: false }, min: 0, max: 100 } }, plugins: { legend: { display: false } } }
+        });
+    }
+    window.onload = () => {
+        const p = new URLSearchParams(window.location.search);
+        if(p.get('res')) { answers = p.get('res').split(',').map(Number); relation = p.get('rel'); switchView('view-report'); renderReport(); }
+        else if(p.get('mode') === 'user') { switchView('view-user-landing'); }
+    };
+</script>
 </body>
 </html>
