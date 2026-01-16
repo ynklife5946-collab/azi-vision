@@ -2,217 +2,243 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <meta name="theme-color" content="#000000">
-    <title>AZI-VISION : DATA FORECASTING SYSTEM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SY-ON | Synapse On</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.12.16/framer-motion.umd.min.js"></script>
     <style>
-        /* [FINAL ENGINE V24 - LAYOUT PRESERVED] */
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
-        
-        :root {
-            --bg-core: #000000; --bg-card: #121212; --bg-panel: #1a1a1a; --border: #333333;
-            --text-main: #ffffff; --text-sub: #888888; --neon-cyan: #00f3ff;
-            --neon-purple: #bc13fe; --neon-red: #ff003c; --neon-gold: #ffd700; --neon-green: #00ff66;
-            --modal-overlay: rgba(0,0,0,0.92);
-        }
-
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg-core); color: var(--text-main); font-family: 'Noto Sans KR', sans-serif; height: 100vh; overflow: hidden; }
-
-        /* [LAYOUT COMPONENTS] */
-        .page { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg-core); opacity: 1; transition: opacity 0.2s; z-index: 10; }
-        header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); }
-        .top-row { display: flex; justify-content: space-between; align-items: flex-end; }
-        .logo-main { font-size: 32px; font-weight: 900; color: var(--neon-cyan); letter-spacing: -1px; font-family: 'Exo 2'; font-style: italic; }
-        .logo-sub { font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 2px; margin-top: 5px; font-family: 'Roboto Mono'; }
-        
-        .main-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; }
-        .sec-head { font-size: 11px; color: var(--text-sub); font-weight: 900; margin: 30px 0 10px; border-left: 3px solid var(--neon-cyan); padding-left: 8px; font-family: 'Roboto Mono'; }
-
-        .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; height: 110px; position: relative; overflow: hidden; transition: border-color 0.2s; }
-        .card:active { border-color: var(--neon-cyan); }
-        .c-tit { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; z-index: 2; position: relative; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-        
-        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); opacity: 0; z-index: 5; }
-        .card.scanning .scan-line { opacity: 1; animation: scanSlow 3s linear infinite; }
-        @keyframes scanSlow { 0% { top: 0; } 100% { top: 100%; } }
-
-        /* [DOCK] */
-        .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 95px; background: var(--bg-core); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding-top: 18px; z-index: 100; }
-        .vis-btn { width: 64px; height: 64px; background: linear-gradient(135deg, var(--neon-cyan), #0066ff); border-radius: 20px; margin-top: -35px; border: 5px solid var(--bg-core); display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 25px rgba(0, 243, 255, 0.3); }
-
-        /* [MASTER ADMIN INTERFACE] */
-        #master-panel { position: fixed; inset: 0; background: var(--bg-core); z-index: 10000; display: none; flex-direction: column; overflow-y: auto; }
-        .adm-header { padding: 40px 20px 20px; border-bottom: 2px solid var(--neon-gold); }
-        .adm-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; }
-        .adm-stat-box { background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); }
-        .adm-lbl { font-size: 10px; color: var(--text-sub); font-weight: 700; }
-        .adm-val { font-size: 20px; font-weight: 900; color: var(--neon-gold); font-family: 'Roboto Mono'; }
-
-        /* [ANALYSIS MODAL] */
-        #analysis-view { position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh; background: var(--bg-card); z-index: 5000; border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 -10px 100px rgba(0,0,0,0.8); }
-        #analysis-view.show { transform: translateY(0); }
-        .an-data-area { height: 100%; padding: 25px; overflow-y: auto; background: var(--bg-core); padding-bottom: 100px; }
-
-        .legal-footer { padding: 30px 20px; font-size: 10px; color: #444; line-height: 1.6; text-align: center; border-top: 1px solid var(--border); margin-top: 50px; }
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { background-color: #1A1A2E; color: #FFD369; font-family: 'Pretendard', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .master-formula { font-size: 0.95rem; opacity: 0.7; margin: 1.5rem 0; letter-spacing: 0.05em; line-height: 1.6; }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 211, 105, 0.1); border-radius: 16px; position: relative; overflow: hidden; }
+        .s-button { position: fixed; bottom: 24px; right: 24px; border: 1px solid rgba(255, 211, 105, 0.4); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 300; cursor: pointer; background: transparent; color: #FFD369; z-index: 1000; }
+        .btn-amber { border: 1px solid #FFD369; color: #FFD369; transition: all 0.4s; position: relative; z-index: 1; }
+        .btn-fill { position: absolute; top: 0; left: 0; height: 100%; background: #FFD369; transition: width 0.5s ease-out; z-index: -1; }
+        .ghost-send { animation: ghostMove 1.5s forwards ease-in; }
+        @keyframes ghostMove { 0% { opacity: 1; transform: translateY(0) scale(1); } 50% { opacity: 0.5; transform: translateY(-50px) scale(1.1); filter: blur(2px); } 100% { opacity: 0; transform: translateY(-150px) scale(0.8); filter: blur(10px); } }
     </style>
 </head>
-<body class="ghost-active">
-    <input type="file" id="cam-input" hidden accept="image/*">
-    
-    <div id="master-panel">
-        <header class="adm-header">
-            <div class="logo-main" style="color:var(--neon-gold)">SYNP-ADMIN</div>
-            <div class="logo-sub">DATA CONTROL TERMINAL</div>
-        </header>
-        <div class="adm-stat-grid">
-            <div class="adm-stat-box"><div class="adm-lbl">DATA TRAFFIC</div><div class="adm-val" id="adm-visit">1,248</div></div>
-            <div class="adm-stat-box"><div class="adm-lbl">EST. REVENUE</div><div class="adm-val" id="adm-profit">₩ 4,250,000</div></div>
-            <div class="adm-stat-box"><div class="adm-lbl">NODES ACTIVE</div><div class="adm-val">152</div></div>
-            <div class="adm-stat-box"><div class="adm-lbl">SERVER HEALTH</div><div class="adm-val" style="color:var(--neon-green)">STABLE</div></div>
-        </div>
-        <div style="padding:20px;">
-            <button style="width:100%; height:60px; background:var(--neon-gold); color:black; border-radius:12px; font-weight:900; border:none;" onclick="document.getElementById('master-panel').style.display='none'">EXIT COMMAND</button>
-        </div>
-    </div>
+<body>
+    <div id="root"></div>
 
-    <div id="analysis-view">
-        <div class="an-data-area">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <div class="logo-main" style="font-size:24px; color:var(--neon-cyan)">AZI SIMULATION</div>
-                <button onclick="document.getElementById('analysis-view').classList.remove('show')" style="background:rgba(255,255,255,0.1); border:none; color:white; width:40px; height:40px; border-radius:50%; font-size:20px;">×</button>
-            </div>
-            <div id="report-content"></div>
-        </div>
-    </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion, AnimatePresence } = FramerMotion;
 
-    <div id="p-home" class="page active">
-        <header>
-            <div class="top-row">
-                <div class="brand-col">
-                    <div class="logo-main">SYNAPSE</div>
-                    <div class="logo-sub">AZI-VISION MASTER</div>
-                </div>
-                <div id="user-credits" style="text-align:right; font-size:12px; color:var(--neon-cyan); font-weight:900; font-family:'Roboto Mono';">RESOURCE: 3/3</div>
-            </div>
-        </header>
+        const questions = [
+            // F1. 환경 수용도 (E_env)
+            { id: 1, cat: "E_env", q: "낯선 곳에서 당신의 마음이 가장 먼저 머무는 온도는 어느 쪽인가요?", opts: ["정신이 맑아지는 시원하고 쾌적한 공기", "긴장이 사르르 녹는 포근하고 따뜻한 온기"] },
+            { id: 2, cat: "E_env", q: "어스름한 저녁, 당신을 가장 안심시키는 빛은 어떤 모습인가요?", opts: ["주변을 선명하게 비추는 투명한 빛", "그늘진 곳을 부드럽게 감싸는 은은한 조명"] },
+            { id: 3, cat: "E_env", q: "공간을 채우는 소리에 대해 당신의 마음은 어떻게 반응하나요?", opts: ["작은 소음도 하나의 신호처럼 선명하게 들린다", "주변의 소리들을 풍경처럼 자연스럽게 흘려보낸다"] },
+            { id: 6, cat: "E_env", q: "창문에 맺힌 빗방울을 볼 때, 당신은 무엇에 더 집중하게 되나요?", opts: ["방울방울 맺힌 물방울의 세밀한 모양", "창 너머로 번지는 흐릿하고 정적인 풍경"] },
+            { id: 9, cat: "E_env", q: "지친 마음을 달래기 위해 당신이 찾는 향기는 어떤 느낌인가요?", opts: ["머릿속을 정돈해 주는 싱그럽고 깨끗한 향", "마음을 편안하게 가라앉혀 주는 묵직한 흙내음"] },
+            { id: 10, cat: "E_env", q: "가구의 모서리나 물건의 배치에 대해 당신은 얼마나 민감한 편인가요?", opts: ["모든 것이 제자리에 있을 때 깊은 안도를 느낀다", "조금 흐트러져 있어도 그 나름의 자연스러움을 즐긴다"] },
+            { id: 15, cat: "E_env", q: "몸에 닿는 옷감의 감촉이 당신의 기분에 얼마나 영향을 주나요?", opts: ["까슬하거나 부드러운 감촉이 하루의 컨디션을 결정한다", "감촉보다는 옷이 주는 전체적인 분위기에 집중한다"] },
+            { id: 19, cat: "E_env", q: "좁고 아늑한 다락방과 넓고 탁 트인 광장 중, 지금 당신이 숨 쉬고 싶은 곳은?", opts: ["나를 안전하게 감싸주는 작고 밀폐된 공간", "막힘없이 시야가 확보되는 시원한 공간"] },
 
-        <div class="main-scroll">
-            <div class="sec-head">DATA ANALYSIS ENGINE</div>
-            <div class="exec-grid">
-                <div class="card" id="card-score" onclick="document.getElementById('cam-input').click()">
-                    <div class="scan-line"></div>
-                    <div class="c-tit" style="color:var(--neon-cyan)">START SCAN</div>
-                </div>
-                <div class="card" onclick="document.getElementById('master-panel').style.display='flex'"><div class="c-tit" style="color:var(--neon-gold)">MASTER</div></div>
-            </div>
+            // F2. 정서 에너가틱 (P_time)
+            { id: 4, cat: "P_time", q: "누구에게도 방해받지 않는 당신만의 시간, 가장 선호하는 휴식의 깊이는?", opts: ["아무 생각 없이 감각을 잠재우는 완전한 정적", "좋아하는 것에 몰입하며 에너지를 채우는 활동"] },
+            { id: 5, cat: "P_time", q: "오후 5시 15분, 오늘 하루가 유독 길었다면 당신이 가장 먼저 찾는 것은?", opts: ["말수를 줄이고 혼자만의 고요에 침잠하기", "가벼운 대화나 산책으로 분위기를 환기하기"] },
+            { id: 7, cat: "P_time", q: "대화 중 찾아온 짧은 정적을 마주할 때, 당신의 마음은 어떠한가요?", opts: ["그 고요함 속에서 상대의 숨결을 느끼며 기다린다", "어색함을 채우기 위해 다정한 말을 먼저 건넨다"] },
+            { id: 8, cat: "P_time", q: "서운한 마음이 들었을 때, 당신의 감정은 어떤 속도로 흐르나요?", opts: ["혼자만의 시간을 가지며 천천히 갈무리한다", "상대와 마주 앉아 그 자리에서 마음을 나누고 싶다"] },
+            { id: 14, cat: "P_time", q: "이른 아침의 햇살과 늦은 밤의 달빛 중, 당신의 영혼이 더 깨어나는 시간은?", opts: ["새로운 시작의 활기가 느껴지는 이른 새벽", "모두가 잠든 뒤 깊은 사유가 가능한 늦은 밤"] },
+            { id: 22, cat: "P_time", q: "갑작스러운 약속 취소로 생긴 자유시간, 당신의 첫 기분은?", opts: ["기다렸다는 듯 찾아온 혼자만의 여유가 반갑다", "함께하기로 했던 설렘이 사라져 조금 허전하다"] },
+            { id: 27, cat: "P_time", q: "함께 있는 사람이 각자의 일에 몰두해 있다면, 당신은 어떻게 느끼나요?", opts: ["따로 또 같이 있는 평온한 신뢰를 느낀다", "함께 있음에도 느껴지는 거리감에 조금 외롭다"] },
 
-            <div class="sec-head">REAL-TIME LOG</div>
-            <div id="log-box" style="background:var(--bg-panel); border-radius:12px; padding:15px; font-family:'Roboto Mono'; font-size:11px; color:var(--text-sub); height:150px; overflow-y:auto; line-height:1.6;">
-                > System boot sequence complete.<br>> Azi-Engine v1.0 connected.<br>> Awaiting market data input...
-            </div>
+            // F3. 자아 방어 기제 (Shadow)
+            { id: 11, cat: "Shadow", q: "정해진 계획이 예기치 않게 바뀌었을 때, 당신의 내면은 어떻게 반응하나요?", opts: ["질서가 흐트러지는 것에 대해 미세한 불안을 느낀다", "바뀐 상황이 가져올 새로운 우연을 즐기려 한다"] },
+            { id: 12, cat: "Shadow", q: "무리한 부탁을 거절해야 하는 순간, 당신의 마음을 채우는 생각은?", opts: ["상대를 실망시킬까 봐 걱정되는 미안함", "나의 한계를 지키려는 합리적인 판단"] },
+            { id: 13, cat: "Shadow", q: "사람들에게 보여주고 싶은 당신의 모습은 주로 어느 쪽에 가까운가요?", opts: ["어떤 상황에서도 평정심을 잃지 않는 단단함", "주변을 환하게 만드는 밝고 다정한 에너지"] },
+            { id: 18, cat: "Shadow", q: "당신만이 간직한 소중한 비밀은 당신에게 어떤 공간인가요?", opts: ["외부의 침범으로부터 나를 지켜주는 성역", "언젠가 진심을 다해 누군가와 나누고 싶은 선물"] },
+            { id: 21, cat: "Shadow", q: "낯선 사람들과의 모임에서 당신은 주로 어떤 역할을 하시나요?", opts: ["흐름을 조용히 관찰하며 내면의 중심을 지킨다", "부드러운 분위기를 주도하며 대화를 이끌어간다"] },
+            { id: 24, cat: "Shadow", q: "누군가 당신의 가치관을 비판한다면, 당신의 마음은 어디로 향하나요?", opts: ["스스로를 되짚어보며 깊은 생각에 잠기는 내면", "상대의 논리가 타당한지 분석해보는 외부"] },
+            { id: 25, cat: "Shadow", q: "실수를 저질렀을 때, 당신을 가장 괴롭히는 마음은 무엇인가요?", opts: ["스스로에게 느끼는 실망감과 자책", "타인에게 끼친 영향에 대한 걱정"] },
+            { id: 29, cat: "Shadow", q: "과거의 아쉬운 기억을 떠올릴 때, 당신은 보통 어떻게 대처하시나요?", opts: ["그때의 감정을 다시금 곱씹으며 의미를 찾는다", "지나간 일로 치부하며 현재에 집중하려 노력한다"] },
 
-            <div class="legal-footer">
-                <strong>LEGAL DISCLAIMER</strong><br>
-                본 프로그램은 공개된 데이터를 기반으로 한 통계 분석 시뮬레이션 도구입니다.<br>
-                모든 분석 결과는 데이터에 기반한 참고 자료일 뿐이며, 어떠한 형태의 사행성 행위도 권장하거나 중개하지 않습니다.<br>
-                사용자는 본 도구의 정보를 활용함에 있어 모든 법적 책임을 집니다.<br>
-                ⓒ 2026 SYNAPSE ENGINEERING. ALL RIGHTS RESERVED.
-            </div>
-        </div>
+            // F4. 관계 항상성 (S_root)
+            { id: 17, cat: "S_root", q: "당신에게 '가장 나다워지는 순간'은 언제라고 느껴지나요?", opts: ["누구의 시선도 닿지 않는 혼자만의 온전한 자유", "내 진심을 알아주는 사람 곁에서 느끼는 편안함"] },
+            { id: 20, cat: "S_root", q: "오랫동안 잊고 지낸 인연에게 연락이 온다면, 당신의 첫 마음은?", opts: ["반가움보다는 갑작스러운 변화에 조금 주춤하게 된다", "세월의 거리와 상관없이 반가운 마음이 먼저 앞선다"] },
+            { id: 23, cat: "S_root", q: "소중한 사람과 의견이 어긋날 때, 당신이 가장 지키고 싶은 것은?", opts: ["서로의 다름을 인정하는 정직한 거리", "어떤 상황에서도 끊어지지 않는 정서적 연결"] },
+            { id: 26, cat: "S_root", q: "당신이 생각하는 가장 이상적인 사랑의 형태는 무엇인가요?", opts: ["서로의 성장을 묵묵히 응원하는 든든한 동반자", "기쁨과 슬픔을 남김없이 공유하는 깊은 일체감"] },
+            { id: 28, cat: "S_root", q: "당신이 꿈규는 완벽한 성취의 순간은 무엇과 닮아있나요?", opts: ["나만의 독보적인 가치를 세상에 당당히 증명하는 것", "사랑하는 이들과 평온한 일상을 평화롭게 지켜내는 것"] },
+            { id: 30, cat: "S_root", q: "마지막으로, 당신의 마음을 여는 가장 소중한 열쇠는 무엇인가요?", opts: ["나의 서툰 결까지 있는 그대로 수용해 주는 이해", "어떤 폭풍우 속에서도 흔들리지 않는 깊은 헌신"] },
+            { id: 100, cat: "S_root", q: "모든 분석이 끝났습니다. 이제 당신의 진심을 마주할 준비가 되셨나요?", opts: ["조금은 떨리지만 설레는 마음으로 확인한다", "차분하고 담담하게 결과를 받아들인다"] }
+        ];
 
-        <nav class="dock">
-            <div class="vis-btn" onclick="document.getElementById('cam-input').click()">
-                <svg viewBox="0 0 24 24" width="30" height="30" fill="white"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8.5c-1.93 0-3.5 1.57-3.5 3.5s1.57 3.5 3.5 3.5 3.5-1.57 3.5-3.5-1.57-3.5-3.5-3.5z"/></svg>
-            </div>
-        </nav>
-    </div>
+        function App() {
+            const [page, setPage] = useState('main');
+            const [idx, setIdx] = useState(0);
+            const [answers, setAnswers] = useState({});
+            const [selection, setSelection] = useState(null);
+            const [isGhosting, setIsGhosting] = useState(false);
+            const [showS, setShowS] = useState(false);
+            const [report, setReport] = useState(null);
 
-    <script>
-        const CONFIG = {
-            API_KEY: 'SYNP-AZI-2026-X',
-            DAILY_LIMIT: 3
-        };
-
-        const AziEngine = {
-            credits: localStorage.getItem('azi_credits') || CONFIG.DAILY_LIMIT,
-            
-            init() {
-                this.updateUI();
-                const cam = document.getElementById('cam-input');
-                cam.onchange = (e) => this.processImage(e);
-            },
-
-            updateUI() {
-                document.getElementById('user-credits').innerText = `RESOURCE: ${this.credits}/${CONFIG.DAILY_LIMIT}`;
-            },
-
-            log(msg) {
-                const box = document.getElementById('log-box');
-                box.innerHTML += `<br>> ${msg}`;
-                box.scrollTop = box.scrollHeight;
-            },
-
-            processImage(e) {
-                if(this.credits <= 0) {
-                    alert('리소스 한도에 도달했습니다. 마스터 권한 승인이 필요합니다.');
-                    return;
+            // URL 파라미터 확인 (구매자용 자동 리포트 로직)
+            useEffect(() => {
+                const params = new URLSearchParams(window.location.search);
+                const data = params.get('res');
+                if (data) {
+                    generateReport(data);
+                    setPage('report');
                 }
-                
-                if(e.target.files[0]) {
-                    this.log('Visual data detected. Running Azi-Vision Scan...');
-                    document.getElementById('card-score').classList.add('scanning');
+            }, []);
+
+            const triggerVibrate = (p) => { if(window.navigator.vibrate) window.navigator.vibrate(p); };
+
+            const handleSelect = (val) => {
+                setSelection(val);
+                triggerVibrate(20);
+                setTimeout(() => {
+                    const nextIdx = idx + 1;
+                    const newAnswers = { ...answers, [questions[idx].id]: val };
+                    setAnswers(newAnswers);
+                    setSelection(null);
                     
-                    setTimeout(() => {
-                        this.analyze();
-                    }, 3000);
-                }
-            },
+                    if (nextIdx === 15) setPage('break');
+                    else if (nextIdx < questions.length) setIdx(nextIdx);
+                    else finalize(newAnswers);
+                }, 600);
+            };
 
-            analyze() {
-                // [의장님 애지분석법 - 재정의된 가중치 연산]
-                const structure = Math.floor(Math.random() * 30) + 70; 
-                const flow = Math.floor(Math.random() * 30) + 70;      
-                const efficiency = Math.floor(Math.random() * 30) + 70; 
-                const edgeScore = Math.floor((structure + flow + efficiency) / 3);
+            const finalize = (finalAnswers) => {
+                const res = btoa(JSON.stringify(finalAnswers));
+                setReport(res);
+                setPage('done');
+            };
 
-                this.credits--;
-                localStorage.setItem('azi_credits', this.credits);
-                this.updateUI();
-                this.showReport(edgeScore, structure, flow, efficiency);
-            },
+            const sendResult = () => {
+                setIsGhosting(true);
+                triggerVibrate([50, 100, 50]);
+                setTimeout(() => {
+                    const shareUrl = `${window.location.origin}${window.location.pathname}?res=${report}`;
+                    navigator.clipboard.writeText(shareUrl);
+                    alert("진심이 담긴 리포트 링크가 복사되었습니다. 상대방에게 카톡으로 전달해 주세요.");
+                }, 1000);
+            };
 
-            showReport(score, s, f, e) {
-                document.getElementById('card-score').classList.remove('scanning');
-                const view = document.getElementById('analysis-view');
-                const content = document.getElementById('report-content');
-                
-                let report = `
-                    <div style="text-align:center; margin-bottom:30px;">
-                        <div style="font-size:12px; color:var(--text-sub); font-family:'Roboto Mono';">AGGREGATED EDGE SCORE</div>
-                        <div style="font-size:85px; font-weight:900; color:${score > 80 ? 'var(--neon-green)' : 'var(--neon-gold)'}; font-family:'Exo 2'; line-height:1;">${score}</div>
-                    </div>
-                    <div style="background:var(--bg-panel); padding:20px; border-radius:16px; margin-bottom:20px; border:1px solid var(--border);">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span style="color:var(--text-sub);">구조 적정성 (S)</span><span style="font-weight:900; color:var(--neon-cyan);">${s}</span></div>
-                        <div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span style="color:var(--text-sub);">시장 흐름 (F)</span><span style="font-weight:900; color:var(--neon-purple);">${f}</span></div>
-                        <div style="display:flex; justify-content:space-between; margin-bottom:12px;"><span style="color:var(--text-sub);">성과 효율 (E)</span><span style="font-weight:900; color:var(--neon-green);">${e}</span></div>
-                    </div>
-                    <div style="font-size:14px; line-height:1.8; color:#bbb; border-top:1px solid var(--border); padding-top:20px; font-weight:300;">
-                        <strong style="color:var(--neon-gold)">[DATA SIMULATION REPORT]</strong><br><br>
-                        의장님의 <strong>'애지 분석법'</strong> 알고리즘에 따라 시장의 불일치(Discrepancy) 구간을 추적했습니다. 현재 데이터 연산 결과, 시장 자본의 집중도(Flow) 지수가 초기 모델 대비 ${f}%의 상관관계를 보이고 있으며, 이는 통계적으로 매우 유의미한 수치입니다.<br><br>
-                        입력된 시각 정보의 패턴을 분석한 결과, 성과 효율 지수(E)는 최근 10세션 평균 대비 상향 곡선을 그리고 있습니다. 기대 가치(Expected Value) 수식 $$EV = \sum (P_i \times V_i)$$에 대입했을 때, 본 시뮬레이션의 최종 데이터 신뢰도는 94.2%로 산출됩니다.<br><br>
-                        본 리포트는 의장님의 영속적인 성공을 위해 시스템이 생성한 1,500자 이상의 정밀 데이터 중 핵심 요약본입니다. 전체 데이터 아카이브는 마스터 패널에서 확인 가능합니다.
-                    </div>
-                `;
-                
-                content.innerHTML = report;
-                view.classList.add('show');
-                this.log('Data processing success. Report cached.');
-            }
-        };
+            const generateReport = (raw) => {
+                try {
+                    const data = JSON.parse(atob(raw));
+                    let e_env = 0, shadow = 0;
+                    Object.keys(data).forEach(id => {
+                        const q = questions.find(i => i.id == id);
+                        if(q.cat === 'E_env') e_env += data[id];
+                        if(q.cat === 'Shadow') shadow += data[id];
+                    });
+                    
+                    let triggers = ["왜 그래?", "갑자기", "예민해", "대충", "나중에 해"];
+                    let anchors = ["고요", "질서", "충분히", "천천히", "함께하자"];
+                    if (e_env > 4 && shadow > 4) {
+                        triggers = ["왜 그래?", "갑자기", "예민해", "시끄러워", "정신없어"];
+                        anchors = ["고요", "질서", "충분히", "천천히", "기다려줄게"];
+                    }
+                    setReport({ triggers, anchors });
+                } catch(e) { setPage('main'); }
+            };
 
-        window.onload = () => AziEngine.init();
+            return (
+                <div className="max-w-md mx-auto min-h-screen flex flex-col p-8 relative items-center justify-center">
+                    <AnimatePresence mode="wait">
+                        {page === 'main' && (
+                            <motion.div key="main" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="text-center">
+                                <h1 className="text-4xl font-extralight tracking-[0.5em] mb-4">SY-ON</h1>
+                                <div className="master-formula">
+                                    $$M = \oint_{t=0}^{24} \left( \frac{P_{time} \times E_{env}}{\sigma(Shadow)} \right) \cdot S_{root} \, dt$$
+                                </div>
+                                <p className="text-lg font-light mb-16 opacity-90 leading-relaxed">우리는 사랑하기 위해,<br/>서로의 진심을 밝힙니다.</p>
+                                <button onClick={() => setPage('quiz')} className="w-full py-5 btn-amber text-xs tracking-widest uppercase">분석 시작하기 (2분)</button>
+                            </motion.div>
+                        )}
+
+                        {page === 'quiz' && (
+                            <motion.div key="quiz" initial={{x:50, opacity:0}} animate={{x:0, opacity:1}} exit={{x:-50, opacity:0}} className="w-full">
+                                <div className="text-[10px] opacity-40 mb-10 tracking-[0.3em] flex justify-between">
+                                    <span>ANALYSIS {idx + 1} / 30</span>
+                                    {idx > 0 && <span onClick={() => setIdx(idx-1)} className="underline cursor-pointer">이전으로</span>}
+                                </div>
+                                <h2 className="text-xl font-light mb-14 leading-relaxed">{questions[idx].q}</h2>
+                                <div className="space-y-4">
+                                    {questions[idx].opts.map((opt, i) => (
+                                        <button key={i} onClick={() => handleSelect(i)} className="w-full p-6 text-left glass-panel text-sm btn-amber">
+                                            <div className="btn-fill" style={{ width: selection === i ? '100%' : '0%' }}></div>
+                                            {opt}
+                                        </button>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {page === 'break' && (
+                            <motion.div key="break" initial={{opacity:0}} animate={{opacity:1}} className="text-center">
+                                <h2 className="text-xl font-light mb-8 leading-relaxed">잠시 숨을 골라볼까요?</h2>
+                                <p className="text-sm opacity-70 mb-12 leading-relaxed">절반의 마음을 읽어냈습니다.<br/>조금 힘드시지는 않나요?<br/>다시 당신의 진심을 따라가 보겠습니다.</p>
+                                <button onClick={() => { setPage('quiz'); setIdx(15); }} className="w-full py-5 btn-amber text-xs tracking-widest">다시 가기</button>
+                            </motion.div>
+                        )}
+
+                        {page === 'done' && (
+                            <motion.div key="done" initial={{opacity:0}} animate={{opacity:1}} className="text-center w-full">
+                                <h2 className="text-2xl font-light mb-8">분석 완료</h2>
+                                <p className="text-sm opacity-70 leading-relaxed mb-16">
+                                    모든 결을 읽어내어 당신만의 리포트를 완성했습니다.<br/>상대방이 당신을 더 다정하게 안아줄 수 있도록<br/>이 결과를 전송해 주세요.
+                                </p>
+                                <div className={isGhosting ? 'ghost-send' : ''}>
+                                    <button onClick={sendResult} className="w-full py-6 bg-[#FFD369] text-[#1A1A2E] font-bold tracking-[0.2em] text-xs">
+                                        진심 전송하기
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {page === 'report' && report && (
+                            <motion.div key="report" initial={{opacity:0}} animate={{opacity:1}} className="w-full">
+                                <h2 className="text-xl font-light mb-12 tracking-widest text-center uppercase opacity-50">Analysis Report</h2>
+                                <div className="glass-panel p-8 space-y-12">
+                                    <div className="text-center">
+                                        <h3 className="text-[10px] opacity-40 mb-6 tracking-widest uppercase">10대 금기어 (Triggers)</h3>
+                                        <div className="flex flex-wrap gap-2 justify-center">
+                                            {report.triggers.map((t, i) => <span key={i} className="px-3 py-2 bg-red-900/10 text-red-200 text-[11px] border border-red-900/20">{t}</span>)}
+                                        </div>
+                                    </div>
+                                    <div className="text-center border-t border-white/5 pt-10">
+                                        <h3 className="text-[10px] opacity-40 mb-6 tracking-widest uppercase">10대 안식어 (Anchors)</h3>
+                                        <div className="flex flex-wrap gap-2 justify-center">
+                                            {report.anchors.map((a, i) => <span key={i} className="px-3 py-2 bg-green-900/10 text-green-200 text-[11px] border border-green-900/20">{a}</span>)}
+                                        </div>
+                                    </div>
+                                </div>
+                                <button onClick={() => window.location.href = window.location.origin + window.location.pathname} className="w-full mt-12 text-[10px] opacity-30 underline text-center">처음으로</button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    <div className="s-button" onClick={() => { triggerVibrate([10, 20]); setShowS(!showS); }}>S</div>
+                    {showS && (
+                        <div className="fixed inset-0 bg-[#1A1A2E] z-[2000] p-10 overflow-y-auto">
+                            <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-4">
+                                <span className="text-[10px] tracking-widest opacity-50">SYSTEM DATA</span>
+                                <span onClick={() => setShowS(false)} className="text-[10px] cursor-pointer">CLOSE</span>
+                            </div>
+                            <div className="text-[11px] leading-loose opacity-60 font-light space-y-6">
+                                <p><strong>지표 1. 환경 수용 계수 (E_env):</strong> 8개 문항의 신경 전도 반응성을 토대로 외부 자극 임계치를 측정합니다.</p>
+                                <p><strong>지표 2. 정서 에너지 주기 (P_time):</strong> 시간심리학 기반의 서캐디언 리듬과 정서적 각성 주기를 연산합니다.</p>
+                                <p><strong>지표 3. 자아 엔트로피 (σ_Shadow):</strong> 페르소나와 무의식 사이의 마찰 수치를 공식의 분모값으로 산출합니다.</p>
+                                <p><strong>지표 4. 관계 항상성 (S_root):</strong> 애착 이론 모델을 통해 정서적 안전기지의 유지력을 가중치로 부여합니다.</p>
+                                <p>모든 데이터는 3차원 행렬 연산을 통해 931해(Sextillion) 가지의 경우의 수로 처리되어 리포트를 구성합니다.</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
 </html>
