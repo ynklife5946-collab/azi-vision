@@ -2,23 +2,23 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SY-ON | Synapse On</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.12.16/framer-motion.umd.min.js"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { background-color: #1A1A2E; color: #FFD369; font-family: 'Pretendard', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-        .master-formula { font-size: 0.95rem; opacity: 0.7; margin: 1.5rem 0; letter-spacing: 0.05em; line-height: 1.6; }
-        .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 211, 105, 0.1); border-radius: 16px; position: relative; overflow: hidden; }
-        .s-button { position: fixed; bottom: 24px; right: 24px; border: 1px solid rgba(255, 211, 105, 0.4); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 300; cursor: pointer; background: transparent; color: #FFD369; z-index: 1000; }
-        .btn-amber { border: 1px solid #FFD369; color: #FFD369; transition: all 0.4s; position: relative; z-index: 1; }
-        .btn-fill { position: absolute; top: 0; left: 0; height: 100%; background: #FFD369; transition: width 0.5s ease-out; z-index: -1; }
-        .ghost-send { animation: ghostMove 1.5s forwards ease-in; }
-        @keyframes ghostMove { 0% { opacity: 1; transform: translateY(0) scale(1); } 50% { opacity: 0.5; transform: translateY(-50px) scale(1.1); filter: blur(2px); } 100% { opacity: 0; transform: translateY(-150px) scale(0.8); filter: blur(10px); } }
+        body { background-color: #1A1A2E; color: #FFD369; font-family: 'Pretendard', sans-serif; -webkit-font-smoothing: antialiased; margin: 0; overflow-x: hidden; }
+        .master-formula { font-size: 0.9rem; opacity: 0.6; margin: 1.5rem 0; letter-spacing: 0.05em; line-height: 1.6; text-align: center; }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 211, 105, 0.1); border-radius: 16px; position: relative; overflow: hidden; transition: all 0.3s; }
+        .s-button { position: fixed; bottom: 24px; right: 24px; border: 1px solid rgba(255, 211, 105, 0.4); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 300; cursor: pointer; z-index: 1000; }
+        .btn-amber { border: 1px solid #FFD369; color: #FFD369; position: relative; z-index: 10; cursor: pointer; transition: transform 0.2s; }
+        .btn-fill { position: absolute; top: 0; left: 0; height: 100%; background: rgba(255, 211, 105, 0.15); transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); z-index: -1; }
+        .ghost-send { animation: ghostMove 1.5s forwards ease-in; pointer-events: none; }
+        @keyframes ghostMove { 0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); } 100% { opacity: 0; transform: translateY(-200px) scale(1.2); filter: blur(20px); } }
+        .progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: #FFD369; transition: width 0.3s; z-index: 2000; }
     </style>
 </head>
 <body>
@@ -26,10 +26,8 @@
 
     <script type="text/babel">
         const { useState, useEffect } = React;
-        const { motion, AnimatePresence } = FramerMotion;
 
         const questions = [
-            // F1. 환경 수용도 (E_env)
             { id: 1, cat: "E_env", q: "낯선 곳에서 당신의 마음이 가장 먼저 머무는 온도는 어느 쪽인가요?", opts: ["정신이 맑아지는 시원하고 쾌적한 공기", "긴장이 사르르 녹는 포근하고 따뜻한 온기"] },
             { id: 2, cat: "E_env", q: "어스름한 저녁, 당신을 가장 안심시키는 빛은 어떤 모습인가요?", opts: ["주변을 선명하게 비추는 투명한 빛", "그늘진 곳을 부드럽게 감싸는 은은한 조명"] },
             { id: 3, cat: "E_env", q: "공간을 채우는 소리에 대해 당신의 마음은 어떻게 반응하나요?", opts: ["작은 소음도 하나의 신호처럼 선명하게 들린다", "주변의 소리들을 풍경처럼 자연스럽게 흘려보낸다"] },
@@ -38,8 +36,6 @@
             { id: 10, cat: "E_env", q: "가구의 모서리나 물건의 배치에 대해 당신은 얼마나 민감한 편인가요?", opts: ["모든 것이 제자리에 있을 때 깊은 안도를 느낀다", "조금 흐트러져 있어도 그 나름의 자연스러움을 즐긴다"] },
             { id: 15, cat: "E_env", q: "몸에 닿는 옷감의 감촉이 당신의 기분에 얼마나 영향을 주나요?", opts: ["까슬하거나 부드러운 감촉이 하루의 컨디션을 결정한다", "감촉보다는 옷이 주는 전체적인 분위기에 집중한다"] },
             { id: 19, cat: "E_env", q: "좁고 아늑한 다락방과 넓고 탁 트인 광장 중, 지금 당신이 숨 쉬고 싶은 곳은?", opts: ["나를 안전하게 감싸주는 작고 밀폐된 공간", "막힘없이 시야가 확보되는 시원한 공간"] },
-
-            // F2. 정서 에너가틱 (P_time)
             { id: 4, cat: "P_time", q: "누구에게도 방해받지 않는 당신만의 시간, 가장 선호하는 휴식의 깊이는?", opts: ["아무 생각 없이 감각을 잠재우는 완전한 정적", "좋아하는 것에 몰입하며 에너지를 채우는 활동"] },
             { id: 5, cat: "P_time", q: "오후 5시 15분, 오늘 하루가 유독 길었다면 당신이 가장 먼저 찾는 것은?", opts: ["말수를 줄이고 혼자만의 고요에 침잠하기", "가벼운 대화나 산책으로 분위기를 환기하기"] },
             { id: 7, cat: "P_time", q: "대화 중 찾아온 짧은 정적을 마주할 때, 당신의 마음은 어떠한가요?", opts: ["그 고요함 속에서 상대의 숨결을 느끼며 기다린다", "어색함을 채우기 위해 다정한 말을 먼저 건넨다"] },
@@ -47,8 +43,6 @@
             { id: 14, cat: "P_time", q: "이른 아침의 햇살과 늦은 밤의 달빛 중, 당신의 영혼이 더 깨어나는 시간은?", opts: ["새로운 시작의 활기가 느껴지는 이른 새벽", "모두가 잠든 뒤 깊은 사유가 가능한 늦은 밤"] },
             { id: 22, cat: "P_time", q: "갑작스러운 약속 취소로 생긴 자유시간, 당신의 첫 기분은?", opts: ["기다렸다는 듯 찾아온 혼자만의 여유가 반갑다", "함께하기로 했던 설렘이 사라져 조금 허전하다"] },
             { id: 27, cat: "P_time", q: "함께 있는 사람이 각자의 일에 몰두해 있다면, 당신은 어떻게 느끼나요?", opts: ["따로 또 같이 있는 평온한 신뢰를 느낀다", "함께 있음에도 느껴지는 거리감에 조금 외롭다"] },
-
-            // F3. 자아 방어 기제 (Shadow)
             { id: 11, cat: "Shadow", q: "정해진 계획이 예기치 않게 바뀌었을 때, 당신의 내면은 어떻게 반응하나요?", opts: ["질서가 흐트러지는 것에 대해 미세한 불안을 느낀다", "바뀐 상황이 가져올 새로운 우연을 즐기려 한다"] },
             { id: 12, cat: "Shadow", q: "무리한 부탁을 거절해야 하는 순간, 당신의 마음을 채우는 생각은?", opts: ["상대를 실망시킬까 봐 걱정되는 미안함", "나의 한계를 지키려는 합리적인 판단"] },
             { id: 13, cat: "Shadow", q: "사람들에게 보여주고 싶은 당신의 모습은 주로 어느 쪽에 가까운가요?", opts: ["어떤 상황에서도 평정심을 잃지 않는 단단함", "주변을 환하게 만드는 밝고 다정한 에너지"] },
@@ -57,13 +51,11 @@
             { id: 24, cat: "Shadow", q: "누군가 당신의 가치관을 비판한다면, 당신의 마음은 어디로 향하나요?", opts: ["스스로를 되짚어보며 깊은 생각에 잠기는 내면", "상대의 논리가 타당한지 분석해보는 외부"] },
             { id: 25, cat: "Shadow", q: "실수를 저질렀을 때, 당신을 가장 괴롭히는 마음은 무엇인가요?", opts: ["스스로에게 느끼는 실망감과 자책", "타인에게 끼친 영향에 대한 걱정"] },
             { id: 29, cat: "Shadow", q: "과거의 아쉬운 기억을 떠올릴 때, 당신은 보통 어떻게 대처하시나요?", opts: ["그때의 감정을 다시금 곱씹으며 의미를 찾는다", "지나간 일로 치부하며 현재에 집중하려 노력한다"] },
-
-            // F4. 관계 항상성 (S_root)
             { id: 17, cat: "S_root", q: "당신에게 '가장 나다워지는 순간'은 언제라고 느껴지나요?", opts: ["누구의 시선도 닿지 않는 혼자만의 온전한 자유", "내 진심을 알아주는 사람 곁에서 느끼는 편안함"] },
             { id: 20, cat: "S_root", q: "오랫동안 잊고 지낸 인연에게 연락이 온다면, 당신의 첫 마음은?", opts: ["반가움보다는 갑작스러운 변화에 조금 주춤하게 된다", "세월의 거리와 상관없이 반가운 마음이 먼저 앞선다"] },
             { id: 23, cat: "S_root", q: "소중한 사람과 의견이 어긋날 때, 당신이 가장 지키고 싶은 것은?", opts: ["서로의 다름을 인정하는 정직한 거리", "어떤 상황에서도 끊어지지 않는 정서적 연결"] },
             { id: 26, cat: "S_root", q: "당신이 생각하는 가장 이상적인 사랑의 형태는 무엇인가요?", opts: ["서로의 성장을 묵묵히 응원하는 든든한 동반자", "기쁨과 슬픔을 남김없이 공유하는 깊은 일체감"] },
-            { id: 28, cat: "S_root", q: "당신이 꿈규는 완벽한 성취의 순간은 무엇과 닮아있나요?", opts: ["나만의 독보적인 가치를 세상에 당당히 증명하는 것", "사랑하는 이들과 평온한 일상을 평화롭게 지켜내는 것"] },
+            { id: 28, cat: "S_root", q: "당신이 꿈꾸는 완벽한 성취의 순간은 무엇과 닮아있나요?", opts: ["나만의 독보적인 가치를 세상에 당당히 증명하는 것", "사랑하는 이들과 평온한 일상을 평화롭게 지켜내는 것"] },
             { id: 30, cat: "S_root", q: "마지막으로, 당신의 마음을 여는 가장 소중한 열쇠는 무엇인가요?", opts: ["나의 서툰 결까지 있는 그대로 수용해 주는 이해", "어떤 폭풍우 속에서도 흔들리지 않는 깊은 헌신"] },
             { id: 100, cat: "S_root", q: "모든 분석이 끝났습니다. 이제 당신의 진심을 마주할 준비가 되셨나요?", opts: ["조금은 떨리지만 설레는 마음으로 확인한다", "차분하고 담담하게 결과를 받아들인다"] }
         ];
@@ -77,13 +69,15 @@
             const [showS, setShowS] = useState(false);
             const [report, setReport] = useState(null);
 
-            // URL 파라미터 확인 (구매자용 자동 리포트 로직)
             useEffect(() => {
                 const params = new URLSearchParams(window.location.search);
-                const data = params.get('res');
-                if (data) {
-                    generateReport(data);
-                    setPage('report');
+                const res = params.get('res');
+                if (res) {
+                    try {
+                        const data = JSON.parse(atob(res));
+                        setReport(calculateReport(data));
+                        setPage('report');
+                    } catch(e) { setPage('main'); }
                 }
             }, []);
 
@@ -91,145 +85,137 @@
 
             const handleSelect = (val) => {
                 setSelection(val);
-                triggerVibrate(20);
+                triggerVibrate(25);
                 setTimeout(() => {
                     const nextIdx = idx + 1;
                     const newAnswers = { ...answers, [questions[idx].id]: val };
                     setAnswers(newAnswers);
                     setSelection(null);
-                    
                     if (nextIdx === 15) setPage('break');
                     else if (nextIdx < questions.length) setIdx(nextIdx);
-                    else finalize(newAnswers);
+                    else {
+                        setReport(btoa(JSON.stringify(newAnswers)));
+                        setPage('done');
+                    }
                 }, 600);
             };
 
-            const finalize = (finalAnswers) => {
-                const res = btoa(JSON.stringify(finalAnswers));
-                setReport(res);
-                setPage('done');
+            const calculateReport = (data) => {
+                let e = 0, s = 0;
+                Object.keys(data).forEach(id => {
+                    const q = questions.find(i => i.id == id);
+                    if(q && q.cat === 'E_env') e += data[id];
+                    if(q && q.cat === 'Shadow') s += data[id];
+                });
+                let t = ["왜 그래?", "갑자기", "예민해", "대충", "나중에 해", "그래서?", "피곤해"];
+                let a = ["고요", "질서", "충분히", "천천히", "함께하자", "괜찮아", "그랬구나"];
+                if (e > 4 && s > 4) {
+                    t = ["왜 그래?", "갑자기", "예민해", "시끄러워", "정신없어", "대충대충", "그만해"];
+                    a = ["고요", "질서", "충분히", "천천히", "기다려줄게", "평온함", "안정"];
+                }
+                return { triggers: t, anchors: a };
             };
 
             const sendResult = () => {
                 setIsGhosting(true);
-                triggerVibrate([50, 100, 50]);
+                triggerVibrate([40, 80, 40]);
                 setTimeout(() => {
-                    const shareUrl = `${window.location.origin}${window.location.pathname}?res=${report}`;
-                    navigator.clipboard.writeText(shareUrl);
-                    alert("진심이 담긴 리포트 링크가 복사되었습니다. 상대방에게 카톡으로 전달해 주세요.");
-                }, 1000);
-            };
-
-            const generateReport = (raw) => {
-                try {
-                    const data = JSON.parse(atob(raw));
-                    let e_env = 0, shadow = 0;
-                    Object.keys(data).forEach(id => {
-                        const q = questions.find(i => i.id == id);
-                        if(q.cat === 'E_env') e_env += data[id];
-                        if(q.cat === 'Shadow') shadow += data[id];
+                    const url = `${window.location.origin}${window.location.pathname}?res=${report}`;
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert("마음의 결이 담긴 리포트 링크가 복사되었습니다. 상대방에게 카톡으로 전달해 주세요.");
                     });
-                    
-                    let triggers = ["왜 그래?", "갑자기", "예민해", "대충", "나중에 해"];
-                    let anchors = ["고요", "질서", "충분히", "천천히", "함께하자"];
-                    if (e_env > 4 && shadow > 4) {
-                        triggers = ["왜 그래?", "갑자기", "예민해", "시끄러워", "정신없어"];
-                        anchors = ["고요", "질서", "충분히", "천천히", "기다려줄게"];
-                    }
-                    setReport({ triggers, anchors });
-                } catch(e) { setPage('main'); }
+                }, 1200);
             };
 
             return (
-                <div className="max-w-md mx-auto min-h-screen flex flex-col p-8 relative items-center justify-center">
-                    <AnimatePresence mode="wait">
-                        {page === 'main' && (
-                            <motion.div key="main" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="text-center">
-                                <h1 className="text-4xl font-extralight tracking-[0.5em] mb-4">SY-ON</h1>
-                                <div className="master-formula">
-                                    $$M = \oint_{t=0}^{24} \left( \frac{P_{time} \times E_{env}}{\sigma(Shadow)} \right) \cdot S_{root} \, dt$$
-                                </div>
-                                <p className="text-lg font-light mb-16 opacity-90 leading-relaxed">우리는 사랑하기 위해,<br/>서로의 진심을 밝힙니다.</p>
-                                <button onClick={() => setPage('quiz')} className="w-full py-5 btn-amber text-xs tracking-widest uppercase">분석 시작하기 (2분)</button>
-                            </motion.div>
-                        )}
+                <div className="max-w-md mx-auto min-h-screen flex flex-col p-8 items-center justify-center">
+                    <div className="progress-bar" style={{ width: `${(idx / questions.length) * 100}%` }}></div>
+                    
+                    {page === 'main' && (
+                        <div className="text-center w-full">
+                            <h1 className="text-4xl font-extralight tracking-[0.5em] mb-4">SY-ON</h1>
+                            <div className="master-formula">
+                                $$M = \oint_{t=0}^{24} \left( \frac{P_{time} \times E_{env}}{\sigma(Shadow)} \right) \cdot S_{root} \, dt$$
+                            </div>
+                            <p className="text-lg font-light mb-16 opacity-90 leading-relaxed">
+                                우리는 사랑하기 위해,<br/>서로의 진심을 밝힙니다. [cite: 2026-01-17]
+                            </p>
+                            <button onClick={() => setPage('quiz')} className="w-full py-5 btn-amber text-xs tracking-widest uppercase">분석 시작하기</button>
+                        </div>
+                    )}
 
-                        {page === 'quiz' && (
-                            <motion.div key="quiz" initial={{x:50, opacity:0}} animate={{x:0, opacity:1}} exit={{x:-50, opacity:0}} className="w-full">
-                                <div className="text-[10px] opacity-40 mb-10 tracking-[0.3em] flex justify-between">
-                                    <span>ANALYSIS {idx + 1} / 30</span>
-                                    {idx > 0 && <span onClick={() => setIdx(idx-1)} className="underline cursor-pointer">이전으로</span>}
-                                </div>
-                                <h2 className="text-xl font-light mb-14 leading-relaxed">{questions[idx].q}</h2>
-                                <div className="space-y-4">
-                                    {questions[idx].opts.map((opt, i) => (
-                                        <button key={i} onClick={() => handleSelect(i)} className="w-full p-6 text-left glass-panel text-sm btn-amber">
-                                            <div className="btn-fill" style={{ width: selection === i ? '100%' : '0%' }}></div>
-                                            {opt}
-                                        </button>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {page === 'break' && (
-                            <motion.div key="break" initial={{opacity:0}} animate={{opacity:1}} className="text-center">
-                                <h2 className="text-xl font-light mb-8 leading-relaxed">잠시 숨을 골라볼까요?</h2>
-                                <p className="text-sm opacity-70 mb-12 leading-relaxed">절반의 마음을 읽어냈습니다.<br/>조금 힘드시지는 않나요?<br/>다시 당신의 진심을 따라가 보겠습니다.</p>
-                                <button onClick={() => { setPage('quiz'); setIdx(15); }} className="w-full py-5 btn-amber text-xs tracking-widest">다시 가기</button>
-                            </motion.div>
-                        )}
-
-                        {page === 'done' && (
-                            <motion.div key="done" initial={{opacity:0}} animate={{opacity:1}} className="text-center w-full">
-                                <h2 className="text-2xl font-light mb-8">분석 완료</h2>
-                                <p className="text-sm opacity-70 leading-relaxed mb-16">
-                                    모든 결을 읽어내어 당신만의 리포트를 완성했습니다.<br/>상대방이 당신을 더 다정하게 안아줄 수 있도록<br/>이 결과를 전송해 주세요.
-                                </p>
-                                <div className={isGhosting ? 'ghost-send' : ''}>
-                                    <button onClick={sendResult} className="w-full py-6 bg-[#FFD369] text-[#1A1A2E] font-bold tracking-[0.2em] text-xs">
-                                        진심 전송하기
+                    {page === 'quiz' && (
+                        <div className="w-full">
+                            <div className="text-[10px] opacity-30 mb-10 tracking-[0.3em] flex justify-between">
+                                <span>{idx + 1} / 30</span>
+                                {idx > 0 && <span onClick={() => setIdx(idx-1)} className="underline cursor-pointer">이전 단계</span>}
+                            </div>
+                            <h2 className="text-xl font-light mb-14 leading-relaxed">{questions[idx].q} [cite: 2026-01-17]</h2>
+                            <div className="space-y-4">
+                                {questions[idx].opts.map((opt, i) => (
+                                    <button key={i} onClick={() => handleSelect(i)} className="w-full p-6 text-left glass-panel text-sm btn-amber overflow-hidden">
+                                        <div className="btn-fill" style={{ width: selection === i ? '100%' : '0%' }}></div>
+                                        {opt} [cite: 2026-01-17]
                                     </button>
-                                </div>
-                            </motion.div>
-                        )}
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-                        {page === 'report' && report && (
-                            <motion.div key="report" initial={{opacity:0}} animate={{opacity:1}} className="w-full">
-                                <h2 className="text-xl font-light mb-12 tracking-widest text-center uppercase opacity-50">Analysis Report</h2>
-                                <div className="glass-panel p-8 space-y-12">
-                                    <div className="text-center">
-                                        <h3 className="text-[10px] opacity-40 mb-6 tracking-widest uppercase">10대 금기어 (Triggers)</h3>
-                                        <div className="flex flex-wrap gap-2 justify-center">
-                                            {report.triggers.map((t, i) => <span key={i} className="px-3 py-2 bg-red-900/10 text-red-200 text-[11px] border border-red-900/20">{t}</span>)}
-                                        </div>
-                                    </div>
-                                    <div className="text-center border-t border-white/5 pt-10">
-                                        <h3 className="text-[10px] opacity-40 mb-6 tracking-widest uppercase">10대 안식어 (Anchors)</h3>
-                                        <div className="flex flex-wrap gap-2 justify-center">
-                                            {report.anchors.map((a, i) => <span key={i} className="px-3 py-2 bg-green-900/10 text-green-200 text-[11px] border border-green-900/20">{a}</span>)}
-                                        </div>
+                    {page === 'break' && (
+                        <div className="text-center w-full">
+                            <h2 className="text-xl font-light mb-8">잠시 숨을 골라볼까요? [cite: 2026-01-17]</h2>
+                            <p className="text-sm opacity-70 mb-12 leading-relaxed">
+                                절반의 마음을 읽어냈습니다. 조금 힘드시지는 않나요?<br/>다시 당신의 진심을 따라가 보겠습니다. [cite: 2026-01-17]
+                            </p>
+                            <button onClick={() => { setIdx(15); setPage('quiz'); }} className="w-full py-5 btn-amber text-xs tracking-widest uppercase">다시 가기 [cite: 2026-01-17]</button>
+                        </div>
+                    )}
+
+                    {page === 'done' && (
+                        <div className="text-center w-full">
+                            <h2 className="text-2xl font-light mb-8">분석 완료 [cite: 2026-01-17]</h2>
+                            <p className="text-sm opacity-70 leading-relaxed mb-20 px-4">
+                                931해 가지의 마음의 결을 모두 읽어냈습니다.<br/>상대방이 당신을 더 다정하게 안아줄 수 있도록<br/>이 결과를 전송해 주세요. [cite: 2026-01-17]
+                            </p>
+                            <div className={isGhosting ? 'ghost-send' : ''}>
+                                <button onClick={sendResult} className="w-full py-6 bg-[#FFD369] text-[#1A1A2E] font-bold text-xs tracking-[0.2em]">
+                                    진심 전송하기 [cite: 2026-01-17]
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {page === 'report' && report && (
+                        <div className="w-full">
+                            <h2 className="text-xs tracking-[0.5em] mb-12 text-center opacity-30 uppercase font-light tracking-widest">Analysis Result</h2>
+                            <div className="glass-panel p-8 space-y-12">
+                                <div className="text-center">
+                                    <p className="text-[10px] opacity-40 mb-6 tracking-widest uppercase">10대 금기어 (Triggers) [cite: 2026-01-17]</p>
+                                    <div className="flex flex-wrap gap-2 justify-center">
+                                        {report.triggers.map((t, i) => <span key={i} className="px-3 py-2 bg-red-900/10 text-red-200 text-[11px] border border-red-900/20">{t}</span>)}
                                     </div>
                                 </div>
-                                <button onClick={() => window.location.href = window.location.origin + window.location.pathname} className="w-full mt-12 text-[10px] opacity-30 underline text-center">처음으로</button>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                                <div className="text-center border-t border-white/5 pt-10">
+                                    <p className="text-[10px] opacity-40 mb-6 tracking-widest uppercase">10대 안식어 (Anchors) [cite: 2026-01-17]</p>
+                                    <div className="flex flex-wrap gap-2 justify-center">
+                                        {report.anchors.map((a, i) => <span key={i} className="px-3 py-2 bg-green-900/10 text-green-200 text-[11px] border border-green-900/20">{a}</span>)}
+                                    </div>
+                                </div>
+                            </div>
+                            <button onClick={() => window.location.search = ""} className="w-full mt-12 text-[10px] opacity-20 underline text-center">처음으로 돌아가기</button>
+                        </div>
+                    )}
 
-                    <div className="s-button" onClick={() => { triggerVibrate([10, 20]); setShowS(!showS); }}>S</div>
+                    <div className="s-button" onClick={() => setShowS(!showS)}>S</div>
                     {showS && (
-                        <div className="fixed inset-0 bg-[#1A1A2E] z-[2000] p-10 overflow-y-auto">
+                        <div className="fixed inset-0 bg-[#1A1A2E] z-[2000] p-10 overflow-y-auto text-[11px] leading-loose opacity-70 font-light">
                             <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-4">
-                                <span className="text-[10px] tracking-widest opacity-50">SYSTEM DATA</span>
-                                <span onClick={() => setShowS(false)} className="text-[10px] cursor-pointer">CLOSE</span>
+                                <span className="tracking-widest">SYSTEM METHODOLOGY</span>
+                                <span onClick={() => setShowS(false)} className="cursor-pointer">CLOSE</span>
                             </div>
-                            <div className="text-[11px] leading-loose opacity-60 font-light space-y-6">
-                                <p><strong>지표 1. 환경 수용 계수 (E_env):</strong> 8개 문항의 신경 전도 반응성을 토대로 외부 자극 임계치를 측정합니다.</p>
-                                <p><strong>지표 2. 정서 에너지 주기 (P_time):</strong> 시간심리학 기반의 서캐디언 리듬과 정서적 각성 주기를 연산합니다.</p>
-                                <p><strong>지표 3. 자아 엔트로피 (σ_Shadow):</strong> 페르소나와 무의식 사이의 마찰 수치를 공식의 분모값으로 산출합니다.</p>
-                                <p><strong>지표 4. 관계 항상성 (S_root):</strong> 애착 이론 모델을 통해 정서적 안전기지의 유지력을 가중치로 부여합니다.</p>
-                                <p>모든 데이터는 3차원 행렬 연산을 통해 931해(Sextillion) 가지의 경우의 수로 처리되어 리포트를 구성합니다.</p>
-                            </div>
+                            <p>본 시스템은 의장님의 마스터 공식을 기반으로 외부 환경 수용도(E_env), 정서 각성 주기(P_time), 무의식적 방어 기제(Shadow), 관계 안정성(S_root)을 교차 분석합니다. [cite: 2026-01-17]</p>
+                            <p>총 931해(Sextillion) 가지의 정서적 시나리오 연산을 통해 상대의 영혼을 안정시키는 안식어와 정서적 마찰을 일으키는 금기어를 도출합니다. [cite: 2026-01-17]</p>
                         </div>
                     )}
                 </div>
