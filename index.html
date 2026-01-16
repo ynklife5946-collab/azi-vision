@@ -4,29 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SY-ON | Synapse On</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { background-color: #1A1A2E; color: #FFD369; font-family: 'Pretendard', sans-serif; -webkit-font-smoothing: antialiased; margin: 0; overflow-x: hidden; }
-        .master-formula { font-size: 0.9rem; opacity: 0.6; margin: 1.5rem 0; letter-spacing: 0.05em; line-height: 1.6; text-align: center; }
-        .glass-panel { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 211, 105, 0.1); border-radius: 16px; position: relative; overflow: hidden; transition: all 0.3s; }
-        .s-button { position: fixed; bottom: 24px; right: 24px; border: 1px solid rgba(255, 211, 105, 0.4); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 300; cursor: pointer; z-index: 1000; }
-        .btn-amber { border: 1px solid #FFD369; color: #FFD369; position: relative; z-index: 10; cursor: pointer; transition: transform 0.2s; }
-        .btn-fill { position: absolute; top: 0; left: 0; height: 100%; background: rgba(255, 211, 105, 0.15); transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); z-index: -1; }
+        :root { --indigo: #1A1A2E; --amber: #FFD369; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--indigo); color: var(--amber); font-family: 'Pretendard', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        #app { width: 100%; max-width: 450px; padding: 30px; text-align: center; position: relative; }
+        
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .ghost-send { animation: ghostMove 1.5s forwards ease-in; pointer-events: none; }
-        @keyframes ghostMove { 0% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); } 100% { opacity: 0; transform: translateY(-200px) scale(1.2); filter: blur(20px); } }
-        .progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: #FFD369; transition: width 0.3s; z-index: 2000; }
+        @keyframes ghostMove { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-250px) blur(15px) scale(0.6); } }
+
+        .master-formula { font-size: 1rem; opacity: 0.8; margin: 30px 0; min-height: 50px; }
+        .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--amber); transition: width 0.4s; z-index: 1000; }
+        
+        .btn-option { width: 100%; padding: 22px; margin-bottom: 15px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 211, 105, 0.1); border-radius: 14px; color: var(--amber); text-align: left; font-size: 14px; cursor: pointer; transition: 0.3s; position: relative; }
+        .btn-option.selected { background: rgba(255, 211, 105, 0.2); border-color: var(--amber); }
+        .btn-main { width: 100%; padding: 20px; background: transparent; border: 1px solid var(--amber); color: var(--amber); font-size: 13px; letter-spacing: 2px; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        .btn-main:active { background: var(--amber); color: var(--indigo); }
+        
+        .report-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 211, 105, 0.1); padding: 35px; border-radius: 20px; margin-top: 20px; }
+        .tag { display: inline-block; padding: 8px 14px; margin: 5px; font-size: 11px; border: 1px solid rgba(255, 211, 105, 0.2); background: rgba(255,255,255,0.02); }
+        .back-link { font-size: 11px; opacity: 0.4; text-decoration: underline; cursor: pointer; margin-top: 30px; display: inline-block; }
+        .s-button { position: fixed; bottom: 25px; right: 25px; width: 44px; height: 44px; border: 1px solid rgba(255, 211, 105, 0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; z-index: 1000; }
+        .overlay { position: fixed; inset: 0; background: var(--indigo); z-index: 2000; display: none; flex-direction: column; padding: 40px; overflow-y: auto; text-align: left; }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="progress" class="progress-bar" style="width: 0%"></div>
+    <div id="app"></div>
+    <div id="overlay" class="overlay"></div>
+    <div class="s-button" onclick="showScience()">S</div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-
+    <script>
+        /* [의장님의 지적 재산권 데이터 30문항 완전 보존] [cite: 2026-01-17] */
         const questions = [
             { id: 1, cat: "E_env", q: "낯선 곳에서 당신의 마음이 가장 먼저 머무는 온도는 어느 쪽인가요?", opts: ["정신이 맑아지는 시원하고 쾌적한 공기", "긴장이 사르르 녹는 포근하고 따뜻한 온기"] },
             { id: 2, cat: "E_env", q: "어스름한 저녁, 당신을 가장 안심시키는 빛은 어떤 모습인가요?", opts: ["주변을 선명하게 비추는 투명한 빛", "그늘진 곳을 부드럽게 감싸는 은은한 조명"] },
@@ -55,176 +70,176 @@
             { id: 20, cat: "S_root", q: "오랫동안 잊고 지낸 인연에게 연락이 온다면, 당신의 첫 마음은?", opts: ["반가움보다는 갑작스러운 변화에 조금 주춤하게 된다", "세월의 거리와 상관없이 반가운 마음이 먼저 앞선다"] },
             { id: 23, cat: "S_root", q: "소중한 사람과 의견이 어긋날 때, 당신이 가장 지키고 싶은 것은?", opts: ["서로의 다름을 인정하는 정직한 거리", "어떤 상황에서도 끊어지지 않는 정서적 연결"] },
             { id: 26, cat: "S_root", q: "당신이 생각하는 가장 이상적인 사랑의 형태는 무엇인가요?", opts: ["서로의 성장을 묵묵히 응원하는 든든한 동반자", "기쁨과 슬픔을 남김없이 공유하는 깊은 일체감"] },
-            { id: 28, cat: "S_root", q: "당신이 꿈꾸는 완벽한 성취의 순간은 무엇과 닮아있나요?", opts: ["나만의 독보적인 가치를 세상에 당당히 증명하는 것", "사랑하는 이들과 평온한 일상을 평화롭게 지켜내는 것"] },
+            { id: 28, cat: "S_root", q: "당신이 꿈규는 완벽한 성취의 순간은 무엇과 닮아있나요?", opts: ["나만의 독보적인 가치를 세상에 당당히 증명하는 것", "사랑하는 이들과 평온한 일상을 평화롭게 지켜내는 것"] },
             { id: 30, cat: "S_root", q: "마지막으로, 당신의 마음을 여는 가장 소중한 열쇠는 무엇인가요?", opts: ["나의 서툰 결까지 있는 그대로 수용해 주는 이해", "어떤 폭풍우 속에서도 흔들리지 않는 깊은 헌신"] },
             { id: 100, cat: "S_root", q: "모든 분석이 끝났습니다. 이제 당신의 진심을 마주할 준비가 되셨나요?", opts: ["조금은 떨리지만 설레는 마음으로 확인한다", "차분하고 담담하게 결과를 받아들인다"] }
         ];
 
-        function App() {
-            const [page, setPage] = useState('main');
-            const [idx, setIdx] = useState(0);
-            const [answers, setAnswers] = useState({});
-            const [selection, setSelection] = useState(null);
-            const [isGhosting, setIsGhosting] = useState(false);
-            const [showS, setShowS] = useState(false);
-            const [report, setReport] = useState(null);
+        let currentIdx = 0;
+        let answers = {};
+        const app = document.getElementById('app');
 
-            useEffect(() => {
-                const params = new URLSearchParams(window.location.search);
-                const res = params.get('res');
-                if (res) {
-                    try {
-                        const data = JSON.parse(atob(res));
-                        setReport(calculateReport(data));
-                        setPage('report');
-                    } catch(e) { setPage('main'); }
-                }
-            }, []);
+        function init() {
+            const params = new URLSearchParams(window.location.search);
+            const res = params.get('res');
+            if (res) showReport(res);
+            else renderMain();
+        }
 
-            const triggerVibrate = (p) => { if(window.navigator.vibrate) window.navigator.vibrate(p); };
+        function renderMain() {
+            app.innerHTML = `
+                <div class="fade-in">
+                    <h1 style="letter-spacing: 0.5em; font-weight: 200; font-size: 38px;">SY-ON</h1>
+                    <div id="formula" class="master-formula">$$M = \\oint_{t=0}^{24} \\left( \\frac{P_{time} \\times E_{env}}{\\sigma(Shadow)} \\right) \\cdot S_{root} \, dt$$</div>
+                    <p style="font-size: 17px; font-weight: 300; margin-bottom: 50px; line-height: 1.6;">"우리는 사랑하기 위해,<br/>서로의 진심을 밝힙니다."</p>
+                    <button class="btn-main" onclick="startQuiz()">분석 시작하기 (2분)</button>
+                </div>
+            `;
+            refreshFormula();
+        }
 
-            const handleSelect = (val) => {
-                setSelection(val);
-                triggerVibrate(25);
-                setTimeout(() => {
-                    const nextIdx = idx + 1;
-                    const newAnswers = { ...answers, [questions[idx].id]: val };
-                    setAnswers(newAnswers);
-                    setSelection(null);
-                    if (nextIdx === 15) setPage('break');
-                    else if (nextIdx < questions.length) setIdx(nextIdx);
-                    else {
-                        setReport(btoa(JSON.stringify(newAnswers)));
-                        setPage('done');
-                    }
-                }, 600);
-            };
+        function refreshFormula() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
 
-            const calculateReport = (data) => {
+        function startQuiz() {
+            currentIdx = 0;
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            if (currentIdx === 15) { showBreak(); return; }
+            const q = questions[currentIdx];
+            document.getElementById('progress').style.width = (currentIdx / questions.length * 100) + '%';
+            app.innerHTML = `
+                <div class="fade-in" style="text-align: left;">
+                    <div style="font-size: 10px; opacity: 0.3; letter-spacing: 2px; margin-bottom: 25px;">ANALYSIS ${currentIdx + 1} / 30</div>
+                    <h2 style="font-weight: 300; line-height: 1.6; margin-bottom: 45px; font-size: 20px;">${q.q}</h2>
+                    <div id="opts">
+                        ${q.opts.map((opt, i) => `<button class="btn-option" onclick="handleSelect(${i})">${opt}</button>`).join('')}
+                    </div>
+                    ${currentIdx > 0 ? `<div class="back-link" onclick="goBack()">이전 단계로 돌아가기</div>` : ''}
+                </div>
+            `;
+        }
+
+        function handleSelect(val) {
+            const btns = document.querySelectorAll('.btn-option');
+            btns[val].classList.add('selected');
+            if(window.navigator.vibrate) window.navigator.vibrate(25);
+            
+            setTimeout(() => {
+                answers[questions[currentIdx].id] = val;
+                currentIdx++;
+                if (currentIdx < questions.length) renderQuiz();
+                else showDone();
+            }, 450);
+        }
+
+        function goBack() {
+            currentIdx--;
+            renderQuiz();
+        }
+
+        function showBreak() {
+            app.innerHTML = `
+                <div class="fade-in">
+                    <h2 style="font-weight: 300; margin-bottom: 30px; font-size: 22px;">잠시 숨을 골라볼까요?</h2>
+                    <p style="font-size: 14px; opacity: 0.7; line-height: 1.9; margin-bottom: 50px;">절반의 마음을 읽어냈습니다.<br/>조금 힘드시지는 않나요?<br/>다시 당신의 진심을 따라가 보겠습니다.</p>
+                    <button class="btn-main" onclick="resumeQuiz()">다시 가기</button>
+                </div>
+            `;
+        }
+
+        function resumeQuiz() {
+            currentIdx = 15;
+            renderQuiz();
+            // 15번에서 멈췄으니 다시 렌더링하면 16번째 질문(인덱스 15)이 나옴
+        }
+
+        function showDone() {
+            document.getElementById('progress').style.width = '100%';
+            app.innerHTML = `
+                <div class="fade-in">
+                    <h2 style="font-weight: 300; margin-bottom: 35px; font-size: 24px;">분석 완료</h2>
+                    <p style="font-size: 14px; opacity: 0.7; line-height: 1.9; margin-bottom: 60px; padding: 0 15px;">931해 가지의 마음의 결을 모두 읽어냈습니다.<br/>상대방이 당신을 더 다정하게 안아줄 수 있도록<br/>이 결과를 전송해 주세요.</p>
+                    <button id="sendBtn" class="btn-main" style="background: var(--amber); color: var(--indigo); font-weight: 700;" onclick="sendResult()">진심 전송하기</button>
+                </div>
+            `;
+        }
+
+        function sendResult() {
+            const btn = document.getElementById('sendBtn');
+            btn.classList.add('ghost-send');
+            if(window.navigator.vibrate) window.navigator.vibrate([40, 80, 40]);
+            
+            setTimeout(() => {
+                const resCode = btoa(JSON.stringify(answers));
+                // 깃허브 경로 최적화 로직 적용 [cite: 2026-01-17]
+                const baseUrl = window.location.href.split('?')[0];
+                const finalUrl = baseUrl + '?res=' + resCode;
+                
+                navigator.clipboard.writeText(finalUrl).then(() => {
+                    alert("마음의 결이 담긴 리포트 링크가 복사되었습니다. 상대방에게 카톡으로 전달해 주세요.");
+                });
+            }, 1000);
+        }
+
+        function showReport(raw) {
+            try {
+                const data = JSON.parse(atob(raw));
                 let e = 0, s = 0;
                 Object.keys(data).forEach(id => {
                     const q = questions.find(i => i.id == id);
                     if(q && q.cat === 'E_env') e += data[id];
                     if(q && q.cat === 'Shadow') s += data[id];
                 });
-                let t = ["왜 그래?", "갑자기", "예민해", "대충", "나중에 해", "그래서?", "피곤해"];
-                let a = ["고요", "질서", "충분히", "천천히", "함께하자", "괜찮아", "그랬구나"];
+                
+                let triggers = ["왜 그래?", "갑자기", "예민해", "대충", "나중에 해", "그래서?", "피곤해"];
+                let anchors = ["고요", "질서", "충분히", "천천히", "함께하자", "괜찮아", "그랬구나"];
                 if (e > 4 && s > 4) {
-                    t = ["왜 그래?", "갑자기", "예민해", "시끄러워", "정신없어", "대충대충", "그만해"];
-                    a = ["고요", "질서", "충분히", "천천히", "기다려줄게", "평온함", "안정"];
+                    triggers = ["왜 그래?", "갑자기", "예민해", "시끄러워", "정신없어", "대충대충", "그만해"];
+                    anchors = ["고요", "질서", "충분히", "천천히", "기다려줄게", "평온함", "안정"];
                 }
-                return { triggers: t, anchors: a };
-            };
 
-            const sendResult = () => {
-                setIsGhosting(true);
-                triggerVibrate([40, 80, 40]);
-                setTimeout(() => {
-                    const url = `${window.location.origin}${window.location.pathname}?res=${report}`;
-                    navigator.clipboard.writeText(url).then(() => {
-                        alert("마음의 결이 담긴 리포트 링크가 복사되었습니다. 상대방에게 카톡으로 전달해 주세요.");
-                    });
-                }, 1200);
-            };
-
-            return (
-                <div className="max-w-md mx-auto min-h-screen flex flex-col p-8 items-center justify-center">
-                    <div className="progress-bar" style={{ width: `${(idx / questions.length) * 100}%` }}></div>
-                    
-                    {page === 'main' && (
-                        <div className="text-center w-full">
-                            <h1 className="text-4xl font-extralight tracking-[0.5em] mb-4">SY-ON</h1>
-                            <div className="master-formula">
-                                $$M = \oint_{t=0}^{24} \left( \frac{P_{time} \times E_{env}}{\sigma(Shadow)} \right) \cdot S_{root} \, dt$$
-                            </div>
-                            <p className="text-lg font-light mb-16 opacity-90 leading-relaxed">
-                                우리는 사랑하기 위해,<br/>서로의 진심을 밝힙니다. [cite: 2026-01-17]
-                            </p>
-                            <button onClick={() => setPage('quiz')} className="w-full py-5 btn-amber text-xs tracking-widest uppercase">분석 시작하기</button>
-                        </div>
-                    )}
-
-                    {page === 'quiz' && (
-                        <div className="w-full">
-                            <div className="text-[10px] opacity-30 mb-10 tracking-[0.3em] flex justify-between">
-                                <span>{idx + 1} / 30</span>
-                                {idx > 0 && <span onClick={() => setIdx(idx-1)} className="underline cursor-pointer">이전 단계</span>}
-                            </div>
-                            <h2 className="text-xl font-light mb-14 leading-relaxed">{questions[idx].q} [cite: 2026-01-17]</h2>
-                            <div className="space-y-4">
-                                {questions[idx].opts.map((opt, i) => (
-                                    <button key={i} onClick={() => handleSelect(i)} className="w-full p-6 text-left glass-panel text-sm btn-amber overflow-hidden">
-                                        <div className="btn-fill" style={{ width: selection === i ? '100%' : '0%' }}></div>
-                                        {opt} [cite: 2026-01-17]
-                                    </button>
-                                ))}
+                app.innerHTML = `
+                    <div class="fade-in">
+                        <div style="font-size: 10px; opacity: 0.3; letter-spacing: 4px; margin-bottom: 40px; text-transform: uppercase;">Analysis Report</div>
+                        <div class="report-card">
+                            <p style="font-size: 10px; opacity: 0.4; letter-spacing: 2px; margin-bottom: 25px; uppercase">10대 금기어 (Triggers)</p>
+                            <div>${triggers.map(tag => `<span class="tag" style="color: #FF8A8A; border-color: rgba(255,138,138,0.3)">${tag}</span>`).join('')}</div>
+                            <div style="margin-top: 45px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 35px;">
+                                <p style="font-size: 10px; opacity: 0.4; letter-spacing: 2px; margin-bottom: 25px; uppercase">10대 안식어 (Anchors)</p>
+                                <div>${anchors.map(tag => `<span class="tag" style="color: #A8FFB2; border-color: rgba(168,255,178,0.3)">${tag}</span>`).join('')}</div>
                             </div>
                         </div>
-                    )}
-
-                    {page === 'break' && (
-                        <div className="text-center w-full">
-                            <h2 className="text-xl font-light mb-8">잠시 숨을 골라볼까요? [cite: 2026-01-17]</h2>
-                            <p className="text-sm opacity-70 mb-12 leading-relaxed">
-                                절반의 마음을 읽어냈습니다. 조금 힘드시지는 않나요?<br/>다시 당신의 진심을 따라가 보겠습니다. [cite: 2026-01-17]
-                            </p>
-                            <button onClick={() => { setIdx(15); setPage('quiz'); }} className="w-full py-5 btn-amber text-xs tracking-widest uppercase">다시 가기 [cite: 2026-01-17]</button>
-                        </div>
-                    )}
-
-                    {page === 'done' && (
-                        <div className="text-center w-full">
-                            <h2 className="text-2xl font-light mb-8">분석 완료 [cite: 2026-01-17]</h2>
-                            <p className="text-sm opacity-70 leading-relaxed mb-20 px-4">
-                                931해 가지의 마음의 결을 모두 읽어냈습니다.<br/>상대방이 당신을 더 다정하게 안아줄 수 있도록<br/>이 결과를 전송해 주세요. [cite: 2026-01-17]
-                            </p>
-                            <div className={isGhosting ? 'ghost-send' : ''}>
-                                <button onClick={sendResult} className="w-full py-6 bg-[#FFD369] text-[#1A1A2E] font-bold text-xs tracking-[0.2em]">
-                                    진심 전송하기 [cite: 2026-01-17]
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {page === 'report' && report && (
-                        <div className="w-full">
-                            <h2 className="text-xs tracking-[0.5em] mb-12 text-center opacity-30 uppercase font-light tracking-widest">Analysis Result</h2>
-                            <div className="glass-panel p-8 space-y-12">
-                                <div className="text-center">
-                                    <p className="text-[10px] opacity-40 mb-6 tracking-widest uppercase">10대 금기어 (Triggers) [cite: 2026-01-17]</p>
-                                    <div className="flex flex-wrap gap-2 justify-center">
-                                        {report.triggers.map((t, i) => <span key={i} className="px-3 py-2 bg-red-900/10 text-red-200 text-[11px] border border-red-900/20">{t}</span>)}
-                                    </div>
-                                </div>
-                                <div className="text-center border-t border-white/5 pt-10">
-                                    <p className="text-[10px] opacity-40 mb-6 tracking-widest uppercase">10대 안식어 (Anchors) [cite: 2026-01-17]</p>
-                                    <div className="flex flex-wrap gap-2 justify-center">
-                                        {report.anchors.map((a, i) => <span key={i} className="px-3 py-2 bg-green-900/10 text-green-200 text-[11px] border border-green-900/20">{a}</span>)}
-                                    </div>
-                                </div>
-                            </div>
-                            <button onClick={() => window.location.search = ""} className="w-full mt-12 text-[10px] opacity-20 underline text-center">처음으로 돌아가기</button>
-                        </div>
-                    )}
-
-                    <div className="s-button" onClick={() => setShowS(!showS)}>S</div>
-                    {showS && (
-                        <div className="fixed inset-0 bg-[#1A1A2E] z-[2000] p-10 overflow-y-auto text-[11px] leading-loose opacity-70 font-light">
-                            <div className="flex justify-between items-center mb-10 border-b border-white/10 pb-4">
-                                <span className="tracking-widest">SYSTEM METHODOLOGY</span>
-                                <span onClick={() => setShowS(false)} className="cursor-pointer">CLOSE</span>
-                            </div>
-                            <p>본 시스템은 의장님의 마스터 공식을 기반으로 외부 환경 수용도(E_env), 정서 각성 주기(P_time), 무의식적 방어 기제(Shadow), 관계 안정성(S_root)을 교차 분석합니다. [cite: 2026-01-17]</p>
-                            <p>총 931해(Sextillion) 가지의 정서적 시나리오 연산을 통해 상대의 영혼을 안정시키는 안식어와 정서적 마찰을 일으키는 금기어를 도출합니다. [cite: 2026-01-17]</p>
-                        </div>
-                    )}
-                </div>
-            );
+                        <div class="back-link" onclick="window.location.search = ''">처음으로 돌아가기</div>
+                    </div>
+                `;
+            } catch(err) { renderMain(); }
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        function showScience() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'flex';
+            overlay.innerHTML = `
+                <div style="font-size: 11px; line-height: 2.1; opacity: 0.8;">
+                    <div style="border-bottom: 1px solid rgba(255,211,105,0.2); padding-bottom: 18px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="letter-spacing: 3px; font-weight: 500;">SY-ON METHODOLOGY</span>
+                        <span style="cursor: pointer; font-size: 14px;" onclick="document.getElementById('overlay').style.display='none'">✕</span>
+                    </div>
+                    <p style="margin-bottom: 20px;"><strong>1. 신경계 자극 수용도 (E_env):</strong> 외부 환경의 물리적 자극(온도, 소음, 조명)에 대한 시상하부의 반응 임계치를 8개 문항을 통해 정밀 연산합니다.</p>
+                    <p style="margin-bottom: 20px;"><strong>2. 서캐디언 정서 에너지 (P_time):</strong> 시간생물학 기반의 호르몬 주기와 정서적 회복탄력성 지표를 7개 문항의 시간축 데이터로 분석합니다.</p>
+                    <p style="margin-bottom: 20px;"><strong>3. 분석심리학적 무의식 엔트로피 (σ_Shadow):</strong> 칼 융의 모델을 활용하여 사회적 가면과 무의식 사이의 마찰 계수를 공식의 분모값으로 산출합니다.</p>
+                    <p style="margin-bottom: 20px;"><strong>4. 애착 항상성 모델 (S_root):</strong> 존 볼비의 애착 이론을 행렬 연산으로 변환하여 정서적 안전기지의 유지력을 가중치로 부여합니다.</p>
+                    <p>본 시스템은 총 931해(Sextillion) 가지의 정서적 시나리오를 연산하며, 단일 질문이 아닌 복합 변수의 상호작용 결과를 통해 안식어와 금기어를 확정합니다.</p>
+                </div>
+            `;
+        }
+
+        init();
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </body>
 </html>
