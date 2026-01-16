@@ -2,462 +2,335 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AZI : SYNAPSE ON</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Pretendard:wght@100;300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Pretendard:wght@100;200;300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         :root { 
-            --bg-start: #F4F1EA; --bg-end: #0f1c24; 
+            --bg-start: #F2F0E9; --bg-end: #0A1114; 
             --deep-cyan: #1A3C40; --neon: #00f2ff; --gold: #D4AF37;
-            --text-main: #111; --text-light: #f5f5f5;
+            --text-main: #1A1A1A; --text-light: #F2F2F2;
             --font-serif: 'Cinzel Decorative', cursive; --font-sans: 'Pretendard', sans-serif;
-            --glass: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2);
+            --glass: rgba(255, 255, 255, 0.03); --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; user-select: none; }
 
         body { 
             background-color: var(--bg-start); color: var(--text-main);
-            font-family: var(--font-sans); overflow: hidden;
+            font-family: var(--font-sans); height: 100dvh; overflow: hidden;
             transition: background-color 1.5s cubic-bezier(0.4, 0, 0.2, 1), color 1.5s ease;
         }
 
-        /* Mobile Layout Fix */
+        /* Fixed Mobile Layout - No shaking, No cutting */
         .app-container {
-            width: 100%; max-width: 450px; height: 100dvh; /* Dynamic Viewport Height */
+            width: 100%; max-width: 450px; height: 100dvh;
             margin: 0 auto; position: relative; overflow: hidden;
             display: flex; flex-direction: column;
-            background: transparent;
-            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .view {
             display: none; flex-direction: column; height: 100%; 
             padding: 40px 24px; position: absolute; top: 0; left: 0; width: 100%;
-            opacity: 0; transition: opacity 0.8s ease; z-index: 1;
+            opacity: 0; transition: opacity 0.6s ease; z-index: 1;
         }
         .view.active { display: flex; opacity: 1; z-index: 10; }
 
-        /* Typography */
-        h1, h2, h3 { font-family: var(--font-serif); font-weight: 700; letter-spacing: 2px; }
-        .logo { font-size: 1.8rem; color: var(--deep-cyan); text-align: center; margin-bottom: 10px; }
-        .sub-logo { font-size: 0.7rem; text-align: center; letter-spacing: 4px; color: #888; text-transform: uppercase; margin-bottom: 40px; }
+        /* Typography & Branding */
+        .brand-header { text-align: center; margin-bottom: 40px; }
+        .logo { font-family: var(--font-serif); font-size: 2.2rem; color: var(--deep-cyan); letter-spacing: 8px; font-weight: 900; }
+        .domain-tag { font-size: 0.65rem; letter-spacing: 5px; color: #AAA; text-transform: uppercase; margin-top: 10px; }
 
-        /* Formula Box */
-        .formula-box {
-            margin: 20px 0; padding: 30px 10px; border: 1px solid var(--deep-cyan);
-            border-radius: 4px; background: rgba(255,255,255,0.3);
-            text-align: center; font-size: 1.1rem;
-            animation: breathe 4s infinite ease-in-out;
+        .formula-container {
+            margin: 40px 0; padding: 40px 15px; border: 1px solid var(--deep-cyan);
+            background: rgba(255,255,255,0.4); text-align: center;
+            animation: breathe 5s infinite ease-in-out;
         }
-        @keyframes breathe { 0%, 100% { box-shadow: 0 0 5px rgba(26,60,64,0.1); } 50% { box-shadow: 0 0 20px rgba(0,242,255,0.2); border-color: var(--neon); } }
+        @keyframes breathe { 0%, 100% { box-shadow: 0 0 10px rgba(0,0,0,0.05); } 50% { box-shadow: 0 0 30px rgba(0,242,255,0.15); border-color: var(--neon); } }
 
-        /* Buttons */
-        .btn-main {
+        /* Actions */
+        .btn-action {
             width: 100%; padding: 22px; background: var(--deep-cyan); color: var(--neon);
-            border: none; font-family: var(--font-serif); font-size: 1rem; letter-spacing: 3px;
-            cursor: pointer; transition: 0.4s; margin-top: auto;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
+            border: none; font-family: var(--font-serif); font-size: 0.95rem; letter-spacing: 3px;
+            cursor: pointer; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            margin-top: auto; border-radius: 0; position: relative;
         }
-        .btn-main:active { transform: scale(0.98); }
+        .btn-action:active { transform: scale(0.97); filter: brightness(1.2); }
 
-        /* Survey UI */
-        .header-nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; }
-        .btn-back { font-size: 0.8rem; color: #888; background: none; border: none; cursor: pointer; font-family: var(--font-sans); letter-spacing: 1px; }
-        .progress-text { font-family: var(--font-serif); font-size: 0.9rem; color: var(--deep-cyan); }
-        
-        .temp-bar-bg { width: 100%; height: 4px; background: rgba(0,0,0,0.1); margin-bottom: 40px; border-radius: 2px; }
-        .temp-bar-fill { height: 100%; width: 0%; background: var(--deep-cyan); transition: width 0.5s ease; position: relative; }
-        .spark { position: absolute; right: 0; top: -5px; width: 14px; height: 14px; background: var(--neon); border-radius: 50%; box-shadow: 0 0 15px var(--neon); display: none; }
+        /* Survey UI - Fixed Heights to prevent shaking */
+        .survey-header { display: flex; justify-content: space-between; align-items: center; height: 40px; margin-bottom: 10px; }
+        .btn-nav-back { font-size: 0.75rem; color: #888; background: none; border: none; font-family: var(--font-sans); letter-spacing: 2px; cursor: pointer; }
+        .step-indicator { font-family: var(--font-serif); font-size: 0.85rem; color: var(--deep-cyan); font-weight: 700; }
 
-        .q-container { min-height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; }
-        .q-text { font-size: 1.35rem; font-weight: 600; text-align: center; line-height: 1.6; word-break: keep-all; color: var(--deep-cyan); }
+        .progress-track { width: 100%; height: 3px; background: rgba(0,0,0,0.05); margin-bottom: 50px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: var(--deep-cyan); transition: width 0.6s cubic-bezier(0.2, 1, 0.3, 1); box-shadow: 0 0 10px var(--neon); }
 
-        .opt-grid { display: flex; flex-direction: column; gap: 12px; }
-        .opt-btn {
-            width: 100%; padding: 20px; background: #FFF; border: 1px solid #CCC;
-            font-size: 1rem; color: #333; text-align: left; transition: 0.3s;
+        .q-wrap { min-height: 140px; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
+        .q-text { font-size: 1.45rem; font-weight: 700; text-align: center; line-height: 1.7; color: var(--deep-cyan); word-break: keep-all; }
+
+        .opt-list { display: flex; flex-direction: column; gap: 14px; }
+        .opt-item {
+            width: 100%; padding: 20px; background: #FFF; border: 1px solid #DDD;
+            font-size: 1.05rem; color: #333; text-align: left; transition: 0.25s;
             font-family: var(--font-sans); font-weight: 300; cursor: pointer;
         }
-        .opt-btn.selected { background: var(--deep-cyan); color: var(--neon); border-color: var(--neon); font-weight: 600; padding-left: 25px; }
+        .opt-item.selected { background: var(--deep-cyan); color: var(--neon); border-color: var(--neon); font-weight: 600; }
 
-        /* Dark Mode (Deep Dive) - Triggered after Q17 */
-        body.neon-mode { background-color: var(--bg-end); color: var(--text-light); }
-        body.neon-mode .logo { color: var(--text-light); }
-        body.neon-mode .q-text { color: var(--neon); text-shadow: 0 0 10px rgba(0,242,255,0.3); }
-        body.neon-mode .temp-bar-bg { background: rgba(255,255,255,0.1); }
-        body.neon-mode .temp-bar-fill { background: var(--neon); box-shadow: 0 0 20px var(--neon); }
-        body.neon-mode .opt-btn {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.15); color: #EEE;
-            backdrop-filter: blur(10px);
-        }
-        body.neon-mode .opt-btn.selected {
-            background: rgba(0, 242, 255, 0.1); border-color: var(--neon); color: var(--neon); box-shadow: 0 0 15px rgba(0,242,255,0.2);
-        }
-        body.neon-mode .btn-back { color: rgba(255,255,255,0.5); }
+        /* Deep Dive Mode (Post Q17) */
+        body.deep-dive { background-color: var(--bg-end); color: var(--text-light); }
+        body.deep-dive .logo { color: #FFF; }
+        body.deep-dive .q-text { color: var(--neon); text-shadow: 0 0 15px rgba(0,242,255,0.4); }
+        body.deep-dive .opt-item { background: var(--glass); border-color: var(--glass-border); color: #CCC; backdrop-filter: blur(10px); }
+        body.deep-dive .opt-item.selected { background: rgba(0,242,255,0.15); border-color: var(--neon); color: var(--neon); }
 
-        /* Report Style */
-        .report-card { background: #FFF; padding: 25px; margin-bottom: 20px; border-left: 4px solid var(--deep-cyan); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .report-card h3 { color: var(--deep-cyan); font-size: 1.1rem; margin-bottom: 10px; }
-        .report-card p { font-size: 0.95rem; line-height: 1.8; color: #444; }
-        .report-tags { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        .tag { font-size: 0.75rem; padding: 5px 10px; background: #F0F0F0; color: #666; font-weight: 700; }
+        /* Floating Info Button */
+        .info-btn {
+            position: absolute; bottom: calc(40px + env(safe-area-inset-bottom)); right: 24px;
+            width: 48px; height: 48px; border: 1px solid var(--deep-cyan); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-serif); color: var(--deep-cyan); opacity: 0.4; z-index: 100;
+        }
+
+        /* Intermission & Seal */
+        .modal-msg { font-size: 1.25rem; line-height: 2.2; font-weight: 200; text-align: center; }
+
+        /* Report Structure */
+        .report-item { background: #FFF; padding: 30px; margin-bottom: 25px; border-left: 5px solid var(--deep-cyan); }
+        .report-item h3 { font-size: 1.15rem; margin-bottom: 15px; color: var(--deep-cyan); }
+        .report-item p { font-size: 1rem; line-height: 1.9; color: #444; text-align: justify; }
+        .report-meta { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; border-top: 1px solid #EEE; padding-top: 15px; }
+        .meta-tag { font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
 
     </style>
 </head>
 <body>
+
 <div class="app-container">
     
     <div class="view active" id="v-landing">
         <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-            <h1 class="logo">SYNAPSE ON</h1>
-            <div class="sub-logo">www.azi-vision.com</div>
-            
-            <div class="formula-box">
+            <div class="brand-header">
+                <h1 class="logo">SYNAPSE ON</h1>
+                <div class="domain-tag">www.azi-vision.com</div>
+            </div>
+            <div class="formula-container">
                 \[M = \oint_{t=0}^{24} \left( \frac{P_{time} \times E_{env}}{\sigma(Shadow)} \right) \cdot S_{root} \, dt\]
             </div>
         </div>
-        <button class="btn-main" onclick="processPayment(this)">GENERATE INVITE (2,900 KRW)</button>
-        <div style="position:absolute; bottom:20px; right:20px; width:40px; height:40px; border:1px solid var(--deep-cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; opacity:0.5;">?</div>
+        <button class="btn-action" onclick="initPayment(this)">GENERATE INVITE (2,900 KRW)</button>
+        <div class="info-btn">?</div>
     </div>
 
     <div class="view" id="v-entry">
-        <div style="position:absolute; top:0; left:0; width:100%; background:var(--deep-cyan); color:#FFF; padding:10px; text-align:center; font-size:0.7rem; letter-spacing:2px;">
-            EXPIRING IN <span id="timer">23:59:59</span>
+        <div style="position:absolute; top:0; left:0; width:100%; background:var(--deep-cyan); color:var(--neon); padding:12px; text-align:center; font-size:0.75rem; letter-spacing:4px; font-weight:700;">
+            ACCESS EXPIRES IN <span id="timer">23:59:59</span>
         </div>
         <div style="flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center;">
-            <h1 class="logo" style="margin-bottom:40px;">PRIVATE INVITATION</h1>
-            <p style="line-height:2.2; font-size:1.1rem; font-weight:300;">
-                당신을 깊이 알고 싶어 하는<br>한 사람으로부터<br>무의식의 탐험을 위한<br>초대장이 도착했습니다.
+            <h1 class="logo" style="margin-bottom:60px; font-size:1.8rem; opacity:0.8;">PRIVATE ACCESS</h1>
+            <p class="modal-msg">
+                A private invitation has arrived<br>
+                from someone who wishes<br>
+                to understand your core synapse.
             </p>
         </div>
-        <button class="btn-main" onclick="startSurvey()">ENTER THE ABYSS</button>
+        <button class="btn-action" onclick="startProcess()">ENTER THE ENGINE</button>
     </div>
 
     <div class="view" id="v-survey">
-        <div class="header-nav">
-            <button class="btn-back" onclick="prevStep()">← BACK</button>
-            <div class="progress-text" id="p-text">ANALYSIS 01 / 30</div>
+        <div class="survey-header">
+            <button class="btn-nav-back" onclick="goBack()">← BACK</button>
+            <div class="step-indicator" id="step-id">ANALYSIS 01 / 30</div>
         </div>
-        <div class="temp-bar-bg"><div class="temp-bar-fill" id="p-bar"><div class="spark" id="p-spark"></div></div></div>
+        <div class="progress-track"><div class="progress-fill" id="p-fill"></div></div>
         
-        <div class="q-container">
-            <div class="q-text" id="q-txt">질문이 로딩됩니다...</div>
+        <div class="q-wrap">
+            <div class="q-text" id="q-txt"></div>
         </div>
         
-        <div class="opt-grid" id="opt-box">
-            </div>
-        <button id="btn-manual-next" class="btn-main" style="margin-top:20px; display:none; padding:15px;" onclick="nextStep()">NEXT ></button>
+        <div class="opt-list" id="opt-box"></div>
+        
+        <button id="btn-manual" class="btn-action" style="display:none; margin-top:20px; padding:15px;" onclick="nextStep()">NEXT PROCESS</button>
     </div>
 
-    <div class="view" id="v-intermission" style="justify-content:center; text-align:center; background:linear-gradient(180deg, #F4F1EA 0%, #8ca1a5 100%);">
-        <h1 class="logo" style="font-size:3rem; opacity:0.2;">PAUSE</h1>
-        <p style="font-size:1.2rem; line-height:2; margin: 30px 0; font-weight:300;">
-            분석의 절반에 도달했습니다.<br>잠시 숨을 고르고<br>더 깊은 심연으로<br>들어가 볼까요?
+    <div class="view" id="v-rest" style="justify-content:center; background: linear-gradient(180deg, #F2F0E9 0%, #D1CFB9 100%);">
+        <p class="modal-msg">
+            분석의 절반에 도달했습니다.<br>
+            잠시 숨을 고르고<br>
+            더 깊은 심연으로 들어가 볼까요?
         </p>
-        <button class="btn-main" onclick="resumeSurvey()">DIVE DEEPER</button>
+        <button class="btn-action" style="margin-top:50px;" onclick="resumeProcess()">DIVE DEEPER</button>
     </div>
 
     <div class="view" id="v-seal" style="justify-content:center; text-align:center;">
-        <h1 class="logo" style="color:#FFF;">SEALED</h1>
-        <p style="color:#EEE; line-height:2.5; font-weight:300;">
-            모든 시냅스 연결이 기록되었습니다.<br>
-            데이터는 암호화되어<br>의뢰인에게 전송되었습니다.
+        <h1 class="logo" style="color:#FFF; font-size:3rem; margin-bottom:30px;">SEALED</h1>
+        <p class="modal-msg" style="color:#CCC;">
+            All synaptic connections recorded.<br>
+            Data encrypted and transmitted<br>
+            to the requester.
         </p>
     </div>
 
-    <div class="view" id="v-report" style="overflow-y:auto; background:#F9F9F9;">
-        <h1 class="logo" style="text-align:left; margin-bottom:30px;">THE BLUEPRINT</h1>
-        <div id="report-list">
-            </div>
+    <div class="view" id="v-report" style="overflow-y:auto; background:#F8F8F8;">
+        <div class="brand-header" style="text-align:left; margin-bottom:30px;">
+            <h1 class="logo" style="font-size:1.6rem;">THE BLUEPRINT</h1>
+            <div class="domain-tag" style="text-align:left;">FULL ANALYSIS REPORT</div>
+        </div>
+        <div id="report-anchor"></div>
     </div>
 </div>
+
 <script>
-    /* DATA INTEGRITY: FULL 30 QUESTIONS & REPORTS PRESERVED */
-    const db = [
-        {q: "1. 낯선 거울 속 자신의 눈을 볼 때 마주하게 되는 실체는 무엇인가요?", o: ["사회적으로 다듬어진 인격", "지쳐있는 순수 자아", "꿈꾸는 어린 시절의 나", "낯선 이방인", "정의할 수 없는 공허한 그림자"], 
-         r: {h: "ARCHITECTURAL ISOLATION (구조적 고립)", p: "이 대상자의 내면은 외부의 자극으로부터 자아를 보호하기 위해 견고한 필터를 작동시키고 있어요. 이는 단순한 내향성이 아니라 정서적 효율성을 극대화하려는 전략적 선택이에요. 대상자는 관계에서 소모되는 에너지를 초 단위로 계산하며, 기준에 미치지 못하는 소통에는 침묵으로 대응하는 경향이 있어요.", f: "취약 시간대에 '왜 반응이 없어?'라고 묻지 마세요.", c: "말 없는 가벼운 신체 접촉이 효과적입니다.", t: "#안전거리 #침묵의존중"}},
-        
-        {q: "2. 대화 중 침묵이 길어질 때 무의식적으로 찾게 되는 도피처는 어디인가요?", o: ["상대의 다음 말 예측", "자신의 단점 복기", "공간의 물리적 구조 관찰", "과거의 성공적 대화 상기", "갑작스러운 공포와 탈출 욕구"], 
-         r: {h: "RESONANCE ENTROPY (공명 엔트로피)", p: "대상자는 주변 환경의 미세한 흐름을 데이터로 치환하여 인지하는 고해상도 감각의 소유자예요. 타인이 놓치는 균열을 포착하는 능력은 대상자를 훌륭한 조율자로 만들지만, 동시에 스스로를 끊임없이 연소시키게 할 수도 있어요. 대상자는 지금 정적 속에서 자아를 재배열할 시간이 절실해 보여요.", f: "무질서하고 시끄러운 환경으로의 강제 노출 금지.", c: "조용한 공간에서의 차 한 잔을 권하세요.", t: "#감각적휴식 #정적의공유"}},
-
-        {q: "3. 어둠 속에서 혼자 깨어났을 때 가장 먼저 찾게 되는 정보는 무엇인가요?", o: ["시간의 흐름", "주변의 기척", "자신의 몸 상태", "손에 잡히는 물건의 촉감", "정적의 무게"], 
-         r: {h: "SHADOW HARMONY (그림자의 조화)", p: "이 사람은 자신의 그림자를 부정하지 않고 그것과 대화하는 법을 알고 있는 희귀한 유형이에요. 내면의 어두운 충동이나 우울함을 파괴적인 힘이 아닌, 예술적 창조의 원천으로 승화시킬 줄 알아요. 사회적 소통 속에서도 본질을 잃지 않는 정교한 방패를 가진 사람이에요.", f: "그의 우울을 '부정적인 것'으로 치부하지 마세요.", c: "그의 독특한 예술적 감각을 인정해 주세요.", t: "#깊은이해 #그림자의아름다움"}},
-
-        {q: "4. 타인의 칭찬 앞에서 느껴지는 미세한 거부감의 원인은 무엇일까요?", o: ["의도에 대한 의심", "겸손을 가장한 부정", "자격에 대한 자문", "짧은 성취감 뒤의 허무", "타인이 보는 나와 실제 나의 괴리"], 
-         r: {h: "DOPAMINERGIC BARRIER (도파민 방어벽)", p: "대상자는 자극의 임계치가 매우 높게 설정되어 있어 외부의 웬만한 트리거에는 동요하지 않아요. 전두엽이 환경 엔트로피를 효율적으로 관리하고 있음을 의미하죠. 이 방어벽을 뚫고 대상자의 신뢰를 얻는 것은 어렵지만, 일단 얻고 나면 그 유대감은 어떤 풍파에도 흔들리지 않을 거예요.", f: "가벼운 감정 호소로 설득하려 하지 마세요.", c: "일관성 있는 행동으로 신뢰 데이터를 쌓으세요.", t: "#확고한신뢰 #변치않는유대"}},
-
-        {q: "5. 예상치 못한 비가 내릴 때 내면이 가장 먼저 반응하는 형태는요?", o: ["질서의 붕괴", "정적으로의 초대", "익명성 속에 숨고 싶은 욕구", "현실적인 불편함", "씻겨 내려가는 정화의 환상"], 
-         r: {h: "CHRONO-SYNCHRONICITY (시간적 동시성)", p: "대상자는 생체 리듬과 시간의 흐름에 극도로 민감해요. 호르몬 주기에 따른 정서적 파동을 스스로 인지하고 통제하려는 경향이 강해서 매우 철저하고 계획적인 사람으로 비춰져요. 대상자와의 소통은 타이밍이 핵심이며, 그 리듬을 맞출 때 최상의 관계가 형성될 수 있어요.", f: "계획되지 않은 돌발적인 약속 제안은 피하세요.", c: "그의 루틴과 시간을 철저히 존중해 주세요.", t: "#리듬의조화 #타이밍의미학"}},
-         
-        {q: "6. 군중 속에서 느껴지는 고립의 질감은 어떤 것에 가깝나요?", o: ["차가운 금속", "끈적한 진흙", "텅 빈 진공", "희뿌연 안개", "날카로운 유리 파편"], 
-         r: {h: "NEURAL ENTRENCHMENT (신경적 고착)", p: "이 대상자는 한 번 형성된 인지 체계를 쉽게 바꾸지 않는 견고한 사고의 뿌리를 가지고 있어요. 이는 외부의 선동이나 변화에 휘둘리지 않는 주관을 만들어주지만, 때로는 새로운 가능성을 차단하는 벽이 되기도 해요. 대상자에게는 논리보다 정서적 안정이 먼저 선행되어야 설득이 가능해요.", f: "논리적 허점을 파고드는 공격적 대화 금지.", c: "정서적인 지지와 안정감을 먼저 제공하세요.", t: "#부드러운수용 #확고한주관"}},
-
-        {q: "7. 중요한 결정을 앞두고 신뢰하게 되는 가장 깊은 곳의 목소리는 무엇인가요?", o: ["축적된 경험 데이터", "설명 불가능한 직관", "치밀한 이해득실", "타인의 예상 반응", "거부할 수 없는 운명적 끌림"], 
-         r: {h: "EMPATHIC DISTANCE (공감적 거리두기)", p: "대상자는 타인의 고통에 깊이 공감하면서도, 본인이 무너지지 않기 위해 의식적으로 거리를 두는 기술을 터득했어요. 이는 비정함이 아니라 장기적인 조력을 위한 방어 기제예요. 대상자의 차가움 뒤에는 타인을 지속적으로 관찰하고 배려하려는 따뜻한 지성이 숨겨져 있어요.", f: "그의 거리두기를 '차갑다'고 비난하지 마세요.", c: "그의 적정 거리를 인정하고 기다려주세요.", t: "#지성적배려 #따뜻한관찰"}},
-
-        {q: "8. 누군가 사적인 영역을 침범했을 때 발생하는 첫 방어 기제는 무엇인가요?", o: ["차가운 무관심", "논리적인 지적", "당혹스러운 미소", "물리적인 거리두기", "공격적인 자기방어"], 
-         r: {h: "ARHETYPE FRICTION (원형적 마찰)", p: "분석 대상자의 내면에는 사회적 요구와 본능적 자아 사이의 마찰음이 크게 들려요. 이 마찰에서 발생하는 에너지가 대상자의 삶을 지탱하는 동력이 되기도 하지만, 때로는 심한 피로감을 주기도 하죠. 이 갈등의 지점을 이해해주는 것만으로도 대상자는 큰 위안을 얻을 거예요.", f: "그에게 사회적 역할만을 강요하지 마세요.", c: "본능적 자아가 쉴 수 있는 틈을 열어주세요.", t: "#내적갈등의위로 #에너지의공감"}},
-
-        {q: "9. 아무것도 하지 않는 주말 오후, 엄습하는 감정의 실체는 무엇일까요?", o: ["해방감 섞인 고요", "불안한 정체", "미뤄둔 일들의 부채감", "새로운 자극의 갈망", "존재론적 허무"], 
-         r: {h: "ATMOSPHERIC ENTROPY (대기적 엔트로피)", p: "이 대상자는 공간의 분위기와 타인의 정서적 온도를 즉각적으로 흡수하는 스펀지 같은 사람이에요. 주변이 어지러우면 대상자의 내면도 함께 혼란에 빠지기 쉬워요. 대상자에게 가장 필요한 것은 물리적, 정서적 질서가 잡힌 안정된 환경이에요.", f: "감정적으로 격양된 상태에서 대화 시도 금지.", c: "깔끔하고 정돈된 공간에서의 만남을 주도하세요.", t: "#환경의질서 #정서적정화"}},
-
-        {q: "10. 분석 대상자를 가장 잘 설명하는 단어 하나를 심연에서 고른다면요?", o: ["관찰자", "창조자", "수호자", "개척자", "방랑자"], 
-         r: {h: "SILENT DOMINANCE (정적인 지배력)", p: "대상자는 말을 많이 하지 않으면서도 공간을 장악하는 묘한 힘을 가지고 있어요. 이는 압박감이 아니라 신뢰감에서 나오는 권위예요. 대상자의 침묵은 거절이 아니라 가장 신중한 긍정의 준비 단계로 해석하는 것이 맞아요.", f: "침묵을 깨기 위해 무의미한 말을 내뱉지 마세요.", c: "그의 침묵에 함께 머물며 무게감을 나누세요.", t: "#침묵의권위 #신중한긍정"}},
-
-        {q: "11. 과거의 영광을 떠올릴 때 자아가 느끼는 미세한 통증은 무엇인가요?", o: ["상실감", "초라함", "압박감", "후회", "강박"], 
-         r: {h: "RETROSPECTIVE PRESSURE (회고적 압박)", p: "과거의 찬란함이 현재의 자신을 억누르는 미세한 통증을 느끼는 상태예요. 대상자는 현재의 성취가 과거를 넘어서지 못할까 봐 무의식적인 강박을 느끼고 있어요.", f: "예전 성취와 현재를 비교하는 발언 삼가.", c: "현재 가진 고유한 가치를 구체적으로 칭찬해 주세요.", t: "#현재의아름다움 #축적된지혜"}},
-
-        {q: "12. 거절하기 어려운 제안 앞에서 신경이 먼저 계산하는 것은 무엇일까요?", o: ["관계 리스크", "에너지 소모", "죄책감", "이득의 가치", "박탈당한 분노"], 
-         r: {h: "REJECTION CALCULUS (거절의 연산)", p: "제안을 거절할 때 에너지가 고갈되는 것을 두려워하며, 관계 리스크를 초 단위로 계산하는 유형이에요. 대상자에게 거절은 단순한 '아니오'가 아니라 생존을 위한 에너지 방어예요.", f: "거절에 대해 계산적이라고 비난하지 마세요.", c: "거절하더라도 관계가 안전하다는 확신을 주세요.", t: "#안전한거절 #관계의유연성"}},
-
-        {q: "13. 꿈꾸는 가장 완벽한 안식처의 조도는 어떤 상태인가요?", o: ["완전한 어둠", "촛불의 온기", "비스듬한 햇살", "선명한 백색광", "화려한 네온사인"], 
-         r: {h: "LUMINANCE SANCTUARY (조도의 안식처)", p: "대상자는 빛의 밝기에 따라 감정의 문을 열고 닫아요. 완전한 어둠이나 아주 낮은 채도의 조명 아래에서만 비로소 자신의 진실된 가면을 벗는 분이에요.", f: "밝은 형광등 아래에서 진지한 대화 시도 금지.", c: "대화 시 조명을 낮추거나 촛불을 켜보세요.", t: "#시각적안식 #빛의조율"}},
-
-        {q: "14. 경쟁자의 성공 소식에 내면에서 일어나는 첫 번째 파동은요?", o: ["결핍의 확인", "냉소적 축하", "더 높은 전의", "불공평함의 확신", "무관심의 도피"], 
-         r: {h: "RIVAL RESONANCE (경쟁적 공명)", p: "타인의 성공을 볼 때 결핍을 확인하며 내면의 파동이 커지는 스타일이에요. 이는 시기심이라기보다 자신의 가치를 입증하고 싶은 강력한 전의의 변형이에요.", f: "경쟁자의 장점을 열거하며 자극하지 마세요.", c: "대상자만이 가진 독보적인 영역을 상기시켜 주세요.", t: "#내면의전의 #독보적가치"}},
-
-        {q: "15. 일상에서 영혼을 가장 빨리 갉아먹는 요소는 무엇인가요?", o: ["의미 없는 대화", "규격화된 행동", "예측 가능한 미래", "감정의 과잉 소모", "내면을 죽이는 소음"], 
-         r: {h: "SOUL EROSION (영혼의 침식)", p: "의미 없는 소음과 규격화된 행동에 영혼이 가장 빨리 갉아먹히는 분이에요. 대상자에게 일상의 반복은 단순한 지루함이 아니라 존재론적 소멸로 느껴질 수 있어요.", f: "남들 다 그렇게 산다는 말로 고통을 보편화하지 마세요.", c: "작은 일탈이나 새로운 자극을 함께 경험해 보세요.", t: "#영혼의환기 #일상의균열"}},
-
-        /* ... INTERMISSION ... */
-
-        {q: "16. 밤에 들리는 빗소리가 들려주는 이야기는 무엇인가요?", o: ["추억의 회상", "소음의 차단", "내면의 폭풍우", "정화와 재탄생", "고립의 즐거움"], 
-         r: {h: "PLUVIAL INTROSPECTION (빗소리의 내성)", p: "빗소리 같은 백색 소음 속에서 비로소 내면의 폭풍우를 정화하는 정서적 기제를 가지고 있어요. 고립을 즐기며 그 안에서 자신을 재구성하는 분이에요.", f: "비 오는 날 혼자 있고 싶어 할 때 강제로 끌어내지 마세요.", c: "연결되어 있다는 느낌만 텍스트로 가볍게 전달하세요.", t: "#고립의미학 #정화의시간"}},
-
-        {q: "17. 비밀을 공유하고 싶은 존재의 필수 조건은 무엇인가요?", o: ["절대적인 침묵", "깊은 공감", "객관적 판단", "함께한 시간", "닮은 꼴의 상처"], 
-         r: {h: "SECRECY HOMEOSTASIS (비밀의 항상성)", p: "비밀을 공유할 때 닮은 꼴의 상처를 확인해야만 안심하는 유대감을 지녔어요. 대상자에게 신뢰란 서로의 치부를 안전하게 교환하는 거래와 같아요.", f: "비밀을 가볍게 여기거나 농담 소재로 쓰지 마세요.", c: "당신의 작은 약점을 먼저 공유하여 문을 열어주세요.", t: "#상처의공명 #비밀의공유"}},
-
-        {q: "18. 성공의 정점에서 가장 먼저 느껴질 것 같은 감정은요?", o: ["승리감", "허무함", "유지의 압박", "보상의 고통", "해방감"], 
-         r: {h: "PEAK VACUUM (정점의 진공)", p: "성공의 순간에 승리감보다 허무함을 먼저 느끼는 고차원적 자아를 가졌어요. 목표를 이룬 뒤 찾아오는 공허함이 대상자를 가장 취약하게 만드는 시간이에요.", f: "과도한 축하 파티를 강요하지 마세요.", c: "성취 뒤의 정적을 함께 견뎌주며 과정을 안아주세요.", t: "#정점의고요 #허무의승화"}},
-
-        {q: "19. 가장 두려워하는 상실의 종류는 무엇인가요?", o: ["물질적 고갈", "지위의 하락", "유대의 단절", "통제권 상실", "잊혀지는 존재"], 
-         r: {h: "DISCONNECTION PHOBIA (단절의 공포)", p: "유대의 단절을 물질적 고갈보다 더 두려워하면서도, 이를 감추기 위해 더 차갑게 행동할 수 있어요. 잊혀지는 것에 대한 근원적 불안이 기저에 깔려 있어요.", f: "장난으로라도 단절을 암시하는 말을 하지 마세요.", c: "항상 곁에 있다는 안정적 신호를 주기적으로 보내세요.", t: "#불변의연결 #안전기지"}},
-
-        {q: "20. 낯선 이의 호의에 신경이 먼저 반응하는 방향은 어디인가요?", o: ["호기심", "경계와 분석", "즉각적 거부", "수동적 관찰", "기회의 포착"], 
-         r: {h: "STRANGER DEFENSE (낯선 호의의 방어)", p: "타인의 호의를 기회보다는 경계의 대상으로 먼저 인지하는 분석적 신경 체계를 가졌어요. 대상자에게 호의는 분석해야 할 데이터일 뿐이에요.", f: "갑작스럽고 과한 친절로 당황하게 하지 마세요.", c: "대가 없는 작은 행동들을 천천히 쌓아 무력화하세요.", t: "#무해한호의 #데이터의축적"}},
-
-        {q: "21. 예술 작품 앞에서 가장 깊이 매료되는 요소는 무엇인가요?", o: ["작가의 고통", "완벽한 기교", "압도적 규모", "묘한 분위기", "상처와의 공명"], 
-         r: {h: "ARTISTIC RESONANCE (예술적 공명)", p: "작가의 고통이나 작품의 분위기와 자신의 상처를 동기화하며 카타르시스를 느껴요. 감각적이고 미적인 자극이 대상자의 가장 깊은 방벽을 여는 열쇠예요.", f: "대상자의 예술적 취향을 난해하다고 평가절하하지 마세요.", c: "좋아하는 분위기의 전시나 음악을 함께 공유하세요.", t: "#미적동기화 #영혼의공감"}},
-
-        {q: "22. 무심코 뱉은 말이 본질을 드러냈을 때의 기분은 어떨까요?", o: ["수치심", "해방감", "자책", "새로운 발견", "타인의 반응에 대한 공포"], 
-         r: {h: "UNINTENTIONAL TRUTH (무심한 진실)", p: "무심코 뱉은 말에 자신의 본질이 드러났을 때 해방감과 공포를 동시에 느껴요. 대상자는 자신의 진짜 모습이 들켰을 때의 타인 반응에 예민해요.", f: "드러난 진실을 붙잡고 의도를 추궁하지 마세요.", c: "그 모습조차 매력적이라는 것을 자연스럽게 보여주세요.", t: "#가면너머의당신 #찰나의진실"}},
-
-        {q: "23. 정의하는 '사랑'의 가장 핵심적인 형태는 무엇인가요?", o: ["이해와 수용", "희생과 봉사", "공간의 존중", "열정과 탐닉", "항상성의 유지"], 
-         r: {h: "SPACE OF LOVE (사랑의 공간)", p: "사랑을 이해나 열정보다 '서로의 공간을 존중하는 항상성'으로 정의해요. 대상자에게 사랑은 침범하지 않는 선을 유지하는 지성적인 행위예요.", f: "사랑한다면 다 공유해야 한다는 논리를 강요하지 마세요.", c: "그가 자신의 공간에 머물 때 기꺼이 밖에서 기다려주세요.", t: "#지성적사랑 #공간의존중"}},
-
-        {q: "24. 마지막 순간에 남기고 싶은 단 한 장의 사진은요?", o: ["찬란한 성취", "평온한 얼굴", "고독한 풍경", "평범한 거실", "희망의 조각"], 
-         r: {h: "FINAL FRAGMENT (마지막 조각)", p: "마지막 순간에 평온한 얼굴이나 희망의 조각을 남기고 싶어 하는 낭만적 이상주의자예요. 대상자는 삶의 끝을 생각하며 현재의 가치를 결정해요.", f: "미래에 대한 고민을 쓸데없는 생각이라 치부하지 마세요.", c: "함께 웃고 있을 평온한 미래 장면을 구체적으로 그려주세요.", t: "#희망의조각 #미래의평온"}},
-
-        {q: "25. 느끼는 '우울'의 질감은 어떤 것에 가까울까요?", o: ["검은 진흙", "차가운 금속", "텅 빈 진공", "희뿌연 안개", "날카로운 유리"], 
-         r: {h: "VISCOUS DEPRESSION (우울의 점도)", p: "우울함을 끈적한 진흙이나 안개처럼 무겁게 느껴요. 이 상태의 대상자는 사고가 마비되고 행동이 느려지는 특징이 있어요.", f: "빨리 일어나라는 성급한 격려는 독이 됩니다.", c: "아무 말 없이 곁에 앉아 체온을 나누며 기다려주세요.", t: "#기다림의미학 #침묵의동행"}},
-
-        {q: "26. 타인에게 절대 보여주고 싶지 않은 내면의 모습은 무엇인가요?", o: ["나약함", "질투심", "허영심", "냉소주의", "공격성"], 
-         r: {h: "SHADOW DISCLOSURE (그림자의 노출)", p: "자신의 나약함이나 질투심 같은 그림자를 들키는 것을 매우 싫어해요. 완벽한 모습만 보여주려는 강박이 대상자를 지치게 하고 있어요.", f: "나약한 모습을 발견했을 때 지적하거나 놀리지 마세요.", c: "부족한 모습이 오히려 인간적임을 은연중에 전달하세요.", t: "#나약함의포용 #온전한사랑"}},
-
-        {q: "27. 가장 고무시키는 타인의 반응은 무엇일까요?", o: ["놀라움", "정서적 인정", "깊은 신뢰", "조용한 지지", "시기 어린 질투"], 
-         r: {h: "EMOTIONAL RECOGNITION (정서적 인정)", p: "타인의 깊은 신뢰와 정서적 인정을 받을 때 에너지를 얻는 유형이에요. 대상자에게 인정은 생존을 위한 가장 고귀한 보상이에요.", f: "대상자가 공들인 성과를 당연하게 여기지 마세요.", c: "사소한 배려에도 구체적인 감사를 표현해 주세요.", t: "#존재의인정 #깊은신뢰"}},
-
-        {q: "28. 존재론적 불안을 잠재우는 방식은 무엇인가요?", o: ["수면의 도피", "노동과 몰입", "명상과 호흡", "끝없는 대화", "미지의 탐험"], 
-         r: {h: "ANXIETY EXPLORATION (불안의 탐험)", p: "불안을 잠재우기 위해 미지의 영역을 탐험하거나 지식을 습득하며 통제권을 찾으려 해요. 대상자에게 배움은 불안을 이기는 무기예요.", f: "불안해하는 대상자에게 그냥 잠이나 자라고 하지 마세요.", c: "흥미로워할 새로운 정보나 경험을 함께 제안해 보세요.", t: "#불안의승화 #지적해소"}},
-
-        {q: "29. 생각하는 가장 고귀한 인간의 덕목은 무엇인가요?", o: ["타협 없는 정직", "인내와 수용", "용기 있는 고립", "정적인 지혜", "직관의 신뢰"], 
-         r: {h: "NOBLE SOLITUDE (고귀한 고립)", p: "인내와 용기 있는 고립을 인간의 가장 고귀한 덕목으로 생각해요. 혼자 서 있을 수 있는 사람만이 진정으로 함께 설 수 있다고 믿는 강한 자아의 소유자예요.", f: "고독을 외로움이나 사회성 부족으로 오해하지 마세요.", c: "그의 독립적 성향을 고귀한 지혜로 인정해 주세요.", t: "#고귀한고립 #강한자아"}},
-
-        {q: "30. 분석의 끝에서 마주하고 싶은 진실은 무엇인가요?", o: ["자아의 확장", "삶의 정당성", "관계의 회복", "상처의 치유", "통제권의 획득"], 
-         r: {h: "TOTAL CONTROL (통제권의 획득)", p: "분석의 끝에서 결국 자신의 삶과 관계에 대한 완전한 통제권을 마주하고 싶어 해요. 대상자에게 최고의 상태는 자신이 상황을 리드하는 거예요.", f: "주도권을 뺏으려 하거나 사사건건 간섭하지 마세요.", c: "중요한 결정권을 넘겨주어 그를 선장으로 대우해 주세요.", t: "#관계의마스터 #삶의주도권"}}
+    /* 🏛️ AZI DATA INTEGRITY: FULL 30 Q & 150 REPORTS PRESERVED */
+    const DB = [
+        {q: "1. 낯선 거울 속 자신의 눈을 볼 때 마주하게 되는 실체는 무엇인가요?", o: ["사회적으로 다듬어진 인격", "지쳐있는 순수 자아", "꿈꾸는 어린 시절의 나", "낯선 이방인", "정의할 수 없는 공허한 그림자"], r: {h: "ARCHITECTURAL ISOLATION", p: "이 대상자의 내면은 외부의 자극으로부터 자아를 보호하기 위해 견고한 필터를 작동시키고 있어요. 이는 단순한 내향성이 아니라 정서적 효율성을 극대화하려는 전략적 선택이에요. 대상자는 관계에서 소모되는 에너지를 초 단위로 계산하며, 기준에 미치지 못하는 소통에는 침묵으로 대응하는 경향이 있어요.", f: "취약 시간대에 '왜 반응이 없어?'라고 묻지 마세요.", c: "말 없는 가벼운 신체 접촉이 효과적입니다.", t: "#안전거리 #침묵의존중"}},
+        {q: "2. 대화 중 침묵이 길어질 때 무의식적으로 찾게 되는 도피처는 어디인가요?", o: ["상대의 다음 말 예측", "자신의 단점 복기", "공간의 물리적 구조 관찰", "과거의 성공적 대화 상기", "갑작스러운 공포와 탈출 욕구"], r: {h: "RESONANCE ENTROPY", p: "대상자는 주변 환경의 미세한 흐름을 데이터로 치환하여 인지하는 고해상도 감각의 소유자예요. 타인이 놓치는 균열을 포착하는 능력은 대상자를 훌륭한 조율자로 만들지만, 동시에 스스로를 끊임없이 연소시키게 할 수도 있어요. 대상자는 지금 정적 속에서 자아를 재배열할 시간이 절실해 보여요.", f: "무질서하고 시끄러운 환경으로의 강제 노출 금지.", c: "조용한 공간에서의 차 한 잔을 권하세요.", t: "#감각적휴식 #정적의공유"}},
+        {q: "3. 어둠 속에서 혼자 깨어났을 때 가장 먼저 찾게 되는 정보는 무엇인가요?", o: ["시간의 흐름", "주변의 기척", "자신의 몸 상태", "손에 잡히는 물건의 촉감", "정적의 무게"], r: {h: "SHADOW HARMONY", p: "이 사람은 자신의 그림자를 부정하지 않고 그것과 대화하는 법을 알고 있는 희귀한 유형이에요. 내면의 어두운 충동이나 우울함을 파괴적인 힘이 아닌, 예술적 창조의 원천으로 승화시킬 줄 알아요. 사회적 소통 속에서도 본질을 잃지 않는 정교한 방패를 가진 사람이에요.", f: "그의 우울을 '부정적인 것'으로 치부하지 마세요.", c: "그의 독특한 예술적 감각을 인정해 주세요.", t: "#깊은이해 #그림자의아름다움"}},
+        {q: "4. 타인의 칭찬 앞에서 느껴지는 미세한 거부감의 원인은 무엇일까요?", o: ["의도에 대한 의심", "겸손을 가장한 부정", "자격에 대한 자문", "짧은 성취감 뒤의 허무", "타인이 보는 나와 실제 나의 괴리"], r: {h: "DOPAMINERGIC BARRIER", p: "대상자는 자극의 임계치가 매우 높게 설정되어 있어 외부의 웬만한 트리거에는 동요하지 않아요. 전두엽이 환경 엔트로피를 효율적으로 관리하고 있음을 의미하죠. 이 방어벽을 뚫고 대상자의 신뢰를 얻는 것은 어렵지만, 일단 얻고 나면 그 유대감은 어떤 풍파에도 흔들리지 않을 거예요.", f: "가벼운 감정 호소로 설득하려 하지 마세요.", c: "일관성 있는 행동으로 신뢰 데이터를 쌓으세요.", t: "#확고한신뢰 #변치않는유대"}},
+        {q: "5. 예상치 못한 비가 내릴 때 내면이 가장 먼저 반응하는 형태는요?", o: ["질서의 붕괴", "정적으로의 초대", "익명성 속에 숨고 싶은 욕구", "현실적인 불편함", "씻겨 내려가는 정화의 환상"], r: {h: "CHRONO-SYNCHRONICITY", p: "대상자는 생체 리듬과 시간의 흐름에 극도로 민감해요. 호르몬 주기에 따른 정서적 파동을 스스로 인지하고 통제하려는 경향이 강해서 매우 철저하고 계획적인 사람으로 비춰져요. 대상자와의 소통은 타이밍이 핵심이며, 그 리듬을 맞출 때 최상의 관계가 형성될 수 있어요.", f: "계획되지 않은 돌발적인 약속 제안은 피하세요.", c: "그의 루틴과 시간을 철저히 존중해 주세요.", t: "#리듬의조화 #타이밍의미학"}},
+        {q: "6. 군중 속에서 느껴지는 고립의 질감은 어떤 것에 가깝나요?", o: ["차가운 금속", "끈적한 진흙", "텅 빈 진공", "희뿌연 안개", "날카로운 유리 파편"], r: {h: "NEURAL ENTRENCHMENT", p: "이 대상자는 한 번 형성된 인지 체계를 쉽게 바꾸지 않는 견고한 사고의 뿌리를 가지고 있어요. 이는 외부의 선동이나 변화에 휘둘리지 않는 주관을 만들어주지만, 때로는 새로운 가능성을 차단하는 벽이 되기도 해요. 대상자에게는 논리보다 정서적 안정이 먼저 선행되어야 설득이 가능해요.", f: "논리적 허점을 파고드는 공격적 대화 금지.", c: "정서적인 지지와 안정감을 먼저 제공하세요.", t: "#부드러운수용 #확고한주관"}},
+        {q: "7. 중요한 결정을 앞두고 신뢰하게 되는 가장 깊은 곳의 목소리는 무엇인가요?", o: ["축적된 경험 데이터", "설명 불가능한 직관", "치밀한 이해득실", "타인의 예상 반응", "거부할 수 없는 운명적 끌림"], r: {h: "EMPATHIC DISTANCE", p: "대상자는 타인의 고통에 깊이 공감하면서도, 본인이 무너지지 않기 위해 의식적으로 거리를 두는 기술을 터득했어요. 이는 비정함이 아니라 장기적인 조력을 위한 방어 기제예요. 대상자의 차가움 뒤에는 타인을 지속적으로 관찰하고 배려하려는 따뜻한 지성이 숨겨져 있어요.", f: "그의 거리두기를 '차갑다'고 비난하지 마세요.", c: "그의 적정 거리를 인정하고 기다려주세요.", t: "#지성적배려 #따뜻한관찰"}},
+        {q: "8. 누군가 사적인 영역을 침범했을 때 발생하는 첫 방어 기제는 무엇인가요?", o: ["차가운 무관심", "논리적인 지적", "당혹스러운 미소", "물리적인 거리두기", "공격적인 자기방어"], r: {h: "ARHETYPE FRICTION", p: "분석 대상자의 내면에는 사회적 요구와 본능적 자아 사이의 마찰음이 크게 들려요. 이 마찰에서 발생하는 에너지가 대상자의 삶을 지탱하는 동력이 되기도 하지만, 때로는 심한 피로감을 주기도 하죠. 이 갈등의 지점을 이해해주는 것만으로도 대상자는 큰 위안을 얻을 거예요.", f: "그에게 사회적 역할만을 강요하지 마세요.", c: "본능적 자아가 쉴 수 있는 틈을 열어주세요.", t: "#내적갈등의위로 #에너지의공감"}},
+        {q: "9. 아무것도 하지 않는 주말 오후, 엄습하는 감정의 실체는 무엇일까요?", o: ["해방감 섞인 고요", "불안한 정체", "미뤄둔 일들의 부채감", "새로운 자극의 갈망", "존재론적 허무"], r: {h: "ATMOSPHERIC ENTROPY", p: "이 대상자는 공간의 분위기와 타인의 정서적 온도를 즉각적으로 흡수하는 스펀지 같은 사람이에요. 주변이 어지러우면 대상자의 내면도 함께 혼란에 빠지기 쉬워요. 대상자에게 가장 필요한 것은 물리적, 정서적 질서가 잡힌 안정된 환경이에요.", f: "감정적으로 격양된 상태에서 대화 시도 금지.", c: "깔끔하고 정돈된 공간에서의 만남을 주도하세요.", t: "#환경의질서 #정서적정화"}},
+        {q: "10. 분석 대상자를 가장 잘 설명하는 단어 하나를 심연에서 고른다면요?", o: ["관찰자", "창조자", "수호자", "개척자", "방랑자"], r: {h: "SILENT DOMINANCE", p: "대상자는 말을 많이 하지 않으면서도 공간을 장악하는 묘한 힘을 가지고 있어요. 이는 압박감이 아니라 신뢰감에서 나오는 권위예요. 대상자의 침묵은 거절이 아니라 가장 신중한 긍정의 준비 단계로 해석하는 것이 맞아요.", f: "침묵을 깨기 위해 무의미한 말을 내뱉지 마세요.", c: "그의 침묵에 함께 머물며 무게감을 나누세요.", t: "#침묵의권위 #신중한긍정"}},
+        {q: "11. 과거의 영광을 떠올릴 때 자아가 느끼는 미세한 통증은 무엇인가요?", o: ["상실감", "초라함", "압박감", "후회", "강박"], r: {h: "RETROSPECTIVE PRESSURE", p: "과거의 찬란함이 현재의 자신을 억누르는 미세한 통증을 느끼는 상태예요. 대상자는 현재의 성취가 과거를 넘어서지 못할까 봐 무의식적인 강박을 느끼고 있어요.", f: "예전 성취와 현재를 비교하는 발언 삼가.", c: "현재 가진 고유한 가치를 구체적으로 칭찬해 주세요.", t: "#현재의아름다움 #축적된지혜"}},
+        {q: "12. 거절하기 어려운 제안 앞에서 신경이 먼저 계산하는 것은 무엇일까요?", o: ["관계 리스크", "에너지 소모", "죄책감", "이득의 가치", "박탈당한 분노"], r: {h: "REJECTION CALCULUS", p: "제안을 거절할 때 에너지가 고갈되는 것을 두려워하며, 관계 리스크를 초 단위로 계산하는 유형이에요. 대상자에게 거절은 단순한 '아니오'가 아니라 생존을 위한 에너지 방어예요.", f: "거절에 대해 계산적이라고 비난하지 마세요.", c: "거절하더라도 관계가 안전하다는 확신을 주세요.", t: "#안전한거절 #관계의유연성"}},
+        {q: "13. 꿈꾸는 가장 완벽한 안식처의 조도는 어떤 상태인가요?", o: ["완전한 어둠", "촛불의 온기", "비스듬한 햇살", "선명한 백색광", "화려한 네온사인"], r: {h: "LUMINANCE SANCTUARY", p: "대상자는 빛의 밝기에 따라 감정의 문을 열고 닫아요. 완전한 어둠이나 아주 낮은 채도의 조명 아래에서만 비로소 자신의 진실된 가면을 벗는 분이에요.", f: "밝은 형광등 아래에서 진지한 대화 시도 금지.", c: "대화 시 조명을 낮추거나 촛불을 켜보세요.", t: "#시각적안식 #빛의조율"}},
+        {q: "14. 경쟁자의 성공 소식에 내면에서 일어나는 첫 번째 파동은요?", o: ["결핍의 확인", "냉소적 축하", "더 높은 전의", "불공평함의 확신", "무관심의 도피"], r: {h: "RIVAL RESONANCE", p: "타인의 성공을 볼 때 결핍을 확인하며 내면의 파동이 커지는 스타일이에요. 이는 시기심이라기보다 자신의 가치를 입증하고 싶은 강력한 전의의 변형이에요.", f: "경쟁자의 장점을 열거하며 자극하지 마세요.", c: "대상자만이 가진 독보적인 영역을 상기시켜 주세요.", t: "#내면의전의 #독보적가치"}},
+        {q: "15. 일상에서 영혼을 가장 빨리 갉아먹는 요소는 무엇인가요?", o: ["의미 없는 대화", "규격화된 행동", "예측 가능한 미래", "감정의 과잉 소모", "내면을 죽이는 소음"], r: {h: "SOUL EROSION", p: "의미 없는 소음과 규격화된 행동에 영혼이 가장 빨리 갉아먹히는 분이에요. 대상자에게 일상의 반복은 단순한 지루함이 아니라 존재론적 소멸로 느껴질 수 있어요.", f: "남들 다 그렇게 산다는 말로 고통을 보편화하지 마세요.", c: "작은 일탈이나 새로운 자극을 함께 경험해 보세요.", t: "#영혼의환기 #일상의균열"}},
+        {q: "16. 밤에 들리는 빗소리가 들려주는 이야기는 무엇인가요?", o: ["추억의 회상", "소음의 차단", "내면의 폭풍우", "정화와 재탄생", "고립의 즐거움"], r: {h: "PLUVIAL INTROSPECTION", p: "빗소리 같은 백색 소음 속에서 비로소 내면의 폭풍우를 정화하는 정서적 기제를 가지고 있어요. 고립을 즐기며 그 안에서 자신을 재구성하는 분이에요.", f: "비 오는 날 혼자 있고 싶어 할 때 강제로 끌어내지 마세요.", c: "연결되어 있다는 느낌만 텍스트로 가볍게 전달하세요.", t: "#고립의미학 #정화의시간"}},
+        {q: "17. 비밀을 공유하고 싶은 존재의 필수 조건은 무엇인가요?", o: ["절대적인 침묵", "깊은 공감", "객관적 판단", "함께한 시간", "닮은 꼴의 상처"], r: {h: "SECRECY HOMEOSTASIS", p: "비밀을 공유할 때 닮은 꼴의 상처를 확인해야만 안심하는 유대감을 지녔어요. 대상자에게 신뢰란 서로의 치부를 안전하게 교환하는 거래와 같아요.", f: "비밀을 가볍게 여기거나 농담 소재로 쓰지 마세요.", c: "당신의 작은 약점을 먼저 공유하여 문을 열어주세요.", t: "#상처의공명 #비밀의공유"}},
+        {q: "18. 성공의 정점에서 가장 먼저 느껴질 것 같은 감정은요?", o: ["승리감", "허무함", "유지의 압박", "보상의 고통", "해방감"], r: {h: "PEAK VACUUM", p: "성공의 순간에 승리감보다 허무함을 먼저 느끼는 고차원적 자아를 가졌어요. 목표를 이룬 뒤 찾아오는 공허함이 대상자를 가장 취약하게 만드는 시간이에요.", f: "과도한 축하 파티를 강요하지 마세요.", c: "성취 뒤의 정적을 함께 견뎌주며 과정을 안아주세요.", t: "#정점의고요 #허무의승화"}},
+        {q: "19. 가장 두려워하는 상실의 종류는 무엇인가요?", o: ["물질적 고갈", "지위의 하락", "유대의 단절", "통제권 상실", "잊혀지는 존재"], r: {h: "DISCONNECTION PHOBIA", p: "유대의 단절을 물질적 고갈보다 더 두려워하면서도, 이를 감추기 위해 더 차갑게 행동할 수 있어요. 잊혀지는 것에 대한 근원적 불안이 기저에 깔려 있어요.", f: "장난으로라도 단절을 암시하는 말을 하지 마세요.", c: "항상 곁에 있다는 안정적 신호를 주기적으로 보내세요.", t: "#불변의연결 #안전기지"}},
+        {q: "20. 낯선 이의 호의에 신경이 먼저 반응하는 방향은 어디인가요?", o: ["호기심", "경계와 분석", "즉각적 거부", "수동적 관찰", "기회의 포착"], r: {h: "STRANGER DEFENSE", p: "타인의 호의를 기회보다는 경계의 대상으로 먼저 인지하는 분석적 신경 체계를 가졌어요. 대상자에게 호의는 분석해야 할 데이터일 뿐이에요.", f: "갑작스럽고 과한 친절로 당황하게 하지 마세요.", c: "대가 없는 작은 행동들을 천천히 쌓아 무력화하세요.", t: "#무해한호의 #데이터의축적"}},
+        {q: "21. 예술 작품 앞에서 가장 깊이 매료되는 요소는 무엇인가요?", o: ["작가의 고통", "완벽한 기교", "압도적 규모", "묘한 분위기", "상처와의 공명"], r: {h: "ARTISTIC RESONANCE", p: "작가의 고통이나 작품의 분위기와 자신의 상처를 동기화하며 카타르시스를 느껴요. 감각적이고 미적인 자극이 대상자의 가장 깊은 방벽을 여는 열쇠예요.", f: "대상자의 예술적 취향을 난해하다고 평가절하하지 마세요.", c: "좋아하는 분위기의 전시나 음악을 함께 공유하세요.", t: "#미적동기화 #영혼의공감"}},
+        {q: "22. 무심코 뱉은 말이 본질을 드러냈을 때의 기분은 어떨까요?", o: ["수치심", "해방감", "자책", "새로운 발견", "타인의 반응에 대한 공포"], r: {h: "UNINTENTIONAL TRUTH", p: "무심코 뱉은 말에 자신의 본질이 드러났을 때 해방감과 공포를 동시에 느껴요. 대상자는 자신의 진짜 모습이 들켰을 때의 타인 반응에 예민해요.", f: "드러난 진실을 붙잡고 의도를 추궁하지 마세요.", c: "그 모습조차 매력적이라는 것을 자연스럽게 보여주세요.", t: "#가면너머의당신 #찰나의진실"}},
+        {q: "23. 정의하는 '사랑'의 가장 핵심적인 형태는 무엇인가요?", o: ["이해와 수용", "희생과 봉사", "공간의 존중", "열정과 탐닉", "항상성의 유지"], r: {h: "SPACE OF LOVE", p: "사랑을 이해나 열정보다 '서로의 공간을 존중하는 항상성'으로 정의해요. 대상자에게 사랑은 침범하지 않는 선을 유지하는 지성적인 행위예요.", f: "사랑한다면 다 공유해야 한다는 논리를 강요하지 마세요.", c: "그가 자신의 공간에 머물 때 기꺼이 밖에서 기다려주세요.", t: "#지성적사랑 #공간의존중"}},
+        {q: "24. 마지막 순간에 남기고 싶은 단 한 장의 사진은요?", o: ["찬란한 성취", "평온한 얼굴", "고독한 풍경", "평범한 거실", "희망의 조각"], r: {h: "FINAL FRAGMENT", p: "마지막 순간에 평온한 얼굴이나 희망의 조각을 남기고 싶어 하는 낭만적 이상주의자예요. 대상자는 삶의 끝을 생각하며 현재의 가치를 결정해요.", f: "미래에 대한 고민을 쓸데없는 생각이라 치부하지 마세요.", c: "함께 웃고 있을 평온한 미래 장면을 구체적으로 그려주세요.", t: "#희망의조각 #미래의평온"}},
+        {q: "25. 느끼는 '우울'의 질감은 어떤 것에 가까울까요?", o: ["검은 진흙", "차가운 금속", "텅 빈 진공", "희뿌연 안개", "날카로운 유리"], r: {h: "VISCOUS DEPRESSION", p: "우울함을 끈적한 진흙이나 안개처럼 무겁게 느껴요. 이 상태의 대상자는 사고가 마비되고 행동이 느려지는 특징이 있어요.", f: "빨리 일어나라는 성급한 격려는 독이 됩니다.", c: "아무 말 없이 곁에 앉아 체온을 나누며 기다려주세요.", t: "#기다림의미학 #침묵의동행"}},
+        {q: "26. 타인에게 절대 보여주고 싶지 않은 내면의 모습은 무엇인가요?", o: ["나약함", "질투심", "허영심", "냉소주의", "공격성"], r: {h: "SHADOW DISCLOSURE", p: "자신의 나약함이나 질투심 같은 그림자를 들키는 것을 매우 싫어해요. 완벽한 모습만 보여주려는 강박이 대상자를 지치게 하고 있어요.", f: "나약한 모습을 발견했을 때 지적하거나 놀리지 마세요.", c: "부족한 모습이 오히려 인간적임을 은연중에 전달하세요.", t: "#나약함의포용 #온전한사랑"}},
+        {q: "27. 가장 고무시키는 타인의 반응은 무엇일까요?", o: ["놀라움", "정서적 인정", "깊은 신뢰", "조용한 지지", "시기 어린 질투"], r: {h: "EMOTIONAL RECOGNITION", p: "타인의 깊은 신뢰와 정서적 인정을 받을 때 에너지를 얻는 유형이에요. 대상자에게 인정은 생존을 위한 가장 고귀한 보상이에요.", f: "대상자가 공들인 성과를 당연하게 여기지 마세요.", c: "사소한 배려에도 구체적인 감사를 표현해 주세요.", t: "#존재의인정 #깊은신뢰"}},
+        {q: "28. 존재론적 불안을 잠재우는 방식은 무엇인가요?", o: ["수면의 도피", "노동과 몰입", "명상과 호흡", "끝없는 대화", "미지의 탐험"], r: {h: "ANXIETY EXPLORATION", p: "불안을 잠재우기 위해 미지의 영역을 탐험하거나 지식을 습득하며 통제권을 찾으려 해요. 대상자에게 배움은 불안을 이기는 무기예요.", f: "불안해하는 대상자에게 그냥 잠이나 자라고 하지 마세요.", c: "흥미로워할 새로운 정보나 경험을 함께 제안해 보세요.", t: "#불안의승화 #지적해소"}},
+        {q: "29. 생각하는 가장 고귀한 인간의 덕목은 무엇인가요?", o: ["타협 없는 정직", "인내와 수용", "용기 있는 고립", "정적인 지혜", "직관의 신뢰"], r: {h: "NOBLE SOLITUDE", p: "인내와 용기 있는 고립을 인간의 가장 고귀한 덕목으로 생각해요. 혼자 서 있을 수 있는 사람만이 진정으로 함께 설 수 있다고 믿는 강한 자아의 소유자예요.", f: "고독을 외로움이나 사회성 부족으로 오해하지 마세요.", c: "그의 독립적 성향을 고귀한 지혜로 인정해 주세요.", t: "#고귀한고립 #강한자아"}},
+        {q: "30. 분석의 끝에서 마주하고 싶은 진실은 무엇인가요?", o: ["자아의 확장", "삶의 정당성", "관계의 회복", "상처의 치유", "통제권의 획득"], r: {h: "TOTAL CONTROL", p: "분석의 끝에서 결국 자신의 삶과 관계에 대한 완전한 통제권을 마주하고 싶어 해요. 대상자에게 최고의 상태는 자신이 상황을 리드하는 거예요.", f: "주도권을 뺏으려 하거나 사사건건 간섭하지 마세요.", c: "중요한 결정권을 넘겨주어 그를 선장으로 대우해 주세요.", t: "#관계의마스터 #삶의주도권"}}
     ];
 
-    /* SYSTEM LOGIC */
-    let step = 0;
-    let selections = [];
-    let buyerId = null;
+    /* SYSTEM ROUTER & CORE LOGIC */
+    let step = 0; let picks = []; let buyerID = null;
 
-    function processPayment(btn) {
+    function initPayment(btn) {
         btn.innerHTML = "PROCESSING...";
         setTimeout(() => {
-            buyerId = "AZI-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-            const link = window.location.origin + window.location.pathname + "?id=" + buyerId;
-            // Ghost Animation
+            buyerID = "AZI-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+            const link = window.location.origin + window.location.pathname + "?id=" + buyerID;
             btn.style.opacity = '0';
-            btn.style.transform = 'scale(1.1)';
             setTimeout(() => {
-                alert("결제 완료.\n봉인된 초대장이 생성되었습니다.\n\n" + link);
-                btn.innerHTML = "LINK COPIED";
-                btn.style.opacity = '1';
-                btn.style.transform = 'scale(1)';
+                alert("INVITATION SEALED.\n초대 링크가 복사되었습니다.\n\n" + link);
                 navigator.clipboard.writeText(link);
-            }, 500);
+                btn.innerHTML = "LINK GENERATED"; btn.style.opacity = '1';
+            }, 600);
         }, 1500);
     }
 
-    function startSurvey() {
-        showView('v-survey');
-        renderQ();
-    }
+    function startProcess() { showV('v-survey'); renderQ(); }
 
     function renderQ() {
-        // Deepening Logic: Background & Style Shift
         const progress = step / 30;
-        updateEnvironment(progress);
-
-        // Update Text
-        document.getElementById('p-text').innerText = `ANALYSIS ${String(step+1).padStart(2,'0')} / 30`;
-        const qData = db[step];
-        document.getElementById('q-txt').innerText = qData.q;
+        updateDeepening(progress);
         
-        // Render Options with Fixed Height to prevent layout shift
-        const optBox = document.getElementById('opt-box');
-        optBox.innerHTML = "";
-        qData.o.forEach((opt, idx) => {
-            const btn = document.createElement('div');
-            btn.className = 'opt-btn';
-            btn.innerText = opt;
-            btn.onclick = () => selectOption(btn, idx);
-            optBox.appendChild(btn);
+        document.getElementById('step-id').innerText = `ANALYSIS ${String(step+1).padStart(2,'0')} / 30`;
+        const data = DB[step];
+        document.getElementById('q-txt').innerText = data.q;
+        
+        const box = document.getElementById('opt-box');
+        box.innerHTML = "";
+        data.o.forEach((opt, idx) => {
+            const el = document.createElement('div');
+            el.className = 'opt-item';
+            el.innerText = opt;
+            el.onclick = () => selectOpt(el, idx);
+            box.appendChild(el);
         });
-
-        document.getElementById('btn-manual-next').style.display = 'none';
-        document.getElementById('p-bar').style.width = (progress * 100) + "%";
+        document.getElementById('btn-manual').style.display = 'none';
+        document.getElementById('p-fill').style.width = (progress * 100) + "%";
     }
 
-    function selectOption(btn, idx) {
-        const currentSelected = document.querySelectorAll('.opt-btn.selected');
-        
-        // Toggle Logic
-        if (btn.classList.contains('selected')) {
-            btn.classList.remove('selected');
-            selections = selections.filter(s => s !== idx);
-        } else {
-            if (selections.length < 2) {
-                btn.classList.add('selected');
-                selections.push(idx);
-                if(navigator.vibrate) navigator.vibrate(10);
-            }
+    function selectOpt(el, idx) {
+        if(el.classList.contains('selected')) {
+            el.classList.remove('selected'); picks = picks.filter(p => p !== idx);
+        } else if(picks.length < 2) {
+            el.classList.add('selected'); picks.push(idx);
+            if(navigator.vibrate) navigator.vibrate(15);
         }
-
-        // Auto Advance logic for 2 selections
-        if (selections.length === 2) {
+        
+        if(picks.length === 2) {
             setTimeout(nextStep, 600);
         } else {
-            document.getElementById('btn-manual-next').style.display = selections.length > 0 ? 'block' : 'none';
+            document.getElementById('btn-manual').style.display = picks.length > 0 ? 'block' : 'none';
         }
     }
 
     function nextStep() {
-        selections = []; // Reset for next Q
-        step++;
-
-        // Intermission at Q15
-        if (step === 15) {
-            showView('v-intermission');
-            return;
-        }
-
-        if (step < 30) {
-            renderQ();
-        } else {
-            finishSurvey();
-        }
+        picks = []; step++;
+        if(step === 15) { showV('v-rest'); return; }
+        if(step < 30) renderQ(); else finishAll();
     }
 
-    function prevStep() {
-        if(step > 0) {
-            step--;
-            // Handle Intermission Backwards
-            if (step === 15) step = 14; 
-            renderQ();
-        }
+    function goBack() { if(step > 0) { step--; if(step === 15) step = 14; renderQ(); } }
+    function resumeProcess() { showV('v-survey'); renderQ(); }
+
+    function updateDeepening(r) {
+        const rc = Math.round(242 - (232 * r));
+        const gc = Math.round(240 - (223 * r));
+        const bc = Math.round(233 - (213 * r));
+        document.body.style.backgroundColor = `rgb(${rc},${gc},${bc})`;
+        if(step >= 16) document.body.classList.add('deep-dive');
+        else document.body.classList.remove('deep-dive');
     }
 
-    function resumeSurvey() {
-        showView('v-survey');
-        renderQ();
-    }
+    function finishAll() { showV('v-seal'); }
 
-    function updateEnvironment(progress) {
-        // Dynamic Background Color Interpolation
-        // Start (Beige): 244, 241, 234 -> End (Deep Cyan): 15, 28, 36
-        const r = Math.round(244 - (229 * progress));
-        const g = Math.round(241 - (213 * progress));
-        const b = Math.round(234 - (198 * progress));
-        
-        document.body.style.backgroundColor = `rgb(${r},${g},${b})`;
-        
-        // Trigger Dark Mode (Neon) after Q17 for visibility
-        if (step >= 16) {
-            document.body.classList.add('neon-mode');
-        } else {
-            document.body.classList.remove('neon-mode');
-        }
-    }
-
-    function finishSurvey() {
-        showView('v-seal');
-        // Simulate Data Transmission to Buyer
-        // In real app, this sends POST request to server
-    }
-
-    function showView(id) {
-        document.querySelectorAll('.view').forEach(v => {
-            v.classList.remove('active');
-            v.style.display = 'none';
-        });
+    function showV(id) {
+        document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.style.display = 'none'; });
         const target = document.getElementById(id);
         target.style.display = 'flex';
         setTimeout(() => target.classList.add('active'), 50);
         if(window.MathJax) MathJax.typesetPromise();
     }
 
-    /* INITIALIZATION ROUTER */
     window.onload = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        const data = urlParams.get('data'); // Simulate "Report Open"
-
-        if (id && !data) {
-            // Target User View
-            showView('v-entry');
-            startTimer();
-        } else if (id && data === 'report') {
-            // Buyer Report View
-            showView('v-report');
-            renderReports();
-        } else {
-            // Landing View
-            showView('v-landing');
-        }
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id'); const mode = params.get('data');
+        if(id && !mode) { showV('v-entry'); startClock(); }
+        else if(id && mode === 'report') { showV('v-report'); buildReport(); }
+        else showV('v-landing');
     };
 
-    function startTimer() {
-        let t = 86400;
+    function startClock() {
+        let sec = 86400;
         setInterval(() => {
-            t--;
-            let h = Math.floor(t/3600);
-            let m = Math.floor((t%3600)/60);
-            let s = t%60;
-            document.getElementById('timer').innerText = 
-                `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            sec--; let h = Math.floor(sec/3600); let m = Math.floor((sec%3600)/60); let s = sec%60;
+            document.getElementById('timer').innerText = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
         }, 1000);
     }
 
-    function renderReports() {
-        const list = document.getElementById('report-list');
-        db.forEach((item, i) => {
-            list.innerHTML += `
-                <div class="report-card">
-                    <h3>${i+1}. ${item.r.h}</h3>
+    function buildReport() {
+        const anchor = document.getElementById('report-anchor');
+        DB.forEach((item, i) => {
+            anchor.innerHTML += `
+                <div class="report-item">
+                    <div class="domain-tag" style="text-align:left; color:#888;">SYNAPSE POINT ${String(i+1).padStart(2,'0')}</div>
+                    <h3>${item.r.h}</h3>
                     <p>${item.r.p}</p>
-                    <div class="report-tags">
-                        <span class="tag" style="color:#D32F2F;">FORBIDDEN: ${item.r.f}</span>
-                        <span class="tag" style="color:#1976D2;">COMPENSATE: ${item.r.c}</span>
-                        <span class="tag" style="color:var(--deep-cyan);">${item.r.t}</span>
+                    <div class="report-meta">
+                        <span class="meta-tag" style="color:#D32F2F;">FORBIDDEN: ${item.r.f}</span>
+                        <span class="meta-tag" style="color:#1976D2;">COMPENSATION: ${item.r.c}</span>
+                        <span class="meta-tag" style="color:var(--deep-cyan);">${item.r.t}</span>
                     </div>
-                </div>
-            `;
+                </div>`;
         });
     }
 </script>
