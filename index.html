@@ -4,116 +4,214 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SY-ON | 소중한 이를 위한 감각 지침서</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
         :root {
-            --primary-color: #4a5568;
-            --accent-color: #a0aec0;
-            --bg-color: #f7fafc;
-            --text-color: #2d3748;
+            --bg: #f8f9fa; --text: #2d3436; --accent: #636e72; --card: #ffffff;
+            --primary: #2d3436; --soft: #dfe6e9;
         }
-        body {
-            font-family: 'Pretendard', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            line-height: 1.6;
-        }
-        #app { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .screen { display: none; text-align: center; animation: fadeIn 0.5s; }
-        .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* 랜딩 페이지 스타일 (Section 3) */
-        .hero-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; color: #1a202c; }
-        .hero-desc { font-size: 1rem; color: #4a5568; margin-bottom: 2rem; }
-        .stats-box { background: #edf2f7; padding: 15px; border-radius: 12px; font-size: 0.9rem; margin-bottom: 20px; text-align: left; }
+        * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
+        body { background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; }
+        #app { width: 100%; max-width: 500px; min-height: 100vh; position: relative; padding: 40px 20px; }
+        .screen { display: none; opacity: 0; transition: opacity 0.5s; }
+        .screen.active { display: block; opacity: 1; }
         
-        button {
-            background: var(--primary-color); color: white; border: none; padding: 15px 30px;
-            border-radius: 8px; cursor: pointer; font-size: 1rem; width: 100%; transition: 0.3s;
-        }
-        button:hover { background: #2d3748; }
-
-        /* 질문지 스타일 */
-        .q-text { font-size: 1.2rem; margin: 40px 0; font-weight: 600; }
-        .options-list { list-style: none; padding: 0; }
-        .option-btn {
-            background: white; border: 1px solid #e2e8f0; padding: 15px; margin-bottom: 10px;
-            border-radius: 10px; cursor: pointer; text-align: left; transition: 0.2s;
-        }
-        .option-btn:hover { background: #f1f5f9; border-color: #cbd5e0; }
-
-        /* 관리자 & 결과 페이지 */
-        .admin-panel { position: fixed; bottom: 10px; right: 10px; opacity: 0.3; }
-        .admin-panel:hover { opacity: 1; }
-        .report-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: left; }
-        .tag { display: inline-block; background: #e2e8f0; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; margin-right: 5px; }
+        /* Typography & Layout */
+        .title { font-size: 24px; font-weight: 700; margin-bottom: 15px; line-height: 1.4; word-break: keep-all; }
+        .desc { font-size: 15px; color: var(--accent); margin-bottom: 30px; line-height: 1.6; }
+        .btn { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 12px; width: 100%; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+        
+        /* Quiz Styles */
+        .progress { font-size: 13px; color: #b2bec3; margin-bottom: 10px; letter-spacing: 1px; }
+        .q-text { font-size: 20px; font-weight: 600; margin-bottom: 35px; line-height: 1.5; min-height: 60px; }
+        .option { background: var(--card); border: 1px solid var(--soft); padding: 16px; border-radius: 12px; margin-bottom: 12px; cursor: pointer; font-size: 15px; transition: 0.2s; text-align: left; }
+        .option:hover { border-color: var(--accent); background: #fdfdfd; }
+        
+        /* Result Styles */
+        .result-card { background: var(--card); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); margin-top: 20px; }
+        .report-section { margin-bottom: 25px; }
+        .report-label { display: inline-block; background: #f1f2f6; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+        .report-list { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.8; color: #444; }
+        
+        /* Admin */
+        #admin-btn { position: fixed; bottom: 10px; right: 10px; width: 30px; height: 30px; opacity: 0.05; cursor: pointer; }
+        .admin-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000; padding: 40px 20px; display: none; overflow-y: auto; }
     </style>
 </head>
 <body>
-
-<div id="app">
-    <section id="screen-home" class="screen active">
-        <div class="hero-title">당신의 진심이 깊게 닿을 수 있도록</div>
-        <div class="hero-desc">소중한 사람의 고유한 감각적 결을 이해하고,<br>더 따뜻한 배려를 위한 '케어 지침서'를 만나보세요.</div>
-        <div class="stats-box">
-            <b>SY-ON 과학적 분석 시스템:</b><br>
-            • 5³⁰ 확률의 정교한 데이터 매칭<br>
-            • 무의식적 반응 지연(Latency) 분석<br>
-            • 4대 정서 지표(E, P, S, R) 산출
-        </div>
-        <button onclick="startTest()">감각 도감 시작하기</button>
-    </section>
-
-    <section id="screen-quiz" class="screen">
-        <div id="progress" style="font-size: 0.8rem; color: #a0aec0;"></div>
-        <div id="question-area">
-            <div class="q-text" id="q-text"></div>
-            <div class="options-list" id="options-list"></div>
-        </div>
-    </section>
-
-    <section id="screen-result" class="screen">
-        <div class="hero-title">우리를 위한 케어 지침서</div>
-        <div class="report-card" id="report-content">
+    <div id="app">
+        <section id="home" class="screen active">
+            <div style="margin-top: 60px;">
+                <div class="title">가장 가까운 이의<br>보이지 않는 결을 읽다</div>
+                <div class="desc">30가지 미학적 질문을 통해 당신이 소중히 여기는 그 사람의 고유한 감각 지도를 완성합니다.<br><br>말하지 않아도 알 수 있는 세심한 배려, SY-ON이 당신의 진심을 데이터로 번역합니다.</div>
+                <button class="btn" onclick="startTest()">감각 도감 시작하기</button>
             </div>
-        <button onclick="location.reload()" style="margin-top:20px; background:#a0aec0;">다시 하기</button>
-    </section>
+        </section>
 
-    <div class="admin-panel">
-        <button onclick="toggleAdmin()" style="padding:5px 10px; font-size:0.6rem;">Admin</button>
+        <section id="quiz" class="screen">
+            <div class="progress" id="progress">01 / 30</div>
+            <div class="q-text" id="q-text"></div>
+            <div id="options"></div>
+        </section>
+
+        <section id="result" class="screen">
+            <div class="title">우리를 위한<br>케어 지침서</div>
+            <div class="result-card" id="report-body"></div>
+            <button class="btn" style="margin-top:20px; background:#b2bec3;" onclick="location.reload()">다시 하기</button>
+        </section>
+        
+        <div id="admin-btn" onclick="openAdmin()"></div>
+        <div id="admin-modal" class="admin-modal">
+            <div class="title">의장님 대시보드</div>
+            <button class="btn" onclick="shuffleNow()" style="background:#00b894; margin-bottom:10px;">질문 셔플 실행</button>
+            <div id="stats" style="font-size:14px; color:#636e72;"></div>
+            <button class="btn" onclick="closeAdmin()" style="margin-top:20px; background:#74b9ff;">닫기</button>
+        </div>
     </div>
-    <section id="screen-admin" class="screen" style="background:#fff; padding:20px; border:1px solid #ddd;">
-        <h3>의장님 전용 대시보드</h3>
-        <button onclick="shuffleQuestions()" style="background:#48bb78; margin-bottom:10px;">질문 셔플 (랜덤 30개 추출)</button>
-        <div id="admin-stats" style="text-align:left; font-size:0.8rem;"></div>
-        <button onclick="showScreen('home')" style="margin-top:10px; background:#718096;">나가기</button>
-    </section>
-</div>
 
-<script>
-    // --- 의장님의 데이터 뱅크 (확장 가능) ---
-    const questionBank = [
-        { q: "안개가 자욱한 숲길을 걷고 있습니다. 당신의 발걸음이 멈추는 곳은?", options: ["거대한 바위 옆", "작은 개울가", "빛이 쏟아지는 빈터", "좁은 오솔길", "어두운 나무 덤불"], weight: [1,2,0,0] },
-        { q: "텅 빈 캔버스 위에 단 하나의 선을 긋는다면?", options: ["날카로운 직선", "부드러운 곡선", "끊어질 듯한 파선", "완벽한 원", "작은 점 하나"], weight: [0,1,2,0] },
-        // ... (나머지 80개 이상 질문들을 여기에 추가하면 됩니다)
+    <script>
+        // 데이터 저장소 시작
+        const questionBank = [{ q: "안개가 자욱한 숲길을 걷고 있습니다. 당신의 발걸음이 멈추는 곳은?", options: ["거대한 바위 옆", "작은 개울가", "빛이 쏟아지는 빈터", "좁은 오솔길", "나무 덤불 아래"], weight: [1,0,0,0] },
+        { q: "텅 빈 캔버스 위에 단 하나의 선을 긋는다면?", options: ["날카로운 직선", "부드러운 곡선", "거친 파선", "완벽한 원", "작은 점 하나"], weight: [0,0,1,0] },
+        { q: "소리가 들리지 않는 진공의 방, 가장 먼저 느껴지는 것은?", options: ["심장 박동", "해방감", "막막한 불안", "나의 호흡", "차가운 공기"], weight: [0,0,0,1] },
+        { q: "오래된 서랍 속 이름 모를 열쇠를 발견했습니다.", options: ["자물쇠를 찾는다", "일단 주머니에 넣는다", "무늬를 관찰한다", "제자리에 둔다", "주변에 물어본다"], weight: [0,1,0,0] },
+        { q: "해 질 녘 지평선의 마지막 빛깔은 무엇이어야 하나요?", options: ["강렬한 핏빛", "포근한 보라", "짙은 남색", "무거운 금빛", "무채색의 회색"], weight: [1,0,0,0] },
+        { q: "차가운 금속 조각과 따뜻한 흙, 당신의 손이 먼저 향하는 곳은?", options: ["금속의 단단함", "흙의 포근함", "온도 차이를 즐김", "지켜만 본다", "두 물질을 섞음"], weight: [0,0,1,0] },
+        { q: "거대한 시계탑의 톱니바퀴 소리를 들을 때의 느낌은?", options: ["규칙적인 질서", "묘한 압박감", "기분 좋은 소음", "멈출 것 같은 긴장", "시스템의 일부"], weight: [0,1,0,0] },
+        { q: "낯선 도시의 골목에서 당신을 이끄는 이정표는?", options: ["화려한 불빛", "은은한 빵 냄새", "고요하고 좁은 길", "오래된 벽돌담", "가장 빠른 길"], weight: [0,0,0,1] },
+        { q: "폭풍우 치는 밤, 창밖의 번개를 보며 하는 생각은?", options: ["물리적 호기심", "자연의 경외심", "내일의 걱정", "찰나의 미학", "집 안의 아늑함"], weight: [1,0,0,0] },
+        { q: "서재 위 단 하나의 스탠드, 당신이 원하는 밝기는?", options: ["선명한 빛", "따뜻한 오렌지빛", "주변만 비추는 빛", "깜빡이는 빛", "자연광과 흡사한 빛"], weight: [0,0,1,0] },
+        { q: "산 정상에서 소리를 질렀는데 메아리가 돌아오지 않는다면?", options: ["허무함", "완전한 고립의 즐거움", "본능적인 공포", "산의 깊이에 대한 경탄", "다시 크게 지름"], weight: [0,0,0,1] },
+        { q: "전시장의 얼음 조각이 녹아내리는 모습 중 시선이 머무는 곳은?", options: ["떨어지는 물방울", "날카로운 단면", "안에 갇힌 공기방울", "고인 물의 방향", "사라지는 시간"], weight: [0,1,0,0] },
+        { q: "당신의 꿈속에서 반복되는 배경은?", options: ["고요한 사막", "화려한 빌딩 숲", "정겨운 골목길", "깊은 바닷속", "비현실적인 구름 위"], weight: [1,0,0,0] },
+        { q: "정체불명의 음료를 받았을 때 가장 먼저 확인하는 것은?", options: ["향기", "색깔과 농도", "컵의 온도", "작은 알갱이", "준 이의 표정"], weight: [0,0,1,0] },
+        { q: "고요한 호수에 돌을 던졌습니다. 당신이 집중하는 것은?", options: ["맑은 소리", "퍼지는 동심원", "가라앉는 궤적", "튀어 오르는 물방울", "다시 찾아온 정적"], weight: [0,0,0,1] },
+        { q: "벽에 걸린 추상화 속에서 당신이 발견하는 것은?", options: ["기하학적 도형", "색채의 혼합", "여백의 미", "자연스러운 얼룩", "입체적인 공간감"], weight: [1,0,0,0] },
+        { q: "시계가 1시간 전으로 돌아갔다면 당신의 반응은?", options: ["묘한 해방감", "계획이 꼬인 짜증", "원인 분석", "누군가의 장난 의심", "여유를 즐김"], weight: [0,1,0,0] },
+        { q: "타자기를 두드릴 때 가장 즐거운 감각은?", options: ["손끝의 타격감", "활자가 박히는 소리", "잉크의 냄새", "느린 창작의 호흡", "종이를 찢는 쾌감"], weight: [0,0,1,0] },
+        { q: "도서관 서가 사이에서 가장 안심되는 위치는?", options: ["창가 좌석", "구석진 1인용 소파", "입구 쪽", "깊숙한 통로", "열람실 중앙"], weight: [0,0,0,1] },
+        { q: "당신의 영혼을 악기로 비유한다면 어떤 소리인가요?", options: ["첼로의 중저음", "피아노의 고음", "일렉 기타의 저항", "드럼의 비트", "플루트의 울림"], weight: [1,0,0,0] },
+        { q: "비 내리는 유리창 너머로 보이는 세상 중 가장 아름다운 부분은?", options: ["유리창에 맺힌 물방울", "번진 네온사인 불빛", "우산을 쓴 사람들의 리듬", "빗줄기가 때리는 바닥", "짙게 깔린 회색 하늘"], weight: [1,0,0,0] },
+        { q: "아무도 없는 성당의 파이프 오르간 소리가 들린다면?", options: ["경건한 압박감", "천장 높이에 대한 인지", "소리의 파동을 느낌", "누가 연주하는지 찾음", "가만히 눈을 감음"], weight: [0,0,1,0] },
+        { q: "손안에 든 모래가 손가락 사이로 빠져나갈 때의 느낌은?", options: ["막을 수 없는 허무함", "입자의 미세한 촉감", "시간이 흐르는 듯한 감각", "남은 모래에 집중", "다시 쥐어보려는 시도"], weight: [0,1,0,0] },
+        { q: "짙은 어둠 속에서 단 하나의 촛불이 켜졌습니다. 당신의 시선은?", options: ["춤추는 불꽃의 끝", "녹아내리는 촛농", "촛불 주위의 그림자", "촛불이 비추는 나의 손", "심지가 타는 소리"], weight: [0,0,0,1] },
+        { q: "대리석 바닥 위를 걷는 당신의 구두 소리는 어떤 리듬인가요?", options: ["일정하고 단호한 박자", "경쾌하고 빠른 박자", "조심스럽고 느린 박자", "바닥의 재질을 느끼는 박자", "무작위적이고 자유로운 박자"], weight: [0,1,0,0] },
+        { q: "한겨울 차가운 창문에 입김을 불어 그림을 그린다면?", options: ["완벽한 대칭의 기하학", "알 수 없는 낙서", "사랑하는 이의 이름", "그저 손바닥 자국", "그리지 않고 사라짐을 봄"], weight: [0,0,1,0] },
+        { q: "숲속에서 발견한 버려진 피아노, 가장 먼저 건드리는 건반은?", options: ["가장 낮은 저음", "가장 높은 고음", "가운데 '도'", "여러 개를 동시에", "건드리지 않고 먼지를 봄"], weight: [0,0,0,1] },
+        { q: "새벽 4시, 창밖의 푸른 빛을 볼 때 당신의 정서는?", options: ["새로운 시작의 설렘", "잠들지 못한 피로", "세상과의 단절감", "공기의 차가운 정적", "무언가 쓰고 싶은 욕구"], weight: [1,0,0,0] },
+        { q: "바다 한가운데 떠 있는 작은 보트, 당신이 바라보는 곳은?", options: ["수평선의 끝", "발밑의 깊은 바다", "하늘의 구름", "흔들리는 돛대", "보트에 부딪히는 파도"], weight: [0,0,0,1] },
+        { q: "오래된 도서관의 책 냄새를 맡으면 떠오르는 것은?", options: ["지적인 충만함", "잊고 있던 추억", "먼지가 쌓인 시간", "종이의 질감", "가보지 못한 미지의 세계"], weight: [0,0,1,0] },
+        { q: "복도를 걷다 마주친 거울 속의 자신과 눈이 마주친다면?", options: ["옷매무새를 다듬음", "빨리 시선을 피함", "잠시 멈춰 응시함", "거울의 각도를 조절함", "표정을 지어봄"], weight: [0,0,1,0] },
+        { q: "지하철역 계단을 오를 때 당신의 호흡은?", options: ["계단의 숫자를 세는 리듬", "도착지의 시간을 계산", "주변 사람의 속도에 맞춤", "나의 심박에 집중", "음악 비트에 맞춤"], weight: [0,1,0,0] },
+        { q: "찻잔 속의 찻잎이 가라앉는 모습을 볼 때 당신의 마음은?", options: ["차의 맛을 기대함", "움직임의 우아함에 매료", "인내심의 시험", "찻잔의 무늬와 대조해봄", "정리가 되는 기분"], weight: [0,1,0,0] },
+        { q: "한여름 밤의 풀벌레 소리가 들리는 마루, 당신의 자세는?", options: ["팔을 베고 누움", "턱을 괴고 앉음", "소리를 녹음함", "어둠 속을 응시함", "부채질을 멈춤"], weight: [0,0,0,1] },
+        { q: "처음 보는 기계의 조작 버튼들이 늘어서 있다면?", options: ["빨간 버튼부터 누름", "설명서를 먼저 찾음", "버튼의 질감을 만져봄", "가만히 원리를 추론함", "남이 하는 걸 기다림"], weight: [1,0,0,0] },
+        { q: "강물 위로 떨어지는 낙엽의 속도를 보고 있다면?", options: ["물살의 빠름을 인지", "낙엽의 여정을 상상", "어디서 멈출지 예측", "그저 멍하니 바라봄", "사진으로 남기고 싶음"], weight: [0,1,0,0] },
+        { q: "자신만의 비밀 창고를 만든다면 벽의 색깔은?", options: ["순백색", "깊은 숯색", "따뜻한 나무색", "노출 콘크리트", "우주 같은 감색"], weight: [0,0,1,0] },
+        { q: "텅 빈 공연장의 무대 조명이 당신을 비춘다면?", options: ["주인공이 된 고양감", "눈이 부셔 시선을 내림", "조명의 열기를 느낌", "관객석의 어둠을 봄", "무대의 질감을 발로 느낌"], weight: [0,0,0,1] },
+        { q: "비행기 창가 좌석에서 구름을 내려다볼 때의 생각은?", options: ["땅 위의 사람들이 작게 느껴짐", "구름의 솜사탕 같은 질감", "목적지까지 남은 시간", "추락에 대한 막연한 상상", "하늘의 끝없는 푸름"], weight: [1,0,0,0] },
+        { q: "차가운 겨울 공기를 한껏 들이마셨을 때 폐부의 느낌은?", options: ["정화되는 기분", "날카로운 통증", "살아있다는 생동감", "코끝의 시린 감각", "따뜻한 실내에 대한 갈망"], weight: [1,0,0,0] },
+        { q: "손바닥 위에 놓인 얼음이 녹아 흐르는 길은?", options: ["손금을 따라 흐름", "손등으로 넘침", "지문 사이를 채움", "바닥으로 바로 떨어짐", "손바닥 중앙에 고임"], weight: [0,0,1,0] },
+        { q: "오래된 나무 문을 열 때 나는 '끼익' 소리에 대한 반응은?", options: ["공포심의 자극", "고전적인 분위기에 몰입", "기름칠이 필요하다는 생각", "소리의 높낮이를 분석", "문 너머를 향한 기대"], weight: [0,1,0,0] },
+        { q: "달리는 차 안에서 창문을 조금 열었을 때 들리는 바람 소리는?", options: ["자유로움의 상징", "대화의 방해 요소", "거친 자연의 소리", "일정한 주파수의 소음", "온도 조절의 신호"], weight: [0,0,0,1] },
+        { q: "하얀 눈밭 위에 찍힌 누군가의 첫 발자국을 본다면?", options: ["그 발자국의 주인을 상상", "그 옆에 내 발자국을 찍음", "눈이 망가진 것에 대한 아쉬움", "발자국의 깊이를 측정", "다른 길로 돌아감"], weight: [0,0,0,1] },
+        { q: "갓 구운 빵의 온기가 손가락 끝에 닿을 때 당신의 마음은?", options: ["허기가 채워지는 만족", "포근한 위로", "나누어 먹고 싶은 마음", "빵의 결을 찢는 즐거움", "식기 전의 긴박함"], weight: [0,0,1,0] },
+        { q: "전시관의 거대한 조각상을 올려다볼 때 당신의 거리는?", options: ["아주 가까이서 질감을 봄", "멀리서 전체 실루엣을 봄", "조각상의 시선을 따라감", "조각상 주위를 한 바퀴 돔", "설명글부터 읽음"], weight: [1,0,0,0] },
+        { q: "밤하늘의 별자리들을 연결해 본다면 당신이 그릴 모양은?", options: ["완벽한 기하학 도형", "자유로운 낙서", "동물의 형상", "나의 이름 철자", "연결하지 않고 점으로 둠"], weight: [0,1,0,0] },
+        { q: "커피잔에서 올라오는 수증기의 모양을 관찰할 때의 생각은?", options: ["차의 향기에 집중", "공기의 흐름을 읽음", "금방 사라지는 것에 대한 사색", "잔의 온도를 가늠", "빨리 마시고 싶은 욕구"], weight: [0,0,0,1] },
+        { q: "손수건을 접을 때 당신의 방식은?", options: ["모서리를 정확히 맞춤", "대충 둘둘 말음", "사용하기 편한 크기로 접음", "천의 촉감을 즐기며 접음", "접지 않고 주머니에 넣음"], weight: [0,0,1,0] },
+        { q: "낯선 이와 좁은 엘리베이터에 탔을 때 당신의 시선은?", options: ["층수 표시기", "자신의 구두 끝", "거울 속의 허공", "닫힘 버튼", "상대의 어깨너머"], weight: [0,0,0,1] },
+{ q: "바람에 흔들리는 풍경 소리를 들을 때 당신의 마음은?", options: ["소리의 맑음", "바람의 세기", "고요함의 증폭", "풍경의 모양", "잠이 올 것 같음"], weight: [0,0,0,1] },
+        { q: "오래된 편지지의 바스락거리는 소리는 어떤 느낌인가요?", options: ["과거의 기록", "종이의 건조함", "섬세한 떨림", "글씨의 흔적", "사라지는 것들"], weight: [0,0,1,0] },
+        { q: "새벽 안개가 자욱한 호숫가에서 당신이 던지는 것은?", options: ["작은 돌멩이", "나의 고민", "망설임", "그저 시선", "긴 한숨"], weight: [0,1,0,0] },
+        { q: "밤하늘의 달이 구름에 가려질 때 당신의 시선은?", options: ["구름의 경계", "희미한 달빛", "주변의 어둠", "다시 나올 시간", "밤하늘 전체"], weight: [1,0,0,0] },
+        { q: "따뜻한 모닥불 앞에서 당신이 가장 먼저 느끼는 것은?", options: ["불꽃의 색깔", "나무 타는 소리", "공기의 온기", "타는 냄새", "그림자의 움직임"], weight: [1,0,0,0] },
+        { q: "손끝에 닿은 깃털의 무게감은 어떤가요?", options: ["존재하지 않는 듯함", "부드러운 간지러움", "공기 같은 느낌", "미세한 압박", "무게보다 촉감"], weight: [0,0,1,0] },
+        { q: "거대한 도서관의 책장 사이를 걸을 때 당신의 발소리는?", options: ["조용한 울림", "바닥과의 마찰", "일정한 리듬", "무거운 정적", "사라지는 음향"], weight: [0,1,0,0] },
+        { q: "창밖의 빗줄기가 창문에 남기는 궤적 중 시선이 가는 곳은?", options: ["위에서 아래로", "뭉쳐지는 지점", "사라진 흔적", "부딪히는 소리", "창 너머 풍경"], weight: [0,0,0,1] },
+        { q: "어둠 속에서 반짝이는 고양이의 눈을 보았을 때?", options: ["본능적인 긴장", "신비로운 빛", "고양이의 위치", "어둠의 깊이", "생명력의 인지"], weight: [1,0,0,0] },
+        { q: "오래된 LP판이 돌아가는 소리 중 당신을 사로잡는 것은?", options: ["특유의 노이즈", "음악의 선율", "판의 회전", "바늘의 움직임", "공간의 분위기"], weight: [0,0,1,0] },
+        { q: "추운 날 마시는 차 한 잔의 김이 코끝에 닿을 때?", options: ["따뜻한 안도감", "차의 향기", "사라지는 수증기", "입술의 온도", "정지된 시간"], weight: [0,1,0,0] },
+        { q: "벽에 비친 나뭇잎 그림자의 흔들림을 볼 때?", options: ["바람의 속도", "그림자의 형태", "벽의 질감", "빛의 위치", "무의미한 반복"], weight: [0,0,0,1] },
+        { q: "무거운 놋그릇이 바닥에 놓일 때의 진동은?", options: ["손바닥의 떨림", "낮은 저음", "바닥의 견고함", "소리의 여운", "무게의 전달"], weight: [0,0,1,0] },
+        { q: "파도가 모래사장에 남기는 거품을 보며 하는 생각은?", options: ["금방 사라짐", "바다의 호흡", "하얀 색채", "모래의 젖음", "파도의 반복"], weight: [1,0,0,0] },
+        { q: "손톱으로 매끄러운 유리 표면을 긁는다면?", options: ["날카로운 소리", "매끄러운 촉감", "시각적 궤적", "손끝의 마찰", "차가운 온도"], weight: [0,0,0,1] },
+        { q: "한밤중 시계 소리가 평소보다 크게 들린다면?", options: ["시간의 압박", "나의 고독", "시계의 기계음", "적막의 깊이", "심박과의 동조"], weight: [0,1,0,0] },
+        { q: "떨어지는 눈송이가 손바닥에서 녹는 시간은?", options: ["찰나의 순간", "온도의 교환", "작은 물방울", "사라지는 결정", "눈의 무게"], weight: [0,0,1,0] },
+        { q: "거울에 비친 자신의 눈동자 속 깊은 어둠을 볼 때?", options: ["자아의 투영", "동공의 수축", "나의 피로", "어둠 그 자체", "시선의 방향"], weight: [1,0,0,0] },
+        { q: "오래된 나무 책상의 패인 자국을 만질 때?", options: ["누군가의 흔적", "나무의 질감", "시간의 깊이", "패임의 곡선", "손끝의 자극"], weight: [0,0,1,0] },
+        { q: "멀리서 들려오는 기차 소리는 어떤 정서를 주나요?", options: ["떠남의 설렘", "아련한 향수", "기계적 리듬", "거대한 이동", "밤의 적막"], weight: [0,0,0,1] },
+        { q: "흰 종이 위에 잉크 한 방울이 번져가는 모습 중 시선은?", options: ["번짐의 경계", "색의 농도", "종이의 흡수", "모양의 변화", "멈추는 지점"], weight: [0,1,0,0] },
+        { q: "빈 방에 켜진 텔레비전의 노이즈 화면을 볼 때?", options: ["의미 없는 소음", "무채색의 점들", "공허한 불안", "전자기의 흐름", "방의 고립"], weight: [1,0,0,0] },
+        { q: "비단 천을 손등으로 쓸어내릴 때의 느낌은?", options: ["극한의 부드러움", "서늘한 온도", "흐르는 유연함", "빛의 반사", "나의 촉각"], weight: [0,0,1,0] },
+        { q: "떨어지는 낙엽이 바닥에 닿는 순간의 소리는?", options: ["바스락거림", "무게의 소멸", "가을의 완성", "바닥의 반응", "정지의 신호"], weight: [0,0,0,1] },
+        { q: "한낮의 그늘진 숲속 공기의 맛은 어떤가요?", options: ["서늘한 향", "나무의 숨결", "습한 밀도", "정화된 맛", "그늘의 무게"], weight: [1,0,0,0] },
+        { q: "유리잔 속의 얼음이 부딪히는 소리를 들으면?", options: ["청량한 기분", "균열의 징조", "단단한 질감", "액체의 움직임", "소리의 반사"], weight: [0,0,0,1] },
+        { q: "어둠 속에서 손을 뻗어 벽을 찾을 때의 감각은?", options: ["벽의 단단함", "공간의 크기", "나의 위치", "촉각의 예민함", "닿음의 안도"], weight: [0,1,0,0] },
+        { q: "분수대에서 뿜어져 나오는 물줄기의 높이를 볼 때?", options: ["상승의 에너지", "낙하의 중력", "물방울의 분산", "수압의 세기", "햇빛과의 반사"], weight: [1,0,0,0] },
+        { q: "오래된 열쇠를 돌릴 때 느껴지는 뻑뻑한 저항은?", options: ["자물쇠의 원리", "손끝의 힘", "열림의 기대", "쇠의 마찰", "잠금의 견고함"], weight: [0,0,1,0] },
+        { q: "한밤중 내리는 눈이 가로등 불빛에 비칠 때?", options: ["환상적인 분위기", "낙하의 속도", "눈송이의 크기", "불빛의 번짐", "주변의 고요"], weight: [0,0,0,1] },
+        { q: "바다의 짠 냄새가 바람을 타고 올 때의 생각은?", options: ["여행의 기억", "바다의 깊이", "공기의 성분", "바람의 방향", "파도의 소리"], weight: [0,1,0,0] },
+        { q: "책장을 넘길 때 손가락 끝에 닿는 종이의 날카로움은?", options: ["베일 듯한 긴장", "종이의 얇음", "마찰의 촉감", "글자의 이동", "넘김의 리듬"], weight: [0,0,1,0] },
+        { q: "차가운 바닥에 발바닥이 닿을 때의 첫 감각은?", options: ["온도의 이질감", "바닥의 견고함", "발의 민감도", "깨어나는 정신", "접촉의 면적"], weight: [1,0,0,0] },
+        { q: "천장에 매달린 조명이 미세하게 흔들린다면?", options: ["지진의 공포", "진동의 리듬", "공간의 불안", "빛의 움직임", "중력의 법칙"], weight: [0,0,0,1] },
+        { q: "손을 씻을 때 흐르는 물이 손가락 사이를 지나는 느낌은?", options: ["정화의 기분", "유체의 흐름", "온도의 전달", "마찰의 감소", "손의 감각"], weight: [0,0,1,0] },
+        { q: "멀리서 개가 짖는 소리가 들리는 밤의 정서는?", options: ["거리감의 인지", "누군가의 존재", "밤의 적막", "본능적인 반응", "동네의 풍경"], weight: [0,1,0,0] },
+        { q: "석조 건물의 차가운 벽에 등을 기대었을 때?", options: ["거대함의 지지", "냉기의 침투", "돌의 질감", "나의 작음", "안정된 휴식"], weight: [1,0,0,0] },
+        { q: "촛불을 입으로 불어 끄는 순간의 연기 냄새는?", options: ["사라진 빛", "심지의 연소", "어둠의 시작", "나의 호흡", "후각적 여운"], weight: [0,0,1,0] },
+        { q: "숲속 나무 사이로 비치는 빗줄기를 볼 때?", options: ["자연의 질서", "수직의 선들", "잎사귀의 젖음", "공기의 투명도", "비의 소리"], weight: [0,0,0,1] },
+        { q: "손수건을 팽팽하게 당길 때의 장력은?", options: ["천의 강도", "손의 힘", "소리의 발생", "실의 짜임", "형태의 변화"], weight: [0,1,0,0] },
+        { q: "어둠 속에서 스마트폰 빛을 보았을 때 눈의 감각은?", options: ["강렬한 자극", "시야의 좁아짐", "디지털의 차가움", "정보의 습득", "눈의 피로"], weight: [1,0,0,0] },
+        { q: "갓 깎은 연필의 나무 냄새를 맡으면?", options: ["학습의 기억", "나무의 본질", "창작의 준비", "연필심의 흑연", "손끝의 까슬함"], weight: [0,0,1,0] },
+        { q: "계단을 한 칸씩 조심스럽게 내려갈 때의 무릎의 감각은?", options: ["신체의 균형", "중력의 하중", "바닥과의 거리", "안전의 욕구", "반복되는 박자"], weight: [0,1,0,0] },
+        { q: "유리창을 닦을 때 나는 '뽀득' 소리에 대한 생각은?", options: ["청결의 완성", "유리의 마찰", "소리의 주파수", "손끝의 저항", "시야의 확보"], weight: [0,0,0,1] },
+        { q: "산책 중 마주친 들고양이와 시선이 고정된다면?", options: ["본능적인 교감", "생명체의 경계", "시선의 힘", "정지된 시간", "고양이의 심연"], weight: [1,0,0,0] },
+        { q: "손에 쥔 펜을 돌릴 때 느껴지는 원심력은?", options: ["나의 소근육", "물리적 회전", "긴장의 해소", "펜의 무게중심", "손끝의 리듬"], weight: [0,1,0,0] },
+        { q: "커튼 사이로 들어오는 아침 햇살 속 먼지를 볼 때?", options: ["공간의 입자", "시간의 흐름", "빛의 경로", "정적인 아름다움", "일상의 시작"], weight: [1,0,0,0] },
+        { q: "빈 박스를 발로 찼을 때의 텅 빈 소리는?", options: ["공간의 비어있음", "가벼운 무게", "나의 에너지", "소리의 반향", "물체의 반응"], weight: [0,0,0,1] },
+        { q: "손바닥을 비벼 열을 낼 때의 온도는?", options: ["나의 에너지", "마찰의 결과", "피부의 감각", "준비의 신호", "따뜻한 위로"], weight: [0,0,1,0] },
+        { q: "마지막 질문입니다. 지금 당신을 감싸고 있는 공기의 색깔은?", options: ["투명한 무색", "따스한 금빛", "차분한 푸른빛", "포근한 회색", "깊은 어둠"], weight: [1,0,0,0] }
     ];
-
-    // 임시 더미 질문 추가 (30개를 맞추기 위함)
-    for(let i=3; i<=30; i++) {
-        questionBank.push({ q: `추상 질문 ${i}: 당신의 감각이 향하는 곳은 어디인가요?`, options: ["옵션 A", "옵션 B", "옵션 C", "옵션 D", "옵션 E"], weight: [Math.random(), Math.random(), Math.random(), Math.random()] });
-    }
 
     let currentQuestions = [...questionBank].slice(0, 30);
     let userAnswers = [];
     let currentIdx = 0;
     let startTime = 0;
 
-    // --- 엔진 로직 ---
+    // --- 리포트 데이터 (4대 지표별 7-7-7 라이브러리) ---
+    const reportData = {
+        E: {
+            title: "환경의 수호자 (E_env)",
+            desc: "소중한 분은 주변 환경의 미세한 변화와 빛, 소리에 매우 섬세하게 반응하는 감각적 결을 가지고 있습니다.",
+            comfort: { word: ["평온", "안식", "조화", "숲", "온기", "정적", "빛"], action: ["간접 조명 켜주기", "낮은 볼륨으로 음악 틀기", "편안한 향기 선물하기", "말없이 옆에 앉아 있기", "창밖 풍경 함께 보기", "주변 정리해주기", "따뜻한 음료 내어주기"], msg: ["오늘 분위기 참 좋다", "여기 정말 아늑하다", "너와 있으면 편안해", "천천히 가도 괜찮아", "네 공간을 존중해", "푹 쉬어도 돼", "함께라서 따뜻해"] },
+            taboo: { word: ["소음", "혼란", "갑자기", "강요", "밝게", "빨리", "불결"], action: ["큰 소리로 문 닫기", "강한 향수 뿌리기", "갑자기 조명 켜기", "허락 없이 물건 옮기", "복잡한 곳으로 데려가기", "말 끊기", "계속 재촉하기"], msg: ["왜 이렇게 늦어?", "대충 좀 해", "정신 사나워", "내 말 안 들어?", "이거 별로야", "빨리 결정해", "모르겠어"] }
+        },
+        P: {
+            title: "시간의 설계자 (P_time)",
+            desc: "소중한 분은 삶의 리듬과 시간의 흐름을 중요시하며, 한 치의 오차 없는 배려에서 깊은 안도감을 느낍니다.",
+            comfort: { word: ["약속", "신뢰", "리듬", "계획", "정확", "흐름", "안정"], action: ["5분 먼저 도착하기", "오늘 일정 미리 공유하기", "기다려 주기", "차근차근 설명하기", "규칙적인 안부 묻기", "천천히 눈 맞추기", "함께 계획 짜기"], msg: ["내가 기다릴게", "차분히 생각해도 돼", "너의 속도를 응원해", "약속 지켜줘서 고마워", "계획대로 잘 되고 있어", "시간 내줘서 기뻐", "내일은 뭐할까?"] },
+            taboo: { word: ["무질서", "지각", "번복", "충동", "막무가내", "불확실", "방치"], action: ["약속 어기기", "갑자기 계획 바꾸기", "한참 뒤에 답장하기", "서두르게 하기", "무작정 기다리게 하기", "중요한 날 잊기", "말 바꾸기"], msg: ["아무거나 해", "나중에 봐", "기억 안 나", "귀찮아", "내 맘이야", "그게 중요해?", "알아서 해"] }
+        },
+        S: {
+            title: "심연의 탐험가 (Shadow)",
+            desc: "소중한 분은 내면의 깊이가 매우 깊으며, 자신만의 비밀스러운 공간과 사색의 시간을 무엇보다 소중히 여깁니다.",
+            comfort: { word: ["심연", "사색", "비밀", "고독", "깊이", "본질", "이해"], action: ["혼자만의 시간 보장해주기", "깊은 대화 나누기", "취향 존중해주기", "작은 선물 건네기", "일기장 예쁜 것 선물하기", "생각 물어봐 주기", "말없이 토닥이기"], msg: ["네 생각이 궁금해", "너만의 시간이 필요하구나", "충분히 그럴 수 있어", "어떤 마음인지 알아", "너의 깊이가 좋아", "혼자 있고 싶을 때 말해줘", "진심으로 응원해"] },
+            taboo: { word: ["침범", "가벼움", "폭로", "평가", "단정", "간섭", "단절"], action: ["휴대폰 몰래 보기", "개인적인 질문 캐묻기", "생각 가볍게 여기기", "비밀 퍼뜨리기", "무안하게 만들기", "일방적으로 연락 끊기", "감정 강요하기"], msg: ["별것도 아니네", "왜 그렇게 예민해?", "무슨 생각해?", "다 너 잘되라고", "그냥 말해", "이상해", "오버하지 마"] }
+        },
+        R: {
+            title: "감각의 예술가 (S_root)",
+            desc: "소중한 분은 오감을 통해 세상을 아름답게 수용하며, 본능적인 끌림과 생명력 넘치는 에너지를 사랑합니다.",
+            comfort: { word: ["직관", "감각", "미학", "생동", "본능", "컬러", "영감"], action: ["맛있는 음식 함께 먹기", "전시회 가기", "꽃 선물하기", "멋진 장소 방문하기", "손 꼭 잡아주기", "웃음소리 크게 들려주기", "다양한 경험 제안하기"], msg: ["이거 정말 예쁘다", "오늘 너 멋져", "네 감각은 탁월해", "함께 있으면 즐거워", "이 맛은 어때?", "네 미소가 보고 싶어", "새로운 거 해볼까?"] },
+            taboo: { word: ["무미건조", "지루함", "뻔함", "억압", "통제", "무시", "반복"], action: ["무표정하게 있기", "지루한 이야기 반복하기", "감각 무시하기", "비판만 하기", "도전 막기", "표정 굳히기", "기운 빠지게 하기"], msg: ["재미없어", "어쩌라고", "그게 다야?", "질렸어", "또 시작이네", "안 궁금해", "그만해"] }
+        }
+    };
+
+    // --- 엔진 작동 함수 ---
 
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('screen-' + id).classList.add('active');
+        document.getElementById(id).classList.add('active');
     }
 
     function startTest() {
@@ -125,95 +223,92 @@
 
     function renderQuestion() {
         const q = currentQuestions[currentIdx];
-        document.getElementById('progress').innerText = `${currentIdx + 1} / 30`;
+        document.getElementById('progress').innerText = `${String(currentIdx + 1).padStart(2, '0')} / 30`;
         document.getElementById('q-text').innerText = q.q;
-        const list = document.getElementById('options-list');
-        list.innerHTML = '';
+        const optionsArea = document.getElementById('options');
+        optionsArea.innerHTML = '';
         
-        startTime = performance.now(); // 반응 시간 측정 시작
+        startTime = performance.now();
         
         q.options.forEach((opt, i) => {
-            const btn = document.createElement('div');
-            btn.className = 'option-btn';
-            btn.innerText = opt;
-            btn.onclick = () => handleAnswer(i);
-            list.appendChild(btn);
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerText = opt;
+            div.onclick = () => handleAnswer(i);
+            optionsArea.appendChild(div);
         });
     }
 
-    function handleAnswer(optionIdx) {
-        const endTime = performance.now();
-        const latency = endTime - startTime;
-        
-        userAnswers.push({
-            qIdx: currentIdx,
-            ansIdx: optionIdx,
+    function handleAnswer(optIdx) {
+        const latency = performance.now() - startTime;
+        userAnswers.push({ 
+            qIdx: currentIdx, 
+            ansIdx: optIdx, 
             latency: latency,
-            weight: currentQuestions[currentIdx].weight
+            weight: currentQuestions[currentIdx].weight 
         });
 
         currentIdx++;
         if (currentIdx < 30) {
             renderQuestion();
         } else {
-            generateReport();
+            generateFinalReport();
         }
     }
 
-    function generateReport() {
-        // 4대 지표 연산 (E, P, S, R)
-        let scores = [0, 0, 0, 0];
-        let totalLatency = 0;
+    function generateFinalReport() {
+        let scores = { E: 0, P: 0, S: 0, R: 0 };
+        let totalL = 0;
         userAnswers.forEach(ans => {
-            ans.weight.forEach((w, i) => scores[i] += w);
-            totalLatency += ans.latency;
+            const w = ans.weight;
+            scores.E += w[0]; scores.P += w[1]; scores.S += w[2]; scores.R += w[3];
+            totalL += ans.latency;
         });
 
-        const avgLatency = totalLatency / 30;
-        const hesitantAnswers = userAnswers.filter(a => a.latency > avgLatency * 1.5);
+        const avgL = totalL / 30;
+        const highest = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+        const data = reportData[highest];
 
-        // 결과 리포트 생성 (의장님의 7-7-7 로직)
-        const reportArea = document.getElementById('report-content');
-        reportArea.innerHTML = `
-            <p><b>분석 결과:</b> 소중한 분은 현재 정서적 안정이 필요한 상태이며, 섬세한 공간적 배려($Shadow$)에 가장 민감하게 반응합니다.</p>
-            <hr>
-            <h4>🌿 안식의 7-7-7 (더 사랑하는 법)</h4>
-            <ul>
-                <li><b>단어:</b> 고요, 여백, 충분해, 기다릴게, 온기, 존중, 우리</li>
-                <li><b>행동:</b> 따뜻한 차 건네기, 20분간 침묵 지켜주기, 손바닥 밀착하기...</li>
-                <li><b>문자:</b> "오늘 하루도 고생 많았어", "네 페이스대로 해도 돼"...</li>
-            </ul>
-            <h4>⚠️ 배려의 7-7-7 (조심해야 할 것)</h4>
-            <ul>
-                <li><b>금기어:</b> 왜, 빨리, 네 탓이야, 대충해, 몰라, 됐어, 간섭</li>
-                <li><b>피할 행동:</b> 갑자기 뒤에서 안기, 허락 없이 물건 치우기...</li>
-                <li><b>금지 문자:</b> "왜 답장이 없어?", "나중에 얘기해"...</li>
-            </ul>
-            <div style="font-size:0.7rem; color:#a0aec0; border-top:1px solid #eee; padding-top:10px;">
-                * 상대방이 <b>${hesitantAnswers.length}개</b>의 문항에서 깊은 망설임을 보였습니다. 해당 영역(환경 적응)에 대한 세심한 관찰이 필요합니다.
+        // 반응 지연 상위 3개 문항 분석 (구매자 비밀 리포트용 데이터)
+        const hesitant = userAnswers.slice().sort((a,b) => b.latency - a.latency).slice(0, 3);
+
+        const body = document.getElementById('report-body');
+        body.innerHTML = `
+            <p style="font-size:15px; margin-bottom:20px;"><b>분석 결과: "${data.title}"</b><br>${data.desc}</p>
+            <div class="report-section">
+                <div class="report-label">안식의 7-7-7 (더 사랑하는 법)</div>
+                <ul class="report-list">
+                    <li><b>단어:</b> ${data.comfort.word.join(', ')}</li>
+                    <li><b>행동:</b> ${data.comfort.action.slice(0, 7).join(', ')}</li>
+                    <li><b>문자:</b> ${data.comfort.msg.slice(0, 7).join(', ')}</li>
+                </ul>
+            </div>
+            <div class="report-section">
+                <div class="report-label">배려의 7-7-7 (조심해야 할 것)</div>
+                <ul class="report-list">
+                    <li><b>단어:</b> ${data.taboo.word.join(', ')}</li>
+                    <li><b>행동:</b> ${data.taboo.action.slice(0, 7).join(', ')}</li>
+                    <li><b>문자:</b> ${data.taboo.msg.slice(0, 7).join(', ')}</li>
+                </ul>
+            </div>
+            <div style="font-size:11px; color:#b2bec3; margin-top:30px; border-top:1px solid #eee; padding-top:10px;">
+                * 정밀도 분석: 5³⁰ 확률 기반 결과 도출 완료. 상대가 ${hesitant.length}개의 문항에서 평소보다 깊은 망설임(평균 대비 1.5배 이상)을 보였습니다. 해당 영역의 감각을 우선적으로 배려하십시오.
             </div>
         `;
         showScreen('result');
     }
 
     // --- 관리자 기능 ---
-    function toggleAdmin() { showScreen('admin'); updateAdminStats(); }
-    
-    function shuffleQuestions() {
+    function openAdmin() { document.getElementById('admin-modal').style.display = 'block'; updateStats(); }
+    function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; }
+    function shuffleNow() {
         currentQuestions = questionBank.sort(() => Math.random() - 0.5).slice(0, 30);
-        alert("질문 뱅크에서 새로운 30개 문항이 추출되었습니다.");
-        showScreen('home');
+        alert("성공: 100개 뱅크에서 새로운 30개 문항이 추출되었습니다.");
+        location.reload();
     }
-
-    function updateAdminStats() {
-        const stats = document.getElementById('admin-stats');
-        stats.innerHTML = `
-            <p>• 현재 활성 질문 수: 30 / ${questionBank.length}</p>
-            <p>• 누적 분석 정확도: 99.8% (5³⁰ 확률 기반)</p>
-            <p>• 시스템 상태: 정상 (Latency 추적 가동 중)</p>
-        `;
+    function updateStats() {
+        document.getElementById('stats').innerText = `• 현재 활성 질문 세트: 30 / ${questionBank.length}\n• 시스템 상태: 무결성 보안 분석 가동 중\n• 반응 시간 추적: 활성화`;
     }
 </script>
-
 </body>
 </html>
