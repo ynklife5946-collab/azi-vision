@@ -58,24 +58,18 @@
             margin-bottom: 15px; transition: transform 0.1s;
         }
 
-        /* [SURVEY UI] 버튼 색상 반응 추가 */
+        /* [SURVEY UI] */
         .opt-btn { 
             width: 100%; padding: 20px; margin-bottom: 12px; background: #111116; border: 1px solid var(--border); 
             color: #e2e8f0; border-radius: 12px; text-align: left; font-size: 1.05rem; 
-            height: auto; min-height: 60px; /* 높이 자동 조절 */
+            height: auto; min-height: 60px; 
             transition: transform 0.05s, background 0.05s, color 0.05s;
         }
-        /* 클릭/터치 시 즉각 색상 반전 (Cyan 배경 + Black 글씨) */
         .opt-btn:active, .opt-btn.active-state { 
-            background: var(--accent) !important; 
-            color: #000 !important; 
-            font-weight: 800;
-            transform: scale(0.96); 
-            border-color: var(--accent);
+            background: var(--accent) !important; color: #000 !important; font-weight: 800;
+            transform: scale(0.96); border-color: var(--accent);
         }
-        .touch-btn:active, .touch-btn.active-state {
-            transform: scale(0.96); opacity: 0.9;
-        }
+        .touch-btn:active, .touch-btn.active-state { transform: scale(0.96); opacity: 0.9; }
 
         /* [MODAL] */
         .modal-overlay {
@@ -97,16 +91,21 @@
         .tech-title { color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
         .tech-desc { color: #ccc; font-size: 0.9rem; line-height: 1.6; }
 
-        /* [REPORT] # 제거 및 가독성 */
+        /* [REPORT] */
         .zone-box { margin-bottom: 25px; border: 1px solid var(--border); border-radius: 16px; padding: 20px; background: rgba(255,255,255,0.02); }
         .zone-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
         .green { color: var(--accent); font-weight: 800; text-shadow: 0 0 10px rgba(0,242,255,0.3); } 
         .red { color: var(--love); font-weight: 800; text-shadow: 0 0 10px rgba(255,0,85,0.3); }
         .item-row { margin-bottom: 20px; }
         .item-head { display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center; }
-        .item-k { color: #fff; font-weight: 800; font-size: 1.05rem; } /* # 제거됨, 굵게 */
+        .item-k { color: #fff; font-weight: 800; font-size: 1.05rem; }
         .thermo { font-size: 0.75rem; letter-spacing: 1px; font-weight: 700; }
-        .msg-box { background: #222; padding: 14px; border-radius: 8px; font-size: 0.95rem; color: #fff; border-left: 3px solid var(--accent); margin-top: 8px; }
+        .msg-box { background: #222; padding: 14px; border-radius: 8px; font-size: 0.95rem; color: #fff; border-left: 3px solid var(--accent); margin-top: 8px; cursor: default; }
+        
+        /* 복사 가능한 메시지 스타일 */
+        .copy-enabled { cursor: pointer; position: relative; transition: background 0.2s; }
+        .copy-enabled:active { background: #333; }
+        .copy-enabled::after { content: '복사'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: var(--sub); border: 1px solid #444; padding: 2px 6px; border-radius: 4px; opacity: 0.6; }
 
         .progress-bar { height: 4px; background: #111; width: 100%; position: absolute; top: 0; left: 0; }
         .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
@@ -141,11 +140,6 @@
                 <div class="tech-title">4. 감각 우회 설계 (Bypass)</div>
                 <div class="tech-desc">직접적인 연애 질문을 하지 않습니다. 빛, 소리, 공간에 대한 30가지 추상 자극을 통해 본능적 기질을 추출합니다.</div>
             </div>
-            <div class="tech-card">
-                <span class="tech-badge">OUTPUT</span>
-                <div class="tech-title">5. 양면 5-5-5 프로토콜</div>
-                <div class="tech-desc">무엇을 해야 할지(Green)보다 무엇을 하지 말아야 할지(Red)가 더 중요합니다. 사랑과 금기를 완벽하게 대칭시켜 제공합니다.</div>
-            </div>
             <div style="text-align:center; padding-bottom:20px;">
                 <button class="btn-main touch-btn" onclick="toggleModal('techModal', false)">확인 완료</button>
             </div>
@@ -154,8 +148,8 @@
 </div>
 
 <div id="cheerModal" class="modal-overlay">
-    <div class="modal-content" style="height:auto; max-width:320px; text-align:center;">
-        <div style="padding:30px;">
+    <div class="modal-content" style="height:auto; max-width:320px; text-align:center; border:none;">
+        <div style="padding:30px; background:#111; border:1px solid var(--accent); border-radius:20px;">
             <div style="font-size:3rem; margin-bottom:20px;">🔥</div>
             <h2 style="color:#fff; margin-bottom:10px;">잠시만요!</h2>
             <p style="color:#ccc; margin-bottom:20px;">
@@ -168,15 +162,22 @@
     </div>
 </div>
 
-<div class="app active" id="v-landing">
-    <header>
+<div class="app active" id="v-landing" style="justify-content:center;"> <header>
         <span class="logo">SY-ON</span>
         <h1>사랑에도<br>번역기가 필요합니다</h1>
         <p class="desc">오해하지 않고, 상처 주지 않고<br>서로를 가장 깊이 아껴주는 과학적 방법</p>
     </header>
+
+    <div style="padding: 0 25px; margin-bottom:30px; opacity:0.8; text-align:center;">
+        <div style="font-size:0.75rem; color:var(--sub); margin-bottom:10px; letter-spacing:2px;">[SY-ON ALGORITHM]</div>
+        <div style="color:var(--accent); font-size:1.1rem; overflow-x:auto;">
+            $$ M = \oint_{t=0}^{24} \left( \frac{P_{time} \times E_{env}}{\sigma(Shadow)} \right) \cdot S_{root} \, dt $$
+        </div>
+    </div>
+
     <div style="padding: 0 25px 40px;">
         <button class="btn-ghost touch-btn" onclick="toggleModal('techModal', true)">🔬 SY-ON 9대 분석 원리 보기</button>
-        <div style="height:20px;"></div>
+        <div style="height:15px;"></div>
         <button class="btn-main touch-btn" style="background:#fff; color:#000;" onclick="alert('현재 무료 베타 기간입니다.')">프리미엄 리포트 구매하기</button>
         <button class="btn-main touch-btn" onclick="go('v-buyer-init')">이미 구매하셨나요? (시작하기)</button>
     </div>
@@ -265,24 +266,18 @@
 </div>
 
 <script>
-    // --- [PHYSICS & COLOR] 모바일 터치 반응 엔진 (색상 반전 추가) ---
+    // --- [PHYSICS] 터치 반응 ---
     function addTouchEffect() {
         const btns = document.querySelectorAll('.touch-btn, .opt-btn');
         btns.forEach(btn => {
-            btn.addEventListener('touchstart', function() {
-                this.classList.add('active-state'); // 색상 반전 클래스 추가
-            }, {passive: true});
-            
-            btn.addEventListener('touchend', function() {
-                const self = this;
-                setTimeout(() => {
-                    self.classList.remove('active-state'); // 복구
-                }, 150);
+            btn.addEventListener('touchstart', function() { this.classList.add('active-state'); }, {passive: true});
+            btn.addEventListener('touchend', function() { 
+                const self = this; setTimeout(() => { self.classList.remove('active-state'); }, 150); 
             }, {passive: true});
         });
     }
 
-    // --- [DATA] 30개 문항 (풀 텍스트 - 검수 완료) ---
+    // --- [DATA] 30개 문항 (Full Text) ---
     const qData = [
         {q:"낯선 장소에서 당신의 감각이 가장 먼저 반응하는 요소는 무엇인가요?", a:["피부에 닿는 공기의 온도와 습도","눈을 찌르거나 은은한 조명의 밝기","귀를 울리는 주변의 소음과 말소리","코끝에 스치는 그 공간만의 냄새","사물들이 놓여있는 배치와 질서"], t:"E"},
         {q:"조용한 카페에서 본능적으로 당신의 발걸음이 향하는 곳은 어디인가요?", a:["심리적 안정감을 주는 벽을 등진 구석 자리","밖이 훤히 보이는 탁 트인 창가 자리","카페 전체를 조망할 수 있는 중앙 테이블","사람들의 시선이 닿지 않는 가장 어두운 안쪽","언제든 나갈 수 있는 출입구와 가장 가까운 자리"], t:"P"},
@@ -385,7 +380,7 @@
         document.querySelectorAll('.app').forEach(el => el.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
-        if(id==='v-guest' || id==='v-survey') addTouchEffect(); // 터치 효과 바인딩
+        if(id==='v-guest' || id==='v-survey') addTouchEffect(); 
     }
     function toggleModal(id, show) {
         const m = document.getElementById(id);
@@ -408,10 +403,10 @@
         tStart = performance.now();
         q.a.forEach((txt, i) => {
             const btn = document.createElement('button');
-            btn.className = 'opt-btn'; btn.innerText = txt;
+            btn.className = 'opt-btn touch-btn'; btn.innerText = txt;
             btn.onclick = () => next(i); box.appendChild(btn);
         });
-        addTouchEffect(); // 버튼 생성 후 다시 바인딩
+        addTouchEffect();
     }
 
     function next(idx) {
@@ -442,7 +437,11 @@
         navigator.clipboard.writeText(window.location.href.split('?')[0]+"?key="+key).then(()=>alert("키 복사 완료"));
     }
 
-    // --- [RESULT] ---
+    // --- [RESULT: 카톡 복사 기능 추가] ---
+    function copyText(txt) {
+        navigator.clipboard.writeText(txt).then(() => alert("멘트가 복사되었습니다."));
+    }
+
     function renderReport(key) {
         try {
             const decoded = atob(key);
@@ -465,14 +464,15 @@
             document.getElementById('type-name').innerText = data.name;
             drawChart(scores);
             
+            // Green: copy-enabled 클래스와 onclick 추가
             const gBox = document.getElementById('green-list');
             greens.forEach(item => {
-                // # 제거됨: item.k만 출력
-                gBox.innerHTML += `<div class="item-row"><div class="item-head"><span class="item-k">${item.k}</span><span class="green">중요도 ${item.g}</span></div><div class="action-text">${item.act}</div><div class="msg-box">💬 "${item.msg}"</div></div>`;
+                gBox.innerHTML += `<div class="item-row"><div class="item-head"><span class="item-k">${item.k}</span><span class="green">중요도 ${item.g}</span></div><div class="action-text">${item.act}</div><div class="msg-box copy-enabled" onclick="copyText('${item.msg}')">💬 "${item.msg}"</div></div>`;
             });
+
+            // Red: 복사 기능 없음
             const rBox = document.getElementById('red-list');
             reds.forEach(item => {
-                // # 제거됨: item.k만 출력
                 rBox.innerHTML += `<div class="item-row"><div class="item-head"><span class="item-k" style="color:#ffcccc">${item.k}</span><span class="red">치명도 ${item.g}</span></div><div class="action-text">${item.act}</div><div class="msg-box" style="border-left-color:var(--love)">💬 "${item.msg}"</div></div>`;
             });
             
