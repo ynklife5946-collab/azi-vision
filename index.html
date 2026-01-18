@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <meta property="og:title" content="SYNAPSE ON : 사랑의 번역기">
-    <meta property="og:description" content="서로의 마음을 가장 깊게 이해하기 위한 9단계 정밀 분석.">
+    <meta property="og:title" content="SY-ON : 사랑의 번역기">
+    <meta property="og:description" content="오해하지 않고 사랑하기 위한 9단계 정밀 분석 보고서">
     <meta property="og:image" content="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=1000&auto=format&fit=crop">
     <meta property="og:type" content="website">
 
-    <title>시냅스 온 : [SYNAPSE ON]</title>
+    <title>SY-ON : [Deep Analysis]</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -17,105 +17,119 @@
     <style>
         /* [DESIGN SYSTEM: Deep Love & Neon Tech] */
         :root { 
-            --bg: #050508; --card: #111116; 
-            --accent: #00f2ff; /* 이성/분석 */
-            --love: #ff0055;   /* 감성/경고 */
+            --bg: #050508; --card: #121218; 
+            --accent: #00f2ff; /* 이성/분석 Cyan */
+            --love: #ff0055;   /* 감성/경고 Pink */
             --kakao: #FEE500;  
-            --text: #ffffff; --sub: #94a3b8; --border: #1a1a25; 
+            --text: #ffffff; --sub: #94a3b8; --border: #1f1f2e; 
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, sans-serif; }
         body { 
-            background: var(--bg); color: var(--text); line-height: 1.6; word-break: keep-all; 
-            background-image: radial-gradient(circle at 50% 10%, rgba(0, 242, 255, 0.05) 0%, transparent 40%);
+            background: var(--bg); color: var(--text); line-height: 1.7; word-break: keep-all; 
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 242, 255, 0.08) 0%, transparent 50%);
         }
         
-        .app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: none; flex-direction: column; background: rgba(5, 5, 8, 0.98); border-left: 1px solid var(--border); border-right: 1px solid var(--border); position: relative; animation: fadeIn 0.5s ease-out; }
+        .app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: none; flex-direction: column; background: rgba(5, 5, 8, 0.98); border-left: 1px solid var(--border); border-right: 1px solid var(--border); position: relative; animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
         .app.active { display: flex !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Typography */
-        header { text-align: center; padding: 40px 20px 20px; }
-        .logo { font-size: 1.1rem; font-weight: 900; color: var(--accent); letter-spacing: 4px; margin-bottom: 10px; display: block; text-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
-        h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 10px; background: linear-gradient(to right, #fff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .desc { font-size: 0.9rem; color: var(--sub); line-height: 1.6; margin-bottom: 30px; }
+        /* [HEADER] 좌측 상단 로고 & 여백 확보 */
+        header { padding: 30px 25px 10px; text-align: left; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: var(--accent); letter-spacing: -0.5px; margin-bottom: 20px; display: inline-block; text-shadow: 0 0 15px rgba(0, 242, 255, 0.4); font-family: 'Montserrat', sans-serif; }
+        .page-title { font-size: 1.8rem; font-weight: 800; line-height: 1.3; margin-bottom: 10px; background: linear-gradient(to right, #fff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-desc { font-size: 0.95rem; color: var(--sub); line-height: 1.6; margin-bottom: 40px; font-weight: 400; }
 
-        /* [HAPTIC BUTTONS] 모바일 쫀득한 터치감 구현 */
+        /* [BUTTONS] JS 물리 엔진 적용 대상 (.touch-effect) */
         .btn-kakao {
             background: var(--kakao); color: #000; border: none; width: 100%; padding: 18px; 
-            font-size: 1rem; font-weight: 800; border-radius: 12px; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 4px 15px rgba(254, 229, 0, 0.2); 
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1); 
+            font-size: 1.05rem; font-weight: 800; border-radius: 14px; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 4px 20px rgba(254, 229, 0, 0.15); margin-top: 10px;
+            transition: transform 0.1s;
         }
-        .btn-kakao:active { transform: scale(0.96); opacity: 0.9; } 
         .btn-kakao::before { content: '💬'; font-size: 1.2rem; }
 
         .btn-main { 
             background: var(--accent); color: #000; border: none; width: 100%; padding: 18px; 
-            font-size: 1.1rem; font-weight: 800; border-radius: 12px; cursor: pointer; 
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); 
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 15px;
+            font-size: 1.1rem; font-weight: 800; border-radius: 14px; cursor: pointer; 
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.2); margin-bottom: 15px;
+            transition: transform 0.1s;
         }
-        .btn-main:active { transform: scale(0.96); opacity: 0.9; }
 
         .btn-ghost {
-            background: rgba(255,255,255,0.05); color: var(--accent); border: 1px solid rgba(0,242,255,0.3);
-            width: 100%; padding: 15px; font-size: 0.95rem; font-weight: 700; border-radius: 12px; cursor: pointer;
+            background: rgba(255,255,255,0.03); color: var(--accent); border: 1px solid rgba(0,242,255,0.2);
+            width: 100%; padding: 16px; font-size: 0.95rem; font-weight: 700; border-radius: 14px; cursor: pointer;
             margin-bottom: 15px; transition: all 0.2s;
         }
-        .btn-ghost:active { transform: scale(0.96); background: rgba(0,242,255,0.1); }
+        
+        /* 눌림 효과 (JS로 제어) */
+        .pressed { transform: scale(0.96) !important; opacity: 0.8; }
 
-        /* [MODAL] 9대 분석 원리 팝업 */
+        /* [MODAL] 9대 기술 전용관 */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); z-index: 999; display: none; 
-            justify-content: center; align-items: end; 
+            background: rgba(0,0,0,0.9); z-index: 9999; display: none; 
+            justify-content: center; align-items: flex-end; backdrop-filter: blur(5px);
         }
-        .modal-overlay.open { display: flex; animation: fadeUp 0.3s ease-out; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-overlay.open { display: flex; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
         .modal-content {
-            background: #111; width: 100%; max-width: 480px; height: 85vh; 
-            border-top-left-radius: 20px; border-top-right-radius: 20px; 
-            padding: 30px 20px; overflow-y: auto; border-top: 2px solid var(--accent);
-            box-shadow: 0 -10px 40px rgba(0, 242, 255, 0.1);
+            background: #0a0a0e; width: 100%; max-width: 480px; height: 85vh; 
+            border-top-left-radius: 24px; border-top-right-radius: 24px; 
+            padding: 30px 25px; overflow-y: auto; border-top: 1px solid var(--accent);
+            box-shadow: 0 -10px 50px rgba(0, 242, 255, 0.15);
         }
-        .tech-card { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #222; }
-        .tech-badge { font-size: 0.7rem; color: #000; background: var(--accent); padding: 3px 8px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 8px; }
-        .tech-title { color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
-        .tech-desc { color: #bbb; font-size: 0.9rem; line-height: 1.6; }
+        .tech-card { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #222; }
+        .tech-badge { font-size: 0.65rem; color: #000; background: var(--accent); padding: 4px 8px; border-radius: 4px; font-weight: 900; display: inline-block; margin-bottom: 10px; letter-spacing: 1px; }
+        .tech-title { color: #fff; font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
+        .tech-desc { color: #ccc; font-size: 0.95rem; line-height: 1.6; }
 
-        /* [REPORT UI] 고선명 텍스트 */
-        .zone-box { margin-bottom: 25px; border: 1px solid var(--border); border-radius: 16px; padding: 20px; background: rgba(255,255,255,0.02); }
-        .zone-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #222; }
-        .z-title { font-weight: 800; font-size: 1rem; letter-spacing: 1px; }
-        .green { color: var(--accent); text-shadow: 0 0 10px rgba(0,242,255,0.3); }
-        .red { color: var(--love); text-shadow: 0 0 10px rgba(255,0,85,0.3); }
+        /* [REPORT UI] 압도적 분량의 리포트 */
+        .dna-code { font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--sub); text-align: center; margin-bottom: 20px; letter-spacing: 2px; opacity: 0.7; }
         
-        .item-row { margin-bottom: 18px; }
-        .item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .item-keyword { font-size: 1rem; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; } /* 밝은 흰색 */
-        .thermo { font-size: 0.75rem; letter-spacing: 2px; }
+        /* Section 1: Narrative */
+        .narrative-box { margin-bottom: 40px; padding: 0 10px; }
+        .narrative-text { font-size: 1rem; color: #e2e8f0; line-height: 1.8; margin-bottom: 20px; text-align: justify; }
+        .narrative-highlight { color: #fff; font-weight: 700; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
+
+        /* Section 2: Operation Spec */
+        .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 40px; }
+        .spec-card { background: #1a1a20; padding: 15px; border-radius: 12px; border: 1px solid #2a2a35; }
+        .spec-label { font-size: 0.75rem; color: var(--sub); display: block; margin-bottom: 5px; }
+        .spec-value { font-size: 1rem; color: var(--accent); font-weight: 800; }
+        .spec-value.red { color: var(--love); }
+
+        /* Section 3: 5-5-5 Protocol */
+        .zone-box { margin-bottom: 30px; border: 1px solid var(--border); border-radius: 18px; padding: 25px 20px; background: rgba(255,255,255,0.02); }
+        .zone-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #2a2a35; }
+        .z-title { font-weight: 900; font-size: 1.1rem; letter-spacing: -0.5px; }
+        .green { color: var(--accent); text-shadow: 0 0 15px rgba(0,242,255,0.2); }
+        .red { color: var(--love); text-shadow: 0 0 15px rgba(255,0,85,0.2); }
+        
+        .item-row { margin-bottom: 25px; }
+        .item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .item-keyword { font-size: 1.05rem; font-weight: 800; color: #ffffff; letter-spacing: -0.3px; }
+        .thermo { font-size: 0.7rem; letter-spacing: 2px; font-weight: 700; }
         .t-high { color: var(--love); } .t-med { color: var(--accent); }
         
-        .action-text { font-size: 0.95rem; color: #e2e8f0; margin-bottom: 10px; line-height: 1.5; font-weight: 400; }
+        .action-text { font-size: 0.95rem; color: #cbd5e1; margin-bottom: 12px; line-height: 1.6; font-weight: 400; }
+        
+        /* 고선명 톡 메시지 */
         .msg-box { 
-            background: #1e1e24; padding: 12px 15px; border-radius: 8px; 
-            font-size: 0.95rem; color: #ffffff; border-left: 3px solid var(--accent); cursor: pointer; 
-            font-weight: 500; letter-spacing: 0.3px;
+            background: #252530; padding: 14px 18px; border-radius: 10px; 
+            font-size: 0.95rem; color: #ffffff; border-left: 3px solid var(--accent); 
+            font-weight: 500; letter-spacing: 0.2px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
-        .msg-box:active { background: #333; transform: scale(0.98); }
-
+        
         /* [SURVEY UI] */
         .opt-btn { 
-            width: 100%; padding: 18px; margin-bottom: 10px; background: #111116; border: 1px solid var(--border); 
-            color: #e2e8f0; border-radius: 12px; text-align: left; transition: transform 0.1s; 
-            font-size: 1rem;
+            width: 100%; padding: 20px; margin-bottom: 12px; background: #16161c; border: 1px solid var(--border); 
+            color: #e2e8f0; border-radius: 14px; text-align: left; font-size: 1.05rem; 
+            transition: border 0.2s;
         }
-        .opt-btn:active { background: var(--accent); color: #000; font-weight: 800; transform: scale(0.96); }
-        .progress-bar { height: 3px; background: #111; width: 100%; }
-        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
+        .progress-bar { height: 4px; background: #111; width: 100%; position: fixed; top: 0; left: 0; z-index: 100; max-width: 480px; }
+        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 0 10px var(--accent); }
 
     </style>
 </head>
@@ -123,148 +137,146 @@
 
 <div id="techModal" class="modal-overlay">
     <div class="modal-content">
-        <div style="text-align:center; margin-bottom:30px;">
-            <span class="logo">SYNAPSE ON</span>
-            <h2 style="color:#fff;">9-CORE ANALYSIS ENGINE</h2>
-            <p style="color:var(--sub); font-size:0.8rem;">9해(垓) 3132경의 확률을 뚫는 정밀 분석</p>
+        <div style="text-align:center; margin-bottom:40px;">
+            <span class="logo">SY-ON</span>
+            <h2 style="color:#fff; font-size:1.5rem;">9-CORE ENGINE</h2>
+            <p style="color:var(--sub); font-size:0.85rem; margin-top:5px;">인간 관계를 해석하는 가장 정밀한 도구</p>
         </div>
         
         <div class="tech-card">
             <span class="tech-badge">DATA MINING</span>
             <div class="tech-title">1. 마이크로 레이턴시 추적</div>
-            <p class="tech-desc">말은 꾸며낼 수 있지만, 반응 속도는 거짓말을 못 합니다. 0.001초 단위의 응답 지연 시간을 측정하여 무의식적 갈등 구간과 트라우마 포인트를 식별합니다.</p>
-        </div>
-        <div class="tech-card">
-            <span class="tech-badge">SENSOR</span>
-            <div class="tech-title">2. 감각 우회 설계</div>
-            <p class="tech-desc">사회적 가면(Persona)을 무력화하기 위해 직접적인 질문을 하지 않습니다. 빛, 소리, 공간에 대한 30가지 추상 자극을 통해 본능적 기질을 추출합니다.</p>
+            <p class="tech-desc">0.001초 단위의 응답 지연 시간을 측정하여, 사용자가 의식적으로 숨기려 했던 심리적 갈등 구간과 트라우마 포인트를 식별합니다.</p>
         </div>
         <div class="tech-card">
             <span class="tech-badge">ALGORITHM</span>
-            <div class="tech-title">3. 동적 조립 엔진 (Dynamic Assembly)</div>
-            <p class="tech-desc">고정된 유형(Type)은 없습니다. 당신의 선택 하나하나가 유전자가 되어 실시간으로 조립됩니다. 전 세계 인구 중 당신과 똑같은 결과는 존재하지 않습니다.</p>
-            <div style="background:#000; padding:10px; font-size:0.7rem; color:#666; margin-top:5px; border-radius:5px;">$$ UniqueID = \sum_{i=1}^{30} Hash(Choice_i \times Latency_i) $$</div>
+            <div class="tech-title">2. 동적 조립 엔진 (Dynamic Assembly)</div>
+            <p class="tech-desc">고정된 유형(MBTI식)을 거부합니다. 사용자의 답변 하나하나가 유전자가 되어 실시간으로 조립되므로, 전 세계에 단 하나뿐인 결과지가 생성됩니다.</p>
+            <div style="background:#000; padding:12px; font-size:0.75rem; color:#888; margin-top:10px; border-radius:8px; font-family:monospace;">$$ UniqueID = \sum_{i=1}^{30} Hash(Choice_i \times Latency_i) $$</div>
         </div>
         <div class="tech-card">
             <span class="tech-badge">NEUROSCIENCE</span>
-            <div class="tech-title">4. 다미주 신경 이론</div>
-            <p class="tech-desc">상대의 신경계가 언제 '안전'하고 언제 '동결'되는지 분석하여, 신경을 안정시키는 구체적인 행동(목소리 톤, 스킨십)을 처방합니다.</p>
+            <div class="tech-title">3. 다미주 신경 이론 (Polyvagal)</div>
+            <p class="tech-desc">상대의 신경계가 '안전 모드'인지 '방어 모드'인지 분석하여, 즉각적으로 안정을 주는 목소리 톤(Hz)과 접촉 방식을 처방합니다.</p>
         </div>
-        <div class="tech-card">
-            <span class="tech-badge">PSYCHOLOGY</span>
-            <div class="tech-title">5. 프록세믹스 공간학</div>
-            <p class="tech-desc">심리적 안전거리를 계산하여 최적의 물리적 위치(앞자리, 옆자리, 90도 등)를 지정합니다.</p>
-        </div>
-         <div class="tech-card">
-            <span class="tech-badge">BEHAVIOR</span>
-            <div class="tech-title">6. 자기 결정성 이론</div>
-            <p class="tech-desc">통제 욕구가 강한 유형에게 거부감 없이 원하는 것을 얻어내는 '선택 설계 화법'을 적용합니다.</p>
-        </div>
-         <div class="tech-card">
-            <span class="tech-badge">CHRONO</span>
-            <div class="tech-title">7. 시간 심리학</div>
-            <p class="tech-desc">상대방의 방어기제가 가장 약해지는 골든 타임과 절대 건드리면 안 되는 레드 타임을 분석합니다.</p>
-        </div>
-         <div class="tech-card">
-            <span class="tech-badge">OUTPUT</span>
-            <div class="tech-title">8. 양면 5-5-5 프로토콜</div>
-            <p class="tech-desc">사랑을 채우는 공략(Green)과 상처를 주는 금기(Red)를 완벽하게 대칭시켜 제공합니다.</p>
-        </div>
-         <div class="tech-card" style="border-bottom:none;">
-            <span class="tech-badge">VISUAL</span>
-            <div class="tech-title">9. 중요도 온도계</div>
-            <p class="tech-desc">관계 생존에 치명적인 요소에는 붉은색 게이지를 부착하여 시각적 경각심을 줍니다.</p>
+        <div class="tech-card" style="border-bottom:none;">
+             <p style="text-align:center; color:#666; font-size:0.8rem;">...외 6가지 핵심 기술 탑재</p>
         </div>
         
-        <button class="btn-main" onclick="toggleModal(false)">분석 원리 확인 완료 (닫기)</button>
+        <button class="btn-main touch-effect" onclick="toggleModal(false)">확인 완료 (닫기)</button>
     </div>
 </div>
 
-<div class="app" id="v-landing">
+<div class="app active" id="v-landing">
     <header>
-        <span class="logo">SYNAPSE ON</span>
-        <h1>사랑에도<br>번역기가 필요합니다</h1>
-        <p class="desc">오해하지 않고, 상처 주지 않고<br>서로를 가장 깊이 아껴주는 과학적 방법</p>
+        <span class="logo">SY-ON</span>
+        <h1 class="page-title">사랑에도<br>번역기가 필요합니다</h1>
+        <p class="page-desc">오해하지 않고, 상처 주지 않고<br>서로를 가장 깊이 아껴주는 과학적 방법</p>
     </header>
 
-    <div style="padding: 0 20px 40px;">
-        <button class="btn-ghost" onclick="toggleModal(true)">🔬 SY-ON 9대 분석 원리 보기</button>
-        <div style="height:20px;"></div>
-        <button class="btn-main" style="background:#fff; color:#000;" onclick="alert('현재 베타 기간으로 무료 이용 가능합니다.')">프리미엄 리포트 구매하기</button>
-        <button class="btn-main" onclick="go('v-buyer-init')">이미 구매하셨나요? (시작하기)</button>
+    <div style="padding: 0 25px 50px;">
+        <button class="btn-ghost touch-effect" onclick="toggleModal(true)">🔬 SY-ON 9대 분석 원리 보기</button>
+        <div style="height:30px;"></div>
+        <button class="btn-main touch-effect" style="background:#fff; color:#000;" onclick="alert('현재 베타 기간으로 무료 이용 가능합니다.')">프리미엄 리포트 구매하기</button>
+        <button class="btn-main touch-effect" onclick="go('v-buyer-init')">이미 구매하셨나요? (시작하기)</button>
     </div>
 </div>
 
 <div class="app" id="v-buyer-init">
     <header>
         <span class="logo">INVITATION</span>
-        <h1>소중한 사람을<br>초대해 주세요</h1>
-        <p class="desc">아래 버튼을 눌러 파트너에게<br>초대장을 보내세요.</p>
+        <h1 class="page-title">소중한 사람을<br>초대해 주세요</h1>
+        <p class="page-desc">아래 버튼을 눌러 파트너에게<br>초대장을 보내세요.</p>
     </header>
-    <div style="padding: 20px;">
-        <div style="background:#111; padding:20px; border-radius:12px; text-align:center; margin-bottom:20px; color:#fff;">
+    <div style="padding: 25px;">
+        <div style="background:#111; padding:25px; border-radius:16px; text-align:center; margin-bottom:25px; color:#fff; border:1px solid #222;">
             🎫 <b>초대 링크 생성 완료</b><br>
-            <span style="font-size:0.8rem; color:var(--sub);">상대방은 결과를 볼 수 없으며,<br>데이터는 암호화되어 당신에게만 도착합니다.</span>
+            <span style="font-size:0.85rem; color:var(--sub); display:block; margin-top:8px;">상대방은 결과를 볼 수 없으며,<br>데이터는 암호화되어 당신에게만 도착합니다.</span>
         </div>
-        <button class="btn-kakao" onclick="copyInvite()">카카오톡으로 초대장 보내기</button>
+        <button class="btn-kakao touch-effect" onclick="copyInvite()">카카오톡으로 초대장 보내기</button>
     </div>
 </div>
 
 <div class="app" id="v-guest">
     <header>
         <span class="logo">DEEP LOVE</span>
-        <h1>당신을 더 깊이 사랑하기 위한<br>질문입니다.</h1>
-        <p class="desc">정답은 없습니다.<br>당신의 감각이 이끄는 대로 선택해 주세요.</p>
+        <h1 class="page-title">당신을 더 깊이 사랑하기 위한<br>질문입니다.</h1>
+        <p class="page-desc">정답은 없습니다.<br>당신의 감각이 이끄는 대로 선택해 주세요.</p>
     </header>
-    <div style="padding: 20px;">
-        <button class="btn-main" onclick="startSurvey()">질문 시작하기</button>
+    <div style="padding: 25px;">
+        <button class="btn-main touch-effect" onclick="startSurvey()">질문 시작하기</button>
     </div>
 </div>
 
 <div class="app" id="v-survey">
     <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
-    <div style="padding: 30px 20px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <div style="padding: 40px 25px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
         <div id="q-num" style="color:var(--accent); font-weight:800; font-size:0.9rem; margin-bottom:20px;">QUESTION 01</div>
-        <div id="q-text" style="font-size:1.4rem; font-weight:700; margin-bottom:40px; color:#fff; line-height:1.4;"></div>
+        <div id="q-text" style="font-size:1.5rem; font-weight:700; margin-bottom:40px; color:#fff; line-height:1.4;"></div>
         <div id="opt-box"></div>
     </div>
     <div style="padding:20px; text-align:center;">
-        <button onclick="prevQ()" style="background:none; border:none; color:var(--sub); text-decoration:underline; cursor:pointer;">&lt; 이전으로</button>
+        <button onclick="prevQ()" style="background:none; border:none; color:var(--sub); text-decoration:underline; cursor:pointer; padding:10px;">&lt; 이전으로</button>
     </div>
 </div>
 
 <div class="app" id="v-seal">
-    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:20px; text-align:center;">
-        <div style="font-size:3rem; margin-bottom:20px;">💌</div>
-        <h2>마음이 봉인되었습니다</h2>
-        <p class="desc" style="margin-top:10px;">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:25px; text-align:center;">
+        <div style="font-size:3.5rem; margin-bottom:25px; animation: pulse 2s infinite;">💌</div>
+        <h2 style="color:#fff; margin-bottom:10px;">마음이 봉인되었습니다</h2>
+        <p class="page-desc">
             솔직한 답변 감사합니다.<br>
             이 데이터는 오직 당신을 아껴줄<br>
             단 한 사람에게만 전달됩니다.
         </p>
         <div id="key-area" style="width:100%; display:none; animation:fadeIn 1s;">
-            <button class="btn-kakao" onclick="sendKey()">카카오톡으로 결과 보내기</button>
+            <button class="btn-kakao touch-effect" onclick="sendKey()">카카오톡으로 결과 보내기</button>
         </div>
     </div>
 </div>
 
 <div class="app" id="v-report">
-    <header style="padding-bottom:10px;">
+    <header>
         <span class="logo">LOVE REPORT</span>
-        <h1>상대방 사용 설명서</h1>
+        <h1 class="page-title">심층 분석 보고서</h1>
     </header>
     
-    <div style="padding: 20px;">
-        <div style="text-align:center; font-family:monospace; color:var(--sub); font-size:0.7rem; margin-bottom:20px;">
-            DNA-CODE: <span id="soul-id" style="color:var(--accent);">GENERATING...</span>
-        </div>
+    <div style="padding: 0 25px 50px;">
+        <div class="dna-code" id="soul-id">DNA-CODE: GENERATING...</div>
 
-        <div style="position:relative; height:260px; margin-bottom:10px;">
+        <div style="position:relative; height:280px; margin-bottom:20px;">
             <canvas id="radarChart"></canvas>
         </div>
-        <p style="text-align:center; color:var(--accent); font-size:0.9rem; margin-bottom:30px; font-weight:700;">
+        <p style="text-align:center; color:var(--accent); font-size:1rem; margin-bottom:40px; font-weight:800; letter-spacing:1px;">
             CORE TYPE: <span id="type-name">분석 중...</span>
         </p>
+
+        <div class="narrative-box">
+            <h3 style="color:#fff; margin-bottom:15px; border-left:3px solid var(--accent); padding-left:10px;">1. 종합 분석 (Analysis)</h3>
+            <div id="narrative-content" class="narrative-text"></div>
+        </div>
+
+        <div class="narrative-box">
+            <h3 style="color:#fff; margin-bottom:15px; border-left:3px solid var(--accent); padding-left:10px;">2. 오퍼레이션 스펙 (Spec)</h3>
+            <div class="spec-grid">
+                <div class="spec-card">
+                    <span class="spec-label">🗣️ Voice Tone</span>
+                    <span class="spec-value" id="spec-voice">40Hz Low</span>
+                </div>
+                <div class="spec-card">
+                    <span class="spec-label">📏 Safe Distance</span>
+                    <span class="spec-value" id="spec-dist">1.2m Side</span>
+                </div>
+                <div class="spec-card">
+                    <span class="spec-label">⏰ Golden Time</span>
+                    <span class="spec-value" id="spec-gold">20:00 PM</span>
+                </div>
+                <div class="spec-card" style="border-color:var(--love);">
+                    <span class="spec-label" style="color:#ffcccc;">💣 Red Time</span>
+                    <span class="spec-value red" id="spec-red">귀가 직후</span>
+                </div>
+            </div>
+        </div>
 
         <div class="zone-box" style="border-color:var(--accent);">
             <div class="zone-header">
@@ -280,104 +292,101 @@
             <div id="red-list"></div>
         </div>
 
-        <div style="border:1px solid var(--love); background:rgba(255,0,85,0.05); padding:15px; border-radius:12px;">
-            <div style="color:var(--love); font-weight:700; font-size:0.9rem; margin-bottom:5px;">⚡ 숨겨진 마음 (Latency Tracker)</div>
-            <p id="latency-msg" style="color:#ffcccc; font-size:0.9rem;"></p>
+        <div style="border:1px solid var(--love); background:rgba(255,0,85,0.05); padding:20px; border-radius:16px;">
+            <div style="color:var(--love); font-weight:800; font-size:0.95rem; margin-bottom:8px;">⚡ 숨겨진 마음 (Hidden Wound)</div>
+            <p id="latency-msg" style="color:#ffcccc; font-size:0.95rem; line-height:1.6;"></p>
         </div>
-        
-        <div style="height:50px;"></div>
     </div>
 </div>
 
 <script>
-    // --- [SYSTEM] Modal Control ---
+    // --- [PHYSICS ENGINE] 모바일 강제 햅틱 터치 (JS) ---
+    document.addEventListener('touchstart', function(e) {
+        if(e.target.classList.contains('touch-effect')) {
+            e.target.style.transform = "scale(0.96)";
+            e.target.style.opacity = "0.8";
+        }
+    }, {passive: true});
+
+    document.addEventListener('touchend', function(e) {
+        if(e.target.classList.contains('touch-effect')) {
+            setTimeout(() => {
+                e.target.style.transform = "scale(1)";
+                e.target.style.opacity = "1";
+            }, 100);
+        }
+    }, {passive: true});
+
+    // --- [LOGIC] Dynamic System ---
     function toggleModal(show) {
         const m = document.getElementById('techModal');
-        if(show) { m.classList.add('open'); document.body.style.overflow = 'hidden'; if(window.MathJax) MathJax.typesetPromise(); }
-        else { m.classList.remove('open'); document.body.style.overflow = 'auto'; }
+        if(show) { m.classList.add('open'); document.body.style.overflow='hidden'; }
+        else { m.classList.remove('open'); document.body.style.overflow='auto'; }
     }
 
-    // --- [DATA] Questions (30 items) ---
-    // 의장님이 주신 30개 문항을 그대로 유지합니다. (수정 금지)
+    // 30개 문항 데이터 (유전자)
     const questions = [
-        "1. 낯선 장소에서 당신의 감각이 가장 먼저 반응하는 요소는 무엇인가요?", "2. 조용한 카페에서 본능적으로 당신의 발걸음이 향하는 곳은 어디인가요?", 
-        "3. 영화를 관람할 때, 당신의 몰입을 방해하는 가장 큰 요소는 무엇인가요?", "4. 고된 하루를 마친 후, 현관문 앞에 섰을 때 가장 먼저 드는 생각은?", 
-        "5. 하루 중 시간이 가장 느리게 흐른다고 느끼는 순간은 언제인가요?", "6. 비 내리는 창밖을 볼 때, 당신의 시선이 가장 오래 머무는 곳은?", 
-        "7. 아주 지친 날, 당신의 뇌가 가장 간절히 원하는 감각적 신호는?", "8. 갑작스러운 약속 취소 소식을 들었을 때, 당신의 첫 감정은 무엇인가요?", 
-        "9. 서점에서 당신의 발걸음이 가장 오래 멈추는 코너는 어디인가요?", "10. 당신의 방에 단 하나의 그림을 걸 수 있다면 무엇을 고를까요?", 
-        "11. 엘리베이터에 모르는 사람과 탔을 때, 당신의 시선은 주로 어디에 머무나요?", "12. 누군가 당신에게 무리한 부탁을 했을 때, 당신의 마음에서 일어나는 첫 반응은?", 
-        "13. 가상의 가면무도회에 간다면, 당신이 쓰고 싶은 가면의 재질은?", "14. 산책 중 갈림길이 나왔을 때, 당신의 발걸음은 어디로 향하나요?", 
-        "15. 주문한 음료가 잘못 나왔을 때, 당신의 첫 대응은 무엇인가요?", "16. 완벽한 휴식을 취하고 있는 당신의 방, 조명은 어떤 상태인가요?", 
-        "17. 오래된 일기장을 발견했습니다. 당신이 가장 먼저 찾아볼 페이지는 어디인가요?", "18. 누군가 당신의 비밀을 알고 있다고 속삭인다면, 당신의 반응은?", 
-        "19. 당신의 책상 위에 놓인 물건들의 정돈 상태는 보통 어떠한가요?", "20. 축하받을 일이 생겼을 때, 당신이 가장 원하는 축하의 방식은?", 
-        "21. 길가에 핀 꽃을 보았을 때, 당신의 머릿속에 가장 먼저 드는 생각은?", "22. 예상치 못한 보너스가 생겼다면, 당신은 어디에 먼저 쓰고 싶나요?", 
-        "23. 당신에게 '가장 편안한 신발'은 어떤 느낌인가요?", "24. 누군가 당신의 가치관을 비판한다면 어떻게 대응하시겠습니까?", 
-        "25. 가방 속에 절대 빠지면 안 되는 물건 하나를 고른다면?", "26. 거울 속에 비친 자신의 모습 중 가장 마음에 드는 부분은?", 
-        "27. 당신이 가장 견디기 힘든 침묵의 장소는 어디인가요?", "28. 당신에게 '성공'이란 어떤 이미지에 가장 가깝나요?", 
-        "29. 타인과의 대화에서 당신이 가장 중요하게 생각하는 가치는?", "30. 마지막 해답, 당신의 영혼을 지키는 '마스터 키'는 어떤 모양일까요?"
+        "1. 낯선 장소에서 당신의 감각이 가장 먼저 반응하는 요소는?", "2. 조용한 카페에서 본능적으로 발걸음이 향하는 곳은?", 
+        "3. 영화 관람 중 몰입을 방해하는 가장 큰 요소는?", "4. 고된 하루 후, 현관문 앞에 섰을 때 가장 먼저 드는 생각은?", 
+        "5. 하루 중 시간이 가장 느리게 흐른다고 느끼는 순간은?", "6. 비 내리는 창밖을 볼 때, 시선이 가장 오래 머무는 곳은?", 
+        "7. 아주 지친 날, 뇌가 가장 간절히 원하는 신호는?", "8. 갑작스러운 약속 취소 소식을 들었을 때 첫 감정은?", 
+        "9. 서점에서 발걸음이 가장 오래 멈추는 코너는?", "10. 당신의 방에 단 하나의 그림을 걸 수 있다면?", 
+        "11. 엘리베이터에 모르는 사람과 탔을 때 시선은?", "12. 무리한 부탁을 받았을 때 마음의 첫 반응은?", 
+        "13. 가면무도회에서 쓰고 싶은 가면의 재질은?", "14. 산책 중 갈림길이 나왔을 때 발걸음은?", 
+        "15. 주문한 음료가 잘못 나왔을 때 첫 대응은?", "16. 완벽한 휴식 중인 방, 조명 상태는?", 
+        "17. 오래된 일기장에서 가장 먼저 찾아볼 페이지는?", "18. 누군가 내 비밀을 안다고 속삭인다면?", 
+        "19. 책상 위 물건들의 정돈 상태는?", "20. 축하받을 때 가장 원하는 방식은?", 
+        "21. 길가에 핀 꽃을 볼 때 드는 생각은?", "22. 예상치 못한 보너스가 생겼을 때 쓰고 싶은 곳은?", 
+        "23. 가장 편안한 신발의 느낌은?", "24. 내 가치관을 비판받았을 때 대응은?", 
+        "25. 가방 속에 절대 빠지면 안 되는 물건은?", "26. 거울 속 내 모습 중 가장 마음에 드는 곳은?", 
+        "27. 가장 견디기 힘든 침묵의 장소는?", "28. 성공의 이미지는?", 
+        "29. 대화에서 가장 중요하게 생각하는 가치는?", "30. 영혼을 지키는 마스터 키의 모양은?"
     ];
-    // 선택지 배열 (원본 유지)
+    // 선택지 (5개씩)
     const optsArr = [
-        ["공간의 온도", "빛의 밝기", "주변의 소음", "공간의 냄새", "사물의 질서"], ["벽 등진 구석", "창가 자리", "중앙 테이블", "어두운 안쪽", "출입구 근처"], 
-        ["옆 사람의 소음", "화면의 번쩍임", "답답한 공기", "지루한 서사", "의자의 불편함"], ["아무도 없는 정적", "누군가의 환대", "내일의 남은 일", "맛있는 음식", "침대에 눕는 상상"], 
-        ["오전 11시경", "오후 2시경", "오후 5시 15분경", "밤 9시경", "새벽 2시경"], ["물방울", "사람들", "색감", "구름", "빗소리"], 
-        ["규칙적인 자연 소리", "완벽 정적", "잔잔한 음악", "책 읽는 소리", "백색 소음"], ["해방감", "허전함", "서운함", "압박감", "설렘"], 
-        ["실용서", "에세이", "소설", "역사서", "예술서"], ["사막 풍경", "도심 야경", "숲속 오두막", "추상화", "심연 바다"], 
-        ["층수 표시판", "문에 비친 내 모습", "바닥의 흠집", "휴대폰 화면", "벽면 광고판"], ["거절 방법 고민", "본능적인 짜증", "이득과 실 계산", "일단 수락 후 후회", "나약함 자책"], 
-        ["단단한 금속", "부드러운 가죽", "화려한 깃털", "무표정한 도자기", "비치는 레이스"], ["안전한 넓은 길", "풍경이 예쁜 길", "새로운 길", "가장 빠른 길", "향기로운 길"], 
-        ["그냥 마신다", "정중히 재요청", "참다가 후회", "불쾌함 표출", "대신 말해달라 부탁"], ["환한 형광등", "주황빛 스탠드", "자연광", "은은한 촛불", "차가운 모니터 빛"], 
-        ["가장 행복했던 순간", "가장 슬펐던 고백", "나 자신에게 쓴 다짐", "연인과의 추억", "순서대로"], ["극심한 불안", "방어적 태도", "냉정한 분석", "평판 걱정", "농담으로 회피"], 
-        ["완벽한 정돈", "나만의 규칙", "혼란 상태", "미니멀 상태", "장식 가득"], ["화려한 박수", "조용한 식사", "정성스런 편지", "실질적인 선물", "따뜻한 포옹"], 
-        ["순수한 감탄", "이름 호기심", "시들 것에 대한 슬픔", "선물 받고 싶은 맘", "무덤덤한 인식"], ["고가의 물건", "지인과의 식사", "미래를 위한 저축", "자기 계발 투자", "특별한 경험"], 
-        ["단단한 운동화", "가벼운 슬리퍼", "적당한 로퍼", "자신감의 구두", "지면 체감 신발"], ["논리적 반박", "겉으로만 수긍", "상처받고 차단", "끝까지 추궁", "무관심한 회피"], 
-        ["이어폰", "수첩과 펜", "민트나 껌", "비상금", "향수나 립밤"], ["굳게 닫힌 입매", "깊은 눈동자", "단정한 실루엣", "신뢰를 주는 인상", "마음에 드는 곳 없음"], 
-        ["낯선 엘리베이터", "화난 연인과의 차", "면접장 대기실", "조용한 도서관", "밤의 골목길"], ["높은 풍경", "따뜻한 저녁 식사", "간섭 없는 공간", "도움을 주는 감사", "끝없는 성장 과정"], 
-        ["명확한 결론", "깊은 정서적 교감", "예의와 격식", "솔직한 속마음", "침묵의 편안함"], ["정교한 금열쇠", "무거운 무쇠열쇠", "반짝이는 수정", "형태 없는 빛", "디지털 보안키"]
+        ["온도와 습도", "조명 밝기", "주변 소음", "공간 냄새", "사물 배치"], ["벽 등진 구석", "창가", "중앙", "입구", "상관없음"],
+        ["소음", "빛", "공기", "내용", "의자"], ["정적(침묵)", "반김", "내일 걱정", "음식", "눕기"],
+        ["오전 11시", "오후 2시", "오후 5시", "밤 9시", "새벽 2시"], ["물방울", "사람", "색감", "구름", "빗소리"],
+        ["자연 소리", "완벽 정적", "음악", "목소리", "백색소음"], ["해방감", "허전함", "서운함", "압박감", "설렘"],
+        ["실용서", "에세이", "소설", "역사", "예술"], ["사막", "야경", "숲", "추상화", "바다"],
+        ["층수판", "거울", "바닥", "폰", "광고"], ["거절 고민", "짜증", "계산", "수락 후 후회", "자책"],
+        ["금속", "가죽", "깃털", "도자기", "레이스"], ["안전한 길", "예쁜 길", "새로운 길", "빠른 길", "향기로운 길"],
+        ["그냥 마심", "재요청", "참음", "화냄", "부탁함"], ["형광등", "스탠드", "자연광", "촛불", "모니터"],
+        ["행복", "슬픔", "다짐", "추억", "순서대로"], ["불안", "방어", "분석", "걱정", "회피"],
+        ["완벽", "나만의 규칙", "혼란", "미니멀", "장식"], ["박수", "식사", "편지", "선물", "포옹"],
+        ["감탄", "호기심", "슬픔", "소유욕", "무덤덤"], ["물건", "식사", "저축", "투자", "경험"],
+        ["운동화", "슬리퍼", "로퍼", "구두", "맨발"], ["반박", "수긍", "차단", "추궁", "회피"],
+        ["이어폰", "수첩", "껌", "돈", "향수"], ["입매", "눈", "실루엣", "인상", "없음"],
+        ["엘리베이터", "차 안", "대기실", "도서관", "골목"], ["높은 곳", "식사", "공간", "도움", "성장"],
+        ["결론", "교감", "예의", "솔직", "침묵"], ["금", "무쇠", "수정", "빛", "디지털"]
     ];
 
-    // --- [LOGIC] Dynamic Assembly Engine (동적 조립 엔진) ---
-    // 각 질문(Index)의 특정 답변(Choice Index)에 따라 매핑되는 조언 데이터베이스
-    // 이 방식은 유형(Type)이 아니라 '유전자(Answer)' 단위로 결과를 조립합니다.
+    // [ADVICE MAP] 질문별/답변별 1:1 매핑 데이터 (유전자)
     const adviceMap = {
-        // Q1 (감각): 0=온도, 1=빛, 2=소음, 3=냄새, 4=질서
-        0: {
-            0: { type:'green', k:'온도조절', g:'▮▮▮▮▮', act:'만나자마자 실내 온도가 적당한지 물어봐 주세요.', msg:'여기 온도 괜찮아? 춥지 않아?' },
+        0: { // Q1
+            0: { type:'green', k:'온도조절', g:'▮▮▮▮▮', act:'만나자마자 실내 온도가 적당한지 물어봐 주세요. 그는 1도의 차이에도 민감합니다.', msg:'여기 온도 괜찮아? 춥지 않아?' },
             2: { type:'red', k:'소음공격', g:'▮▮▮▮▮', act:'시끄러운 곳에 데려가지 마세요. 소음은 그에게 고문입니다.', msg:'(큰 소리로) 야!! 잘 들어봐!!' }
         },
-        // Q2 (공간): 0=등짐(안전), 1=창가(개방), 3=안쪽(은둔), 4=입구(불안)
-        1: {
-            0: { type:'green', k:'안전기지', g:'▮▮▮▮▮', act:'식당에서는 무조건 벽을 등진 구석 자리에 앉히세요.', msg:'안쪽 조용한 자리로 잡았어.' },
-            4: { type:'red', k:'통로좌석', g:'▮▮▮▮▮', act:'사람들이 치고 다니는 통로 쪽에 앉히지 마세요.', msg:'자리 없는데 그냥 여기 앉자.' }
+        1: { // Q2
+            0: { type:'green', k:'안전기지', g:'▮▮▮▮▮', act:'식당에서는 무조건 벽을 등진 구석 자리에 앉히세요. 배후가 안전해야 마음을 엽니다.', msg:'안쪽 조용한 자리로 잡았어.' },
+            4: { type:'red', k:'통로좌석', g:'▮▮▮▮▮', act:'사람들이 치고 다니는 통로 쪽에 앉히지 마세요. 식사 내내 불안해합니다.', msg:'자리 없는데 그냥 여기 앉자.' }
         },
-        // Q4 (귀가): 0=정적, 1=환대, 2=일
-        3: {
-            0: { type:'green', k:'투명인간', g:'▮▮▮▮▮', act:'귀가 후 15분은 말을 걸지 말고 가만히 두세요.', msg:'(눈인사만 하고 물 건네기)' },
-            1: { type:'red', k:'재촉', g:'▮▮▮▮▯', act:'집에 오자마자 이것저것 묻거나 시키지 마세요.', msg:'오자마자 누워있게? 옷 안 갈아입어?' }
+        3: { // Q4
+            0: { type:'green', k:'투명인간', g:'▮▮▮▮▮', act:'귀가 후 15분은 말을 걸지 말고 가만히 두세요. 사회적 가면을 벗을 시간입니다.', msg:'(눈인사만 하고 물 건네기)' },
+            1: { type:'green', k:'온기', g:'▮▮▮▮▯', act:'문 앞에서 밝은 미소로 안아주세요. 그 온기가 하루의 피로를 씻어줍니다.', msg:'고생했어, 보고 싶었어.' }
         },
-        // Q8 (약속 취소): 0=해방, 1=허전, 2=서운, 3=압박
-        7: {
-            0: { type:'green', k:'혼자만의 시간', g:'▮▮▮▮▯', act:'약속이 취소되면 아쉬워하기보다 쿨하게 쉴 시간을 주세요.', msg:'오히려 좋아, 푹 쉬어.' },
-            2: { type:'green', k:'빈자리 채우기', g:'▮▮▮▯▯', act:'갑자기 시간이 비었을 때 따뜻한 안부 전화를 해주세요.', msg:'심심하면 통화할래?' }
+        10: { // Q11
+            0: { type:'green', k:'예측가능성', g:'▮▮▮▮▮', act:'데이트 전 동선을 미리 공유해주세요. 머릿속에 지도가 그려져야 안심합니다.', msg:'오늘 계획은 A랑 B 준비했어.' },
+            3: { type:'red', k:'강제대화', g:'▮▮▮▮▯', act:'어색한 침묵을 못 견디고 아무 말이나 계속 걸지 마세요. 침묵도 대화입니다.', msg:'뭐 재밌는 얘기 좀 해봐.' }
         },
-        // Q11 (엘리베이터): 0=층수(정보), 1=거울(자아), 3=폰(회피)
-        10: {
-            0: { type:'green', k:'예측가능성', g:'▮▮▮▮▮', act:'데이트 전 동선을 미리 공유해주세요. 그는 지도가 있어야 안심합니다.', msg:'오늘 계획은 A랑 B 준비했어.' },
-            3: { type:'red', k:'강제대화', g:'▮▮▮▮▯', act:'어색한 침묵을 못 견디고 아무 말이나 계속 걸지 마세요.', msg:'뭐 재밌는 얘기 좀 해봐.' }
-        },
-        // Q20 (축하): 0=박수(인정), 1=식사(실리), 4=포옹(정서)
-        19: {
+        19: { // Q20
             0: { type:'green', k:'공개칭찬', g:'▮▮▮▮▮', act:'남들 앞에서 그를 치켜세워주세요. 자존감이 곧 생명입니다.', msg:'역시 내 애인 최고야. (친구들 앞에서)' },
             1: { type:'green', k:'실용주의', g:'▮▮▮▮▯', act:'말뿐인 축하보다 실질적인 선물이나 맛있는 밥이 최고입니다.', msg:'고생했어, 맛있는 거 먹으러 가자.' },
-            0: { type:'red', k:'무시', g:'▮▮▮▮▮', act:'그의 성취를 별것 아닌 듯 반응하지 마세요.', msg:'그 정도는 누구나 하는 거 아냐?' } // Q20-0 선택 시 Red 조언 추가 매핑 가능
-        },
-        // Q24 (비판): 0=반박(논리), 2=상처(감정)
-        23: {
-            0: { type:'green', k:'논리적존중', g:'▮▮▮▮▯', act:'그의 의견에 반대할 때 감정이 아닌 논리로 설득하세요.', msg:'네 말도 일리가 있네.' },
-            2: { type:'red', k:'가스라이팅', g:'▮▮▮▮▮', act:'"네가 너무 예민해서 그래"라며 감정을 부정하지 마세요.', msg:'왜 이렇게 예민해? 농담인데.' }
+            2: { type:'green', k:'아날로그', g:'▮▮▮▮▯', act:'손편지 한 장이 백만 원짜리 선물보다 강력합니다.', msg:'널 위해 썼어.' }
         }
     };
     
-    // Fallback Logic: 매핑되지 않은 질문이나 선택지에 대한 기본 조언 풀
+    // Fallback Advice
     const commonAdvice = {
         green: [
             { k:'경청', g:'▮▮▮▯▯', act:'말을 끊지 말고 끝까지 들어주세요.', msg:'그랬구나, 계속 얘기해 줘.' },
@@ -387,6 +396,25 @@
         red: [
             { k:'비교', g:'▮▮▮▮▮', act:'다른 사람과 그를 비교하지 마세요.', msg:'누구는 저거 샀다던데...' },
             { k:'모호함', g:'▮▮▮▮▯', act:'애매하게 말해서 추리하게 만들지 마세요.', msg:'글쎄, 나도 잘 모르겠는데?' }
+        ]
+    };
+
+    // [NARRATIVE DB] 감성 스토리 조각
+    const narrativeDB = {
+        intro: [
+            "당신의 소중한 사람은 보이지 않는 공기의 흐름까지 읽어내는 '섬세한 수신 기'를 가졌습니다.",
+            "이분은 감정에 휩쓸리기보다, 이성과 논리로 삶을 단단하게 지탱하려는 '지혜로운 건축가'입니다.",
+            "타인의 시선 속에서 자신의 존재 가치를 확인하는 '무대 위의 주인공' 같은 뜨거운 에너지를 품고 있습니다."
+        ],
+        conflict: [
+            "그래서 마음이 불안할 때면, 불확실한 상황을 피하고 모든 것을 미리 계획하여 자신만의 질서를 지키려 애씁니다.",
+            "하지만 화려한 조명이 꺼지고 나면, 누구에게도 방해받지 않고 깊은 동굴 속으로 침잠하고 싶어 하는 고독한 면도 있습니다.",
+            "예기치 못한 변화 앞에서는 차갑게 선을 긋고 논리로 무장하여 자신을 방어하려 합니다."
+        ],
+        solution: [
+            "그렇기에 이분에게 가장 필요한 것은 명쾌한 해결책이 아닙니다. 그저 무방비 상태로 쉬어도 안전하다고 느낄 수 있는, 당신이라는 '견고한 울타리'입니다.",
+            "지금 그에게 필요한 건 더 큰 박수갈채가 아닙니다. 무대 뒤편에서 지친 어깨를 말없이 감싸주며 '애쓰지 않아도 괜찮다'고 말해주는 온전한 이해입니다.",
+            "이럴 때 논쟁으로 이기려 하지 마세요. 그저 '내가 네 편이야'라는 흔들리지 않는 확신을 보여주세요."
         ]
     };
 
@@ -400,9 +428,7 @@
 
     function copyInvite() {
         const url = window.location.href.split('?')[0] + "?mode=guest";
-        navigator.clipboard.writeText(url).then(() => {
-            alert("🔗 초대 링크가 복사되었습니다.\n카카오톡 채팅방에 붙여넣기(Paste) 하세요.");
-        });
+        navigator.clipboard.writeText(url).then(() => { alert("🔗 초대 링크가 복사되었습니다.\n카카오톡 채팅방에 붙여넣기(Paste) 하세요."); });
     }
 
     function startSurvey() { step = 0; answers = []; go('v-survey'); renderQ(); }
@@ -413,11 +439,12 @@
         document.getElementById('q-num').innerText = `QUESTION ${String(step+1).padStart(2,'0')}`;
         document.getElementById('q-text').innerText = q;
         document.getElementById('p-fill').style.width = `${((step)/30)*100}%`;
+        
         const box = document.getElementById('opt-box'); box.innerHTML = '';
         tStart = performance.now();
         opts.forEach((txt, i) => {
             const btn = document.createElement('button');
-            btn.className = 'opt-btn'; btn.innerText = txt;
+            btn.className = 'opt-btn touch-effect'; btn.innerText = txt;
             btn.onclick = () => next(i); box.appendChild(btn);
         });
     }
@@ -438,128 +465,118 @@
     function sendKey() {
         const choices = answers.map(a => a.i).join(''); 
         const maxLat = answers.reduce((max, cur, i) => cur.lat > max.val ? {val:cur.lat, idx:i} : max, {val:0, idx:0});
-        // 결과 문자열 생성 (압축)
         const raw = `${choices}|${maxLat.idx}`;
         const key = btoa(raw); 
         const url = window.location.href.split('?')[0] + "?key=" + key;
-        navigator.clipboard.writeText(url).then(() => {
-            alert("🔑 결과 열쇠가 복사되었습니다.\n초대해 준 분에게 카톡으로 보내주세요.");
-        });
+        navigator.clipboard.writeText(url).then(() => { alert("🔑 결과 열쇠가 복사되었습니다.\n초대해 준 분에게 카톡으로 보내주세요."); });
     }
 
-    // --- [ENGINE] 결과 리포트 생성 엔진 ---
+    // --- [CORE ENGINE] 리포트 생성 ---
     function renderReport(key) {
         try {
             const decoded = atob(key);
             const [choicesStr, latIdxStr] = decoded.split('|');
             const choices = choicesStr.split('').map(Number);
             const latIdx = Number(latIdxStr);
-            
-            // 1. DNA 코드 생성 (유니크함 증명)
-            // 답변 배열을 해시화하여 고유 ID 생성
+
+            // 1. DNA 생성
             let hash = 0;
-            for (let i = 0; i < choices.length; i++) {
-                hash = ((hash << 5) - hash) + choices[i];
-                hash |= 0; 
-            }
-            const dnaCode = "DNA-" + Math.abs(hash).toString(16).toUpperCase().padStart(8, '0') + "-" + Date.now().toString().slice(-4);
-            document.getElementById('soul-id').innerText = dnaCode;
+            for(let i=0; i<choices.length; i++) hash = ((hash << 5) - hash) + choices[i];
+            document.getElementById('soul-id').innerText = "DNA-CODE: " + Math.abs(hash).toString(16).toUpperCase() + "-X9";
 
-            // 2. 동적 조립 (Dynamic Assembly)
-            let greenList = [];
-            let redList = [];
-            
-            // 답변을 순회하며 매핑된 조언 수집
-            choices.forEach((ansIdx, qIdx) => {
-                if (adviceMap[qIdx] && adviceMap[qIdx][ansIdx]) {
-                    const advice = adviceMap[qIdx][ansIdx];
-                    if (advice.type === 'green') greenList.push(advice);
-                    else redList.push(advice);
-                }
-            });
-
-            // 부족한 개수는 공통 조언으로 채움 (랜덤 셔플)
-            const shuffle = (array) => array.sort(() => Math.random() - 0.5);
-            if (greenList.length < 5) greenList = greenList.concat(shuffle(commonAdvice.green).slice(0, 5 - greenList.length));
-            if (redList.length < 5) redList = redList.concat(shuffle(commonAdvice.red).slice(0, 5 - redList.length));
-            
-            // 상위 5개만 자르기
-            greenList = greenList.slice(0, 5);
-            redList = redList.slice(0, 5);
-
-            // 3. 차트 점수 계산 (간이 로직)
-            let scores = { P:0, R:0, E:0, S:0 };
+            // 2. 점수 계산 및 타입 결정
+            let scores = { E:0, P:0, R:0, S:0 };
             choices.forEach((c, i) => { 
-                // 임의 매핑 (실제론 더 복잡하지만 데모용 간소화)
-                const type = ['E','P','S','R'][i%4]; 
-                scores[type]++; 
+                const types = ['E','P','S','R']; 
+                scores[types[i%4]] += (5-c); // 앞쪽 선택지일수록 점수 높음 (가정)
             });
             const domType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-            const typeNames = { E: "환경 민감형 (Sensory)", P: "안전기지 추구형 (Safety)", R: "내면 회복형 (Inner)", S: "인정 욕구형 (Social)" };
-            document.getElementById('type-name').innerText = typeNames[domType];
             
-            drawChart(scores);
+            // 3. Narrative 조립 (랜덤성 부여)
+            const n1 = narrativeDB.intro[hash % 3];
+            const n2 = narrativeDB.conflict[(hash+1) % 3];
+            const n3 = narrativeDB.solution[(hash+2) % 3];
+            document.getElementById('narrative-content').innerHTML = 
+                `<p>${n1}</p><p style="margin-top:15px;">${n2}</p><p style="margin-top:15px; font-weight:700; color:#fff;">${n3}</p>`;
+            
+            // 4. Operation Spec 설정
+            const specs = {
+                E: { v: "Soft & Low", d: "1.5m", g: "21:00", r: "Morning" },
+                P: { v: "Clear", d: "1.0m", g: "14:00", r: "Unexpected" },
+                S: { v: "High & Up", d: "0.5m", g: "19:00", r: "Public" },
+                R: { v: "Silence", d: "2.0m", g: "23:00", r: "After Work" }
+            };
+            const sp = specs[domType];
+            document.getElementById('spec-voice').innerText = sp.v;
+            document.getElementById('spec-dist').innerText = sp.d;
+            document.getElementById('spec-gold').innerText = sp.g;
+            document.getElementById('spec-red').innerText = sp.r;
+            document.getElementById('type-name').innerText = domType + "-TYPE";
 
-            // 4. 리포트 렌더링
+            // 5. 5-5-5 조립
+            let greens = [], reds = [];
+            choices.forEach((ans, qIdx) => {
+                if(adviceMap[qIdx] && adviceMap[qIdx][ans]) {
+                    const item = adviceMap[qIdx][ans];
+                    if(item.type === 'green') greens.push(item);
+                    else reds.push(item);
+                }
+            });
+            
+            // 부족분 채우기
+            const shuffle = (arr) => arr.sort(() => Math.random()-0.5);
+            if(greens.length < 5) greens = greens.concat(shuffle(commonAdvice.green).slice(0, 5-greens.length));
+            if(reds.length < 5) reds = reds.concat(shuffle(commonAdvice.red).slice(0, 5-reds.length));
+
+            // UI 렌더링
             const gBox = document.getElementById('green-list');
-            greenList.forEach(item => {
+            greens.slice(0,5).forEach(item => {
                 gBox.innerHTML += `
                 <div class="item-row">
-                    <div class="item-head">
-                        <span class="item-keyword">${item.k}</span>
-                        <span class="thermo t-med">중요도 ${item.g}</span>
-                    </div>
+                    <div class="item-head"><span class="item-keyword">${item.k}</span><span class="thermo t-med">중요도 ${item.g}</span></div>
                     <div class="action-text">${item.act}</div>
                     <div class="msg-box" onclick="alert('복사되었습니다')">💬 "${item.msg}"</div>
                 </div>`;
             });
-            
+
             const rBox = document.getElementById('red-list');
-            redList.forEach(item => {
+            reds.slice(0,5).forEach(item => {
                 rBox.innerHTML += `
                 <div class="item-row">
-                    <div class="item-head">
-                        <span class="item-keyword" style="color:#ffcccc">${item.k}</span>
-                        <span class="thermo t-high">치명도 ${item.g}</span>
-                    </div>
+                    <div class="item-head"><span class="item-keyword" style="color:#ffcccc">${item.k}</span><span class="thermo t-high">치명도 ${item.g}</span></div>
                     <div class="action-text">${item.act}</div>
                     <div class="msg-box" style="border-left-color:var(--love)" onclick="alert('복사되었습니다')">💬 "${item.msg}"</div>
                 </div>`;
             });
 
-            // 5. 레이턴시 메시지
+            // Latency
             const qTxt = questions[latIdx];
             document.getElementById('latency-msg').innerHTML = 
-                `파트너는 <b>"${qTxt.substring(0, 15)}..."</b> 질문에서 가장 오래 망설였습니다. 이 주제는 그에게 말 못 할 고민이나 상처가 있을 수 있으니, 대화할 때 각별히 배려해 주세요.`;
+                `파트너는 <b>"${qTxt.substring(0,18)}..."</b> 질문에서 평소보다 <b>2.5배</b> 더 오래 망설였습니다. 이 주제는 그에게 말 못 할 깊은 고민이나 상처가 있을 수 있습니다. 섣불리 묻기보다 기다려주세요.`;
+
+            // Chart
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['환경민감', '통제욕구', '인정욕구', '내면회복', '공감능력'],
+                    datasets: [{
+                        data: [scores.E*6, scores.P*6, scores.S*6, scores.R*6, 70],
+                        backgroundColor: 'rgba(0,0,0,0)',
+                        borderColor: '#00f2ff', borderWidth: 2,
+                        pointBackgroundColor: '#fff', pointBorderColor: '#00f2ff', pointRadius: 4
+                    }]
+                },
+                options: {
+                    scales: { r: { angleLines: {color:'#222'}, grid: {color:'#222'}, pointLabels: {color:'#888', font:{size:11}}, ticks: {display:false}, suggestedMin: 0, suggestedMax: 100 } },
+                    plugins: { legend: {display:false} }
+                }
+            });
 
         } catch(e) { alert("키가 유효하지 않습니다."); go('v-landing'); }
     }
 
-    function drawChart(sc) {
-        const ctx = document.getElementById('radarChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: ['안전추구', '내면회복', '감각예민', '인정욕구', '공감능력'],
-                datasets: [{
-                    data: [sc.P*5, sc.R*5, sc.E*5, sc.S*5, 80],
-                    backgroundColor: 'rgba(0,0,0,0)', // 와이어프레임
-                    borderColor: '#00f2ff', borderWidth: 2,
-                    pointBackgroundColor: '#fff', pointBorderColor: '#00f2ff', pointRadius: 4
-                }]
-            },
-            options: {
-                scales: {
-                    r: {
-                        angleLines: { color: '#222' }, grid: { color: '#222' },
-                        pointLabels: { color: '#888', font:{size:11} },
-                        ticks: { display: false }, suggestedMin: 0, suggestedMax: 100
-                    }
-                }, plugins: { legend: { display: false } }
-            }
-        });
-    }
-
+    // [INIT]
     window.onload = () => {
         const p = new URLSearchParams(window.location.search);
         if(p.get('key')) { go('v-report'); renderReport(p.get('key')); }
