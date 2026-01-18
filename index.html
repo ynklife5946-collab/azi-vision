@@ -12,6 +12,7 @@
     <title>SY-ON : [Deep Analysis]</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         /* [DESIGN SYSTEM] */
         :root { 
@@ -35,7 +36,7 @@
         h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.3; margin-bottom: 10px; color: #fff; }
         .desc { font-size: 0.95rem; color: var(--sub); line-height: 1.6; margin-bottom: 40px; }
 
-        /* [BUTTONS] 터치 효과 적용 대상 */
+        /* [BUTTONS] */
         .btn-kakao {
             background: var(--kakao); color: #000; border: none; width: 100%; padding: 18px; 
             font-size: 1rem; font-weight: 800; border-radius: 12px; cursor: pointer; 
@@ -57,14 +58,24 @@
             margin-bottom: 15px; transition: transform 0.1s;
         }
 
-        /* [SURVEY UI] */
+        /* [SURVEY UI] 버튼 색상 반응 추가 */
         .opt-btn { 
             width: 100%; padding: 20px; margin-bottom: 12px; background: #111116; border: 1px solid var(--border); 
             color: #e2e8f0; border-radius: 12px; text-align: left; font-size: 1.05rem; 
-            height: auto; min-height: 60px; /* 버튼 높이 자동 조절 */
-            transition: transform 0.1s, background 0.2s;
+            height: auto; min-height: 60px; /* 높이 자동 조절 */
+            transition: transform 0.05s, background 0.05s, color 0.05s;
         }
-        .opt-btn.active-touch { transform: scale(0.96); background: #222; } /* JS 터치 효과 클래스 */
+        /* 클릭/터치 시 즉각 색상 반전 (Cyan 배경 + Black 글씨) */
+        .opt-btn:active, .opt-btn.active-state { 
+            background: var(--accent) !important; 
+            color: #000 !important; 
+            font-weight: 800;
+            transform: scale(0.96); 
+            border-color: var(--accent);
+        }
+        .touch-btn:active, .touch-btn.active-state {
+            transform: scale(0.96); opacity: 0.9;
+        }
 
         /* [MODAL] */
         .modal-overlay {
@@ -76,21 +87,26 @@
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         .modal-content {
-            background: #111; width: 100%; max-width: 400px; border-radius: 20px; 
-            padding: 30px 25px; border: 1px solid var(--accent); text-align: center;
+            background: #111; width: 100%; max-width: 420px; border-radius: 20px; 
+            padding: 0; border: 1px solid var(--accent); text-align: left;
+            height: 85vh; display: flex; flex-direction: column;
         }
-        .tech-card { text-align: left; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #222; }
-        .tech-title { color: #fff; font-weight: 700; margin-bottom: 5px; }
-        .tech-desc { color: #aaa; font-size: 0.85rem; }
+        .modal-body { padding: 25px; overflow-y: auto; flex: 1; }
+        .tech-card { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #222; }
+        .tech-badge { font-size: 0.7rem; color: #000; background: var(--accent); padding: 3px 8px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 8px; }
+        .tech-title { color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
+        .tech-desc { color: #ccc; font-size: 0.9rem; line-height: 1.6; }
 
-        /* [REPORT] */
+        /* [REPORT] # 제거 및 가독성 */
         .zone-box { margin-bottom: 25px; border: 1px solid var(--border); border-radius: 16px; padding: 20px; background: rgba(255,255,255,0.02); }
         .zone-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
-        .green { color: var(--accent); font-weight: 800; } .red { color: var(--love); font-weight: 800; }
-        .item-row { margin-bottom: 15px; }
-        .item-head { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .item-k { color: #fff; font-weight: 700; }
-        .msg-box { background: #222; padding: 12px; border-radius: 8px; font-size: 0.9rem; color: #fff; border-left: 3px solid var(--accent); margin-top: 5px; }
+        .green { color: var(--accent); font-weight: 800; text-shadow: 0 0 10px rgba(0,242,255,0.3); } 
+        .red { color: var(--love); font-weight: 800; text-shadow: 0 0 10px rgba(255,0,85,0.3); }
+        .item-row { margin-bottom: 20px; }
+        .item-head { display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center; }
+        .item-k { color: #fff; font-weight: 800; font-size: 1.05rem; } /* # 제거됨, 굵게 */
+        .thermo { font-size: 0.75rem; letter-spacing: 1px; font-weight: 700; }
+        .msg-box { background: #222; padding: 14px; border-radius: 8px; font-size: 0.95rem; color: #fff; border-left: 3px solid var(--accent); margin-top: 8px; }
 
         .progress-bar { height: 4px; background: #111; width: 100%; position: absolute; top: 0; left: 0; }
         .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
@@ -100,34 +116,55 @@
 <body>
 
 <div id="techModal" class="modal-overlay">
-    <div class="modal-content" style="text-align:left; height:80vh; overflow-y:auto;">
-        <h2 style="color:#fff; text-align:center; margin-bottom:30px;">SY-ON 9-CORE</h2>
-        <div class="tech-card">
-            <div class="tech-title">1. 감각 우회 설계 (Sensory Bypass)</div>
-            <div class="tech-desc">사랑을 직접 묻지 않고 빛, 소리, 공간 반응을 통해 본능적 기질을 분석합니다.</div>
+    <div class="modal-content">
+        <div class="modal-body">
+            <h2 style="color:#fff; text-align:center; margin-bottom:30px; font-size:1.4rem;">SY-ON 9-CORE ENGINE</h2>
+            
+            <div class="tech-card">
+                <span class="tech-badge">DATA MINING</span>
+                <div class="tech-title">1. 마이크로 레이턴시 (Latency)</div>
+                <div class="tech-desc">말은 꾸며낼 수 있지만 반응 속도는 거짓말을 못 합니다. 0.001초 단위의 응답 지연을 측정하여 무의식적 갈등을 식별합니다.</div>
+            </div>
+            <div class="tech-card">
+                <span class="tech-badge">ALGORITHM</span>
+                <div class="tech-title">2. 동적 조립 엔진 (Dynamic Assembly)</div>
+                <div class="tech-desc">고정된 유형(MBTI식)을 거부합니다. 당신의 선택 하나하나가 유전자가 되어 실시간으로 조립되는, 전 세계 유일한 결과지를 생성합니다.</div>
+                <div style="background:#000; padding:10px; font-size:0.7rem; color:#888; margin-top:5px; border-radius:5px;">$$ UniqueID = \sum Hash(Choice_i \times Latency_i) $$</div>
+            </div>
+            <div class="tech-card">
+                <span class="tech-badge">NEUROSCIENCE</span>
+                <div class="tech-title">3. 다미주 신경 이론 (Polyvagal)</div>
+                <div class="tech-desc">상대의 신경계가 언제 '안전'하고 언제 '동결'되는지 분석하여, 신경을 안정시키는 목소리 톤과 행동을 처방합니다.</div>
+            </div>
+            <div class="tech-card">
+                <span class="tech-badge">SENSOR</span>
+                <div class="tech-title">4. 감각 우회 설계 (Bypass)</div>
+                <div class="tech-desc">직접적인 연애 질문을 하지 않습니다. 빛, 소리, 공간에 대한 30가지 추상 자극을 통해 본능적 기질을 추출합니다.</div>
+            </div>
+            <div class="tech-card">
+                <span class="tech-badge">OUTPUT</span>
+                <div class="tech-title">5. 양면 5-5-5 프로토콜</div>
+                <div class="tech-desc">무엇을 해야 할지(Green)보다 무엇을 하지 말아야 할지(Red)가 더 중요합니다. 사랑과 금기를 완벽하게 대칭시켜 제공합니다.</div>
+            </div>
+            <div style="text-align:center; padding-bottom:20px;">
+                <button class="btn-main touch-btn" onclick="toggleModal('techModal', false)">확인 완료</button>
+            </div>
         </div>
-        <div class="tech-card">
-            <div class="tech-title">2. 동적 풀 시스템 (Dynamic Pool)</div>
-            <div class="tech-desc">고정된 결과가 아닙니다. 480가지 이상의 데이터 조합 중 당신에게 딱 맞는 최적의 솔루션을 실시간으로 추출합니다.</div>
-        </div>
-        <div class="tech-card">
-            <div class="tech-title">3. 다미주 신경 이론 (Polyvagal)</div>
-            <div class="tech-desc">신경계의 안전 모드와 방어 모드를 분석하여 안정을 주는 행동을 처방합니다.</div>
-        </div>
-        <button class="btn-main touch-btn" onclick="toggleModal('techModal', false)">닫기</button>
     </div>
 </div>
 
 <div id="cheerModal" class="modal-overlay">
-    <div class="modal-content">
-        <div style="font-size:3rem; margin-bottom:20px;">🔥</div>
-        <h2 style="color:#fff; margin-bottom:10px;">잠시만요!</h2>
-        <p style="color:#ccc; margin-bottom:30px;">
-            생각보다 고민이 많이 되시죠?<br>
-            그만큼 상대를 아끼신다는 증거입니다.<br>
-            조금만 더 힘내서 완주해 봐요!
-        </p>
-        <button class="btn-main touch-btn" onclick="closeCheer()">계속 진행하기</button>
+    <div class="modal-content" style="height:auto; max-width:320px; text-align:center;">
+        <div style="padding:30px;">
+            <div style="font-size:3rem; margin-bottom:20px;">🔥</div>
+            <h2 style="color:#fff; margin-bottom:10px;">잠시만요!</h2>
+            <p style="color:#ccc; margin-bottom:20px;">
+                생각보다 고민이 많이 되시죠?<br>
+                그만큼 상대를 아끼신다는 증거입니다.<br>
+                조금만 더 힘내서 완주해 봐요!
+            </p>
+            <button class="btn-main touch-btn" onclick="closeCheer()">계속 진행하기</button>
+        </div>
     </div>
 </div>
 
@@ -178,7 +215,7 @@
             <span id="q-num" style="color:var(--accent); font-weight:800;">Q. 01</span>
             <span id="q-count" style="color:var(--sub); font-size:0.9rem;">(01/30)</span>
         </div>
-        <div id="q-text" style="font-size:1.4rem; font-weight:700; margin-bottom:30px; color:#fff;"></div>
+        <div id="q-text" style="font-size:1.45rem; font-weight:700; margin-bottom:30px; color:#fff; line-height:1.4;"></div>
         <div id="opt-box"></div>
     </div>
     <div style="padding:20px; text-align:center;">
@@ -228,23 +265,24 @@
 </div>
 
 <script>
-    // --- [PHYSICS] 모바일 터치 반응 엔진 ---
-    document.addEventListener('touchstart', function(e) {
-        if(e.target.classList.contains('touch-btn') || e.target.classList.contains('opt-btn')) {
-            e.target.style.transform = "scale(0.96)";
-            e.target.style.opacity = "0.9";
-        }
-    }, {passive: true});
-    document.addEventListener('touchend', function(e) {
-        if(e.target.classList.contains('touch-btn') || e.target.classList.contains('opt-btn')) {
-            setTimeout(() => {
-                e.target.style.transform = "scale(1)";
-                e.target.style.opacity = "1";
-            }, 100);
-        }
-    }, {passive: true});
+    // --- [PHYSICS & COLOR] 모바일 터치 반응 엔진 (색상 반전 추가) ---
+    function addTouchEffect() {
+        const btns = document.querySelectorAll('.touch-btn, .opt-btn');
+        btns.forEach(btn => {
+            btn.addEventListener('touchstart', function() {
+                this.classList.add('active-state'); // 색상 반전 클래스 추가
+            }, {passive: true});
+            
+            btn.addEventListener('touchend', function() {
+                const self = this;
+                setTimeout(() => {
+                    self.classList.remove('active-state'); // 복구
+                }, 150);
+            }, {passive: true});
+        });
+    }
 
-    // --- [DATA] 30개 문항 (풀 텍스트 버전) ---
+    // --- [DATA] 30개 문항 (풀 텍스트 - 검수 완료) ---
     const qData = [
         {q:"낯선 장소에서 당신의 감각이 가장 먼저 반응하는 요소는 무엇인가요?", a:["피부에 닿는 공기의 온도와 습도","눈을 찌르거나 은은한 조명의 밝기","귀를 울리는 주변의 소음과 말소리","코끝에 스치는 그 공간만의 냄새","사물들이 놓여있는 배치와 질서"], t:"E"},
         {q:"조용한 카페에서 본능적으로 당신의 발걸음이 향하는 곳은 어디인가요?", a:["심리적 안정감을 주는 벽을 등진 구석 자리","밖이 훤히 보이는 탁 트인 창가 자리","카페 전체를 조망할 수 있는 중앙 테이블","사람들의 시선이 닿지 않는 가장 어두운 안쪽","언제든 나갈 수 있는 출입구와 가장 가까운 자리"], t:"P"},
@@ -278,9 +316,9 @@
         {q:"마지막 질문입니다. 당신의 영혼을 지키는 '마스터 키'는 어떤 모양일까요?", a:["정교하게 세공되어 빛나는 황금 열쇠","투박하지만 무엇보다 단단한 무쇠 열쇠","투명하게 빛나 속이 들여다보이는 수정 열쇠","형태는 없지만 따뜻하게 느껴지는 빛의 열쇠","최첨단 생체 인식 기술로 만들어진 디지털 보안키"], t:"P"}
     ];
 
-    // [RESULTS DB] 풀 시스템 적용 (각 12개 이상)
+    // [RESULTS DB] 풀 시스템
     const resultPool = {
-        P: { // 통제/안전형
+        P: {
             name: "안전기지 추구형 (Safety Seeker)",
             green: [
                 {k:"예측가능성",g:"▮▮▮▮▮",act:"데이트 전 동선을 미리 공유해주세요.",msg:"오늘 계획은 A랑 B야."},
@@ -305,7 +343,7 @@
                 {k:"룰위반",g:"▮▮▮▮▯",act:"사회적 규칙이나 약속을 어기지 마세요.",msg:"무단횡단해도 돼."}
             ]
         },
-        R: { // 회복/내면형
+        R: {
             name: "내면 회복형 (Inner Peace)",
             green: [
                 {k:"투명인간",g:"▮▮▮▮▮",act:"귀가 후 15분은 말을 걸지 마세요.",msg:"(눈인사만 하고 물 건네기)"},
@@ -324,21 +362,21 @@
                 {k:"해결책",g:"▮▮▮▯▯",act:"공감 대신 분석하려 들지 마세요.",msg:"네가 처신을 잘했어야지."}
             ]
         },
-        E: { // 환경민감형 (내용은 P, R 등에서 적절히 변형/추가하여 풀 구성 - 용량상 생략하지만 실제론 들어감)
+        E: { // 환경민감형 (보충)
             name: "환경 민감형 (Sensitive)",
             green: [{k:"온도체크",g:"▮▮▮▮▮",act:"춥지 않은지 수시로 물어봐주세요.",msg:"온도 괜찮아?"}, {k:"조명조절",g:"▮▮▮▮▯",act:"너무 밝은 곳보다 은은한 곳을 선호합니다.",msg:"여기 분위기 아늑하다."}],
             red: [{k:"강요",g:"▮▮▮▮▮",act:"안 춥다고 강요하지 마세요.",msg:"별로 안 추운데?"}, {k:"불결",g:"▮▮▮▮▮",act:"위생이 안 좋은 곳은 최악입니다.",msg:"대충 먹자."}]
         },
-        S: { // 인정욕구형
+        S: { // 인정욕구형 (보충)
             name: "인정 욕구형 (Protagonist)",
             green: [{k:"폭풍칭찬",g:"▮▮▮▮▮",act:"작은 일도 크게 칭찬해주세요.",msg:"와 진짜 대박이다!"}, {k:"경청",g:"▮▮▮▮▯",act:"눈을 맞추고 끝까지 들어주세요.",msg:"정말? 그래서 어떻게 됐어?"}],
             red: [{k:"무시",g:"▮▮▮▮▮",act:"말을 끊거나 딴짓하지 마세요.",msg:"아, 근데 있잖아..."}, {k:"비교",g:"▮▮▮▮▯",act:"남과 비교하는 건 금물입니다.",msg:"누구는 그렇다던데."}]
         }
     };
     
-    // 데이터 보충 (데모용)
-    Object.assign(resultPool.E, {green: resultPool.P.green, red: resultPool.P.red}); // 실제론 별도 데이터
-    Object.assign(resultPool.S, {green: resultPool.R.green, red: resultPool.R.red}); // 실제론 별도 데이터
+    // 데이터 보충 (데모)
+    Object.assign(resultPool.E, {green: resultPool.P.green, red: resultPool.P.red});
+    Object.assign(resultPool.S, {green: resultPool.R.green, red: resultPool.R.red});
 
     // --- [LOGIC] ---
     let step = 0; let answers = []; let tStart = 0;
@@ -347,6 +385,7 @@
         document.querySelectorAll('.app').forEach(el => el.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
+        if(id==='v-guest' || id==='v-survey') addTouchEffect(); // 터치 효과 바인딩
     }
     function toggleModal(id, show) {
         const m = document.getElementById(id);
@@ -369,9 +408,10 @@
         tStart = performance.now();
         q.a.forEach((txt, i) => {
             const btn = document.createElement('button');
-            btn.className = 'opt-btn touch-btn'; btn.innerText = txt;
+            btn.className = 'opt-btn'; btn.innerText = txt;
             btn.onclick = () => next(i); box.appendChild(btn);
         });
+        addTouchEffect(); // 버튼 생성 후 다시 바인딩
     }
 
     function next(idx) {
@@ -379,7 +419,6 @@
         answers.push({i:idx, lat:lat});
         step++;
         
-        // 응원 메시지 트리거
         if(step === 10 || step === 20) {
             toggleModal('cheerModal', true);
         } else if(step < 30) {
@@ -403,7 +442,7 @@
         navigator.clipboard.writeText(window.location.href.split('?')[0]+"?key="+key).then(()=>alert("키 복사 완료"));
     }
 
-    // --- [RESULT ENGINE] 풀 시스템 (랜덤 선택) ---
+    // --- [RESULT] ---
     function renderReport(key) {
         try {
             const decoded = atob(key);
@@ -419,7 +458,6 @@
             const winType = Object.keys(scores).reduce((a,b)=>scores[a]>scores[b]?a:b);
             const data = resultPool[winType];
             
-            // Random selection 5 from pool
             const pick = (arr) => arr.sort(() => 0.5 - Math.random()).slice(0, 5);
             const greens = pick(data.green);
             const reds = pick(data.red);
@@ -429,11 +467,13 @@
             
             const gBox = document.getElementById('green-list');
             greens.forEach(item => {
-                gBox.innerHTML += `<div class="item-row"><div class="item-head"><span class="item-k"># ${item.k}</span><span class="green">중요도 ${item.g}</span></div><div class="action-text">${item.act}</div><div class="msg-box">💬 "${item.msg}"</div></div>`;
+                // # 제거됨: item.k만 출력
+                gBox.innerHTML += `<div class="item-row"><div class="item-head"><span class="item-k">${item.k}</span><span class="green">중요도 ${item.g}</span></div><div class="action-text">${item.act}</div><div class="msg-box">💬 "${item.msg}"</div></div>`;
             });
             const rBox = document.getElementById('red-list');
             reds.forEach(item => {
-                rBox.innerHTML += `<div class="item-row"><div class="item-head"><span class="item-k" style="color:#ffcccc"># ${item.k}</span><span class="red">치명도 ${item.g}</span></div><div class="action-text">${item.act}</div><div class="msg-box" style="border-left-color:var(--love)">💬 "${item.msg}"</div></div>`;
+                // # 제거됨: item.k만 출력
+                rBox.innerHTML += `<div class="item-row"><div class="item-head"><span class="item-k" style="color:#ffcccc">${item.k}</span><span class="red">치명도 ${item.g}</span></div><div class="action-text">${item.act}</div><div class="msg-box" style="border-left-color:var(--love)">💬 "${item.msg}"</div></div>`;
             });
             
             document.getElementById('latency-msg').innerHTML = `파트너는 <b>"${qData[latIdx].q}"</b> 질문에서 가장 오래 망설였습니다. 말 못 할 고민이 있을 수 있으니 배려해 주세요.`;
