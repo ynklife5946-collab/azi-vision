@@ -5,67 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Clock</title>
+    <title>SYNAPSE : NO EXCUSE</title>
+    
     <style>
-        /* [STEALTH MODE: RIGHT-TOP CLOCK] */
-        #stealth-clock-layer {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
-            background: #000000;
-            z-index: 999999;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; /* 상단 정렬 */
-            align-items: flex-end;     /* 우측 정렬 */
-            padding: 40px 30px;        /* 우상단 여백 */
-            font-family: 'Roboto Mono', monospace;
-            color: #444;
-            user-select: none;
-            transition: opacity 0.3s ease;
+        #landing-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: #050505; z-index: 999999; overflow-y: auto;
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #fff; display: block;
         }
+        .ld-container { max-width: 800px; margin: 0 auto; padding: 40px 25px; }
+        .ld-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 40px; }
+        .ld-logo { font-family: 'Exo 2', sans-serif; font-size: 28px; font-weight: 900; color: #00f3ff; font-style: italic; }
+        .ld-ver { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #666; font-weight: 700; letter-spacing: 1px; }
         
-        .sc-time-wrap { display: flex; align-items: baseline; gap: 8px; justify-content: flex-end; }
-        .sc-time { 
-            font-size: 80px; /* 크기 조정 */
-            font-weight: 100; 
-            color: #e0e0e0; 
-            letter-spacing: -2px;
-            line-height: 1;
-        }
-        .sc-sec { font-size: 30px; font-weight: 300; color: #555; }
-        .sc-date { 
-            font-size: 16px; 
-            font-weight: 400; 
-            letter-spacing: 2px; 
-            margin-top: 5px; 
-            color: #666;
-            text-transform: uppercase;
-            text-align: right; /* 날짜도 우측 정렬 */
-        }
+        .ld-sec { margin-bottom: 60px; }
+        .ld-label { display: inline-block; font-family: 'Roboto Mono', monospace; color: #00f3ff; border: 1px solid #00f3ff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 15px; }
+        .ld-tit { font-size: 28px; font-weight: 900; line-height: 1.3; margin-bottom: 20px; color: #fff; }
+        .ld-desc { font-size: 15px; color: #aaa; line-height: 1.7; word-break: keep-all; }
+        .ld-highlight { color: #fff; font-weight: 700; text-decoration: underline; text-decoration-color: #bc13fe; text-underline-offset: 4px; }
         
-        /* [FINAL ENGINE V24 CSS - 원본 유지] */
+        .ld-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }
+        .ld-card { background: #121212; border: 1px solid #333; padding: 25px; border-radius: 12px; }
+        .lc-tit { font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: block; }
+        .lc-txt { font-size: 13px; color: #888; line-height: 1.5; }
+
+        .ld-math { background: #1a1a1a; border: 1px solid #bc13fe; padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; }
+        .ld-formula { font-family: 'Times New Roman', serif; font-size: 22px; color: #fff; font-style: italic; margin: 15px 0; }
+        
+        .ld-list li { margin-bottom: 15px; padding-left: 15px; border-left: 2px solid #333; }
+        .li-tit { font-weight: 900; color: #fff; font-size: 15px; display: block; margin-bottom: 5px; }
+        .li-desc { font-size: 13px; color: #888; }
+
+        .ld-footer { text-align: center; margin-top: 60px; padding-top: 40px; border-top: 1px solid #333; }
+        .ld-btn { 
+            background: #00f3ff; color: #000; border: none; 
+            font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 18px; 
+            padding: 20px 60px; border-radius: 8px; cursor: pointer; 
+            margin-top: 30px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.4); 
+            width: 100%; max-width: 320px;
+        }
+    </style>
+
+    <style>
+        /* [FINAL ENGINE V24] */
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
         
         :root {
-            --bg-core: #000000; --bg-card: #121212; --bg-panel: #1a1a1a; --border: #333333;
-            --text-main: #ffffff; --text-sub: #888888;
-            --neon-cyan: #00f3ff; --neon-purple: #bc13fe; --neon-red: #ff003c;
-            --neon-gold: #ffd700; --neon-green: #00ff66;
+            --bg-core: #000000;
+            --bg-card: #121212;
+            --bg-panel: #1a1a1a;
+            --border: #333333;
+            --text-main: #ffffff;
+            --text-sub: #888888;
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-red: #ff003c;
+            --neon-gold: #ffd700;
+            --neon-green: #00ff66;
             --modal-overlay: rgba(0,0,0,0.92);
         }
+
         body.white-mode {
-            --bg-core: #f5f5f7; --bg-card: #ffffff; --bg-panel: #e9ecef; --border: #d1d5db;
-            --text-main: #111827; --text-sub: #4b5563;
-            --neon-cyan: #0066ff; --neon-purple: #6200ea; --neon-red: #d32f2f;
-            --neon-gold: #f57c00; --neon-green: #2e7d32;
+            --bg-core: #f5f5f7;
+            --bg-card: #ffffff;
+            --bg-panel: #e9ecef;
+            --border: #d1d5db;
+            --text-main: #111827;
+            --text-sub: #4b5563;
+            --neon-cyan: #0066ff;
+            --neon-purple: #6200ea;
+            --neon-red: #d32f2f;
+            --neon-gold: #f57c00;
+            --neon-green: #2e7d32;
             --modal-overlay: rgba(255,255,255,0.95);
         }
+
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; background: var(--bg-core); color: var(--text-main); font-family: 'Noto Sans KR', sans-serif; height: 100vh; overflow: hidden; }
 
-        /* [LAYOUT & COMPONENTS] */
+        /* [LAYOUT] */
         .page { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg-core); opacity: 1; transition: opacity 0.2s; z-index: 10; }
         .page.hidden { opacity: 0; pointer-events: none; z-index: 0; }
+
+        /* [HEADER] */
         header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); }
         .top-row { display: flex; justify-content: space-between; align-items: flex-end; }
         .logo-main { font-size: 32px; font-weight: 900; color: var(--neon-cyan); letter-spacing: -1px; line-height: 1; font-family: 'Exo 2'; font-style: italic; text-shadow: 0 0 10px rgba(0,243,255,0.3); }
@@ -73,28 +96,54 @@
         .clock-box { text-align: right; font-family: 'Roboto Mono'; }
         .time-big { font-size: 24px; font-weight: 700; color: var(--text-main); }
         .date-full { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+
+        /* [TICKER] */
         .news-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: var(--bg-card); padding: 12px 0; border-bottom: 1px solid var(--border); margin-top: 15px; }
         .ticker-wrap { display: flex; width: max-content; animation: ticker 40s linear infinite; }
         .ticker-item { padding: 0 30px; font-size: 13px; color: var(--text-sub); font-weight: 500; }
         .ticker-item span { color: var(--neon-red); font-weight: 900; margin-right: 6px; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* [SCROLL AREA] */
         .main-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; }
         .sec-head { font-size: 11px; color: var(--text-sub); font-weight: 900; margin: 30px 0 10px; letter-spacing: 1px; font-family: 'Roboto Mono'; border-left: 3px solid var(--neon-cyan); padding-left: 8px; }
+
+        /* [CONTROL CARDS] */
         .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; height: 110px; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; position: relative; overflow: hidden; transition: border-color 0.2s; }
+        .card { 
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; height: 110px; 
+            display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; 
+            position: relative; overflow: hidden; transition: border-color 0.2s;
+        }
         .card:active { border-color: var(--neon-cyan); }
         .c-tit { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; letter-spacing: 0.5px; z-index: 2; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+        
         #card-score { background: var(--bg-card); }
         #score-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 1; display: none; filter: contrast(1.1); }
-        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); opacity: 0; pointer-events: none; z-index: 5; }
+        
+        /* [SLOW SCAN LINE - 3 SECONDS] */
+        .scan-line { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px; 
+            background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); 
+            opacity: 0; pointer-events: none; z-index: 5;
+        }
         .card.scanning .scan-line { opacity: 1; animation: scanSlow 3s linear infinite; }
-        @keyframes scanSlow { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        @keyframes scanSlow { 
+            0% { top: 0; opacity: 0; } 
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; } 
+        }
+
+        /* [LIVE CHANNELS] */
         .cctv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .cctv { height: 90px; background: #000; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); }
         .cctv img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
         .rec { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); padding: 3px 6px; border-radius: 4px; font-size: 9px; color: white; font-weight: 900; display: flex; align-items: center; gap: 4px; z-index: 2; }
         .dot { width: 5px; height: 5px; background: var(--neon-red); border-radius: 50%; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* [SHORTCUTS] */
         .shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .s-btn { height: 90px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
         .s-btn:active { background: var(--bg-panel); transform: scale(0.98); }
@@ -102,6 +151,8 @@
         .s-lbl { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         body.ghost-active .s-ico { fill: var(--neon-cyan); }
         body.ghost-active .s-lbl { color: var(--neon-cyan); }
+
+        /* [DOCK] */
         .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 95px; background: var(--bg-core); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: flex-start; padding-top: 18px; z-index: 100; opacity: 0.98; }
         .d-btn { width: 60px; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0.5; color: var(--text-main); }
         .d-btn.active { opacity: 1; color: var(--neon-cyan); }
@@ -109,9 +160,13 @@
         .d-lbl { font-size: 10px; font-weight: 700; }
         .vis-btn { width: 64px; height: 64px; background: linear-gradient(135deg, var(--neon-cyan), #0066ff); border-radius: 20px; margin-top: -35px; border: 5px solid var(--bg-core); display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 25px rgba(0, 243, 255, 0.3); }
         .vis-btn svg { width: 30px; height: 30px; fill: white; }
+
+        /* [MODAL COMMON] */
         .sub-head { padding: 30px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-core); position: sticky; top: 0; z-index: 20; }
         .sub-tit { font-size: 22px; font-weight: 900; color: var(--text-main); font-style: italic; }
         .close-btn { width: 100%; height: 55px; background: var(--text-main); color: var(--bg-core); border-radius: 12px; font-weight: 900; border: none; font-size: 16px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        /* [CUSTOM MODAL SYSTEM] */
         #custom-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         #custom-modal.show { display: flex; }
         .modal-box { width: 85%; max-width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
@@ -121,6 +176,8 @@
         .m-btn { flex: 1; height: 50px; border-radius: 12px; border: none; font-weight: 800; font-size: 14px; cursor: pointer; }
         .m-yes { background: var(--neon-cyan); color: #000; }
         .m-no { background: var(--bg-panel); color: var(--text-sub); border: 1px solid var(--border); }
+
+        /* [CUSTOM NUMBER PAD MODAL] */
         #input-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; flex-direction: column; justify-content: flex-end; }
         #input-modal.show { display: flex; }
         .input-box { background: var(--bg-card); border-top: 2px solid var(--neon-cyan); padding: 30px 20px; border-radius: 25px 25px 0 0; }
@@ -129,15 +186,23 @@
         .num-btn { height: 60px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-size: 20px; font-weight: bold; }
         .num-btn:active { background: var(--neon-cyan); color: black; }
         .num-ok { grid-column: span 3; background: var(--neon-cyan); color: black; margin-top: 10px; }
-        #analysis-view { position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh; background: var(--bg-card); z-index: 5000; border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 -10px 100px rgba(0,0,0,0.8); }
+
+        /* [ANALYSIS VIEW] */
+        #analysis-view { 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh; 
+            background: var(--bg-card); z-index: 5000; 
+            border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0;
+            display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 -10px 100px rgba(0,0,0,0.8);
+        }
         #analysis-view.show { transform: translateY(0); }
         .an-img-area { flex: 1; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); border-radius: 23px 23px 0 0; }
         #an-img-target { width: 100%; height: 100%; object-fit: contain; }
         .an-data-area { height: 40%; padding: 25px; overflow-y: auto; background: var(--bg-core); }
         .an-tit { font-size: 18px; font-weight: 900; color: var(--neon-cyan); margin-bottom: 20px; }
         .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        
-        /* CONTENT STYLES */
+
+        /* [CONTENTS] */
         #calc-wrap { padding: 0; display: flex; flex-direction: column; height: 100%; }
         #calc-disp { background: var(--bg-panel); padding: 30px; text-align: right; font-size: 40px; border-radius: 16px; margin-bottom: 20px; font-family: 'Roboto Mono'; color: var(--text-main); border: 1px solid var(--border); min-height: 100px; display: flex; align-items: center; justify-content: flex-end; }
         .calc-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
@@ -145,6 +210,7 @@
         .cp-btn:active { background: var(--neon-cyan); color: black; }
         .cp-act { color: var(--neon-cyan); }
         .cp-eq { grid-column: span 4; background: var(--neon-cyan); color: black; border: none; height: 60px; margin-bottom: 10px; }
+
         .cal-nav { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
         .cal-ym { font-size: 24px; font-weight: 900; color: var(--neon-cyan); font-family: 'Roboto Mono'; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
@@ -154,6 +220,7 @@
         .cal-cell.active { background: var(--neon-cyan); color: #000; font-weight: 900; }
         #cal-memo { width: 100%; height: 150px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; margin-top: 25px; padding: 15px; color: var(--text-main); font-size: 15px; resize: none; }
         .cal-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 12px; font-weight: 900; border: none; margin-top: 15px; font-size: 16px; }
+
         .bank-disp { padding: 40px 20px; text-align: center; background: var(--bg-panel); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
         .bank-lbl { font-size: 12px; color: var(--text-sub); font-weight: 700; margin-bottom: 5px; }
         .bank-val { font-size: 40px; font-weight: 900; color: var(--neon-gold); font-family: 'Roboto Mono'; letter-spacing: -2px; }
@@ -162,6 +229,7 @@
         .b-btn.in { background: rgba(0, 255, 102, 0.1); border-color: var(--neon-green); color: var(--neon-green); }
         .b-btn.out { background: rgba(255, 60, 60, 0.1); border-color: var(--neon-red); color: var(--neon-red); }
         .b-reset { width: 100%; height: 55px; background: transparent; border: 1px solid var(--border); color: var(--text-sub); border-radius: 12px; margin-top: 20px; }
+
         .st-header { background: rgba(0, 255, 102, 0.05); border: 1px solid var(--neon-green); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 30px; }
         .st-tit { color: var(--neon-green); font-weight: 900; font-size: 20px; margin-bottom: 5px; }
         .st-sub { color: var(--text-sub); font-size: 11px; }
@@ -171,6 +239,7 @@
         .st-inp { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 15px; padding: 5px 0; border-bottom: 1px solid var(--border); }
         .st-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 14px; font-weight: 900; border: none; margin-top: 30px; font-size: 16px; }
         .st-reset { width: 100%; height: 60px; background: rgba(255,60,60,0.1); border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 14px; font-weight: 900; margin-top: 15px; font-size: 16px; margin-bottom: 100px; }
+
         .odds-table { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--text-sub); }
         .odds-table th { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); color: var(--neon-purple); }
         .odds-table td { padding: 15px 10px; border-bottom: 1px solid var(--border); color: var(--text-main); font-weight: 500; }
@@ -184,58 +253,78 @@
     </style>
 </head>
 <body>
-    <div id="stealth-clock-layer">
-        <div class="sc-time-wrap">
-            <div id="sc-t" class="sc-time">00:00</div>
-            <div id="sc-s" class="sc-sec">00</div>
+
+    <div id="landing-layer">
+        <div class="ld-container">
+            <header class="ld-head">
+                <div class="ld-logo">AZI VISION</div>
+                <div class="ld-ver">SYSTEM V2.5</div>
+            </header>
+
+            <section class="ld-sec">
+                <span class="ld-label">01. INTRODUCTION</span>
+                <h1 class="ld-tit">SYNAPSE BLACK:<br>데이터의 실체는 배당의 흐름보다 강력합니다.</h1>
+                <p class="ld-desc">
+                    시냅스 블랙은 단순한 승부 예측을 넘어, 시장의 보이지 않는 왜곡과 자본의 흐름을 수학적으로 해체합니다. <br><br>
+                    20년 차 엔지니어의 경험과 최첨단 시뮬레이션 엔진이 결합된 <span class="ld-highlight">애지분석법(Azi-Analysis)</span>은 당신의 비즈니스 성공을 위한 가장 강력한 무기가 될 것입니다.
+                </p>
+            </section>
+
+            <section class="ld-sec">
+                <span class="ld-label">02. CORE ALGORITHM</span>
+                <h2 class="ld-tit">애지분석법 (Azi-Analysis)</h2>
+                <p class="ld-desc">시냅스 블랙의 심장부인 애지분석법은 세 가지 핵심 필터를 통해 시장의 허점을 완벽하게 포착합니다.</p>
+                <div class="ld-grid">
+                    <div class="ld-card">
+                        <span class="lc-tit" style="color:#00f3ff">① 구조 분석 (Structure Analysis)</span>
+                        <div class="lc-txt">시장의 설계 판독: 북메이커가 설정한 기준점과 초기 배당의 구조적 의도를 해부합니다. 리스크 방어: 타겟 구간에 정확히 안착한 수익 구조만을 선별하여 수학적으로 안정적인 수익 모델을 제시합니다.</div>
+                    </div>
+                    <div class="ld-card">
+                        <span class="lc-tit" style="color:#bc13fe">② 흐름 분석 (Flow Analysis)</span>
+                        <div class="lc-txt">실시간 자본 추적: 전 세계 거대 자본(Smart Money)의 이동 방향과 배당의 유기적인 변화를 스캐닝합니다. 데이터 왜곡 포착: 대중의 심리가 반영된 허수 자본과 실제 승부처를 구분하여 수익성을 극대화합니다.</div>
+                    </div>
+                    <div class="ld-card">
+                        <span class="lc-tit" style="color:#ffd700">③ 효율 분석 (Efficiency Analysis)</span>
+                        <div class="lc-txt">1만 회 몬테카를로 시뮬레이션: v2.5 엔진이 해당 경기를 가상 세계에서 10,000회 사전 수행하여 통계적 확률을 산출합니다. 로컬 인텔리전스 딥 스캔: 현지 전술 변화, 선수 컨디션, 기상 변수 등 정성적 데이터를 정량적 수치로 환산합니다.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="ld-sec">
+                <span class="ld-label">03. EDGE SCORE</span>
+                <div class="ld-math">
+                    <p class="ld-desc">애지분석법의 모든 연산 결과는 단 하나의 숫자로 수렴됩니다. 우리는 주관적 감을 배제하고 오직 수학적 기대 가치(EV)만을 신뢰합니다.</p>
+                    <div class="ld-formula">Edge Score = (Structure + Flow + Efficiency) / 3</div>
+                    <p class="ld-desc" style="font-size:12px; color:#00f3ff; margin-top:15px;">진입 기준: 엣지 지수가 임계치를 돌파한 경기만을 엄선하여 고밀도 리포트로 제공합니다.</p>
+                </div>
+            </section>
+
+            <section class="ld-sec">
+                <span class="ld-label">04. INTEGRITY SYSTEM</span>
+                <h2 class="ld-tit">시냅스만의 철저한 무결성 시스템</h2>
+                <ul class="ld-list">
+                    <li>
+                        <span class="li-tit">독보적 보안</span>
+                        <span class="li-desc">모든 분석 리포트 하단에는 고유 검증 ID(Synapse-V-ID)가 부여되어 데이터의 위변조를 원천 차단합니다.</span>
+                    </li>
+                    <li>
+                        <span class="li-tit">완벽한 개발 공정</span>
+                        <span class="li-desc">비즈니스 엔진의 안정성을 위해 단 1픽셀의 임의 변경도 허용하지 않는 엄격한 개발 가이드를 준수합니다.</span>
+                    </li>
+                    <li>
+                        <span class="li-tit">투명한 데이터 근거</span>
+                        <span class="li-desc">모든 분석 결과는 공신력 있는 데이터와 현지 인텔리전스의 명확한 출처를 기반으로 작성됩니다.</span>
+                    </li>
+                </ul>
+            </section>
+
+            <div class="ld-footer">
+                <h2 class="ld-tit" style="font-size:22px;">지금, 비즈니스의 격차를 경험하십시오.</h2>
+                <p class="ld-desc">데이터는 거짓말을 하지 않습니다. 다만 해석의 밀도가 다를 뿐입니다.<br>시냅스 블랙 v2.5와 함께 시장의 흐름을 지배하는 상위 1%의 시각을 소유하십시오.</p>
+                <button class="ld-btn" onclick="document.getElementById('landing-layer').style.display='none'">SYSTEM ACCESS</button>
+            </div>
         </div>
-        <div id="sc-d" class="sc-date">LOADING...</div>
     </div>
-    
-    <script>
-        (function() {
-            // 시계 작동
-            function updateStealthClock() {
-                const now = new Date();
-                const h = String(now.getHours()).padStart(2, '0');
-                const m = String(now.getMinutes()).padStart(2, '0');
-                const s = String(now.getSeconds()).padStart(2, '0');
-                const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-                
-                const tEl = document.getElementById('sc-t');
-                const sEl = document.getElementById('sc-s');
-                const dEl = document.getElementById('sc-d');
-
-                if(tEl && sEl && dEl) {
-                    tEl.innerText = `${h}:${m}`;
-                    sEl.innerText = s;
-                    dEl.innerText = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${days[now.getDay()]}`;
-                }
-            }
-            setInterval(updateStealthClock, 1000);
-            updateStealthClock();
-
-            // 잠금 해제 (0.5초 꾹 누르기)
-            let pressTimer;
-            const layer = document.getElementById('stealth-clock-layer');
-            
-            function startPress() { pressTimer = setTimeout(unlock, 500); } // 0.5초로 단축
-            function endPress() { clearTimeout(pressTimer); }
-            
-            layer.addEventListener('touchstart', startPress);
-            layer.addEventListener('touchend', endPress);
-            layer.addEventListener('mousedown', startPress);
-            layer.addEventListener('mouseup', endPress);
-
-            function unlock() {
-                if(navigator.vibrate) navigator.vibrate(100);
-                layer.style.opacity = '0';
-                layer.style.pointerEvents = 'none'; // 클릭 방해 방지
-                setTimeout(() => { layer.style.display = 'none'; }, 300);
-            }
-        })();
-    </script>
-    
     <input type="file" id="cam-input" hidden accept="image/*">
     
     <div id="custom-modal">
@@ -343,6 +432,9 @@
     </div>
 
     <script>
+        // [STEALTH LOGIC REMOVED] - As requested by user to keep code original
+
+        // --- 기존 데이터 및 로직 유지 ---
         const DefaultDB = {
             normal: [
                 {n:'FLASHSCORE',u:'https://www.flashscore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'},
@@ -523,8 +615,7 @@
                 const box=document.getElementById('grid-box'), list=Ghost.active?DB.secret:DB.normal; let h='';
                 list.forEach((i,x)=>{ if(x<8) { 
                     let u=i.u; if(u && !u.startsWith('http'))u='https://'+u; 
-                    // [버그 수정] onclick 내 람다식을 함수식으로 변경하여 호환성 해결
-                    const act=u?`window.open('${u}')`:`Modal.show('설정에서 주소를 입력하세요', function(){App.open('SETTINGS')})`; 
+                    const act=u?`window.open('${u}')`:`Modal.show('설정에서 주소를 입력하세요', ()=>App.open('SETTINGS'))`; 
                     h+=`<div class="s-btn" onclick="${act}"><svg class="s-ico" viewBox="0 0 24 24"><path d="${i.i}"/></svg><span class="s-lbl">${i.n}</span></div>`; 
                 }});
                 h+=`<div class="s-btn" onclick="Ghost.trigger()"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span class="s-lbl" style="${Ghost.active?'color:var(--neon-cyan)':'color:var(--text-sub)'}">COMPASS</span></div>`;
@@ -534,7 +625,7 @@
                 let h=''; 
                 DB.tv.forEach(t => {
                     let u = t.u; if(u && !u.startsWith('http')) u='https://'+u;
-                    const act = u ? `window.open('${u}')` : `Modal.show('라이브 주소가 없습니다', function(){App.open('SETTINGS')})`;
+                    const act = u ? `window.open('${u}')` : `Modal.show('라이브 주소가 없습니다', ()=>App.open('SETTINGS'))`;
                     h+=`<div class="cctv" onclick="${act}"><img src="${t.u}"><div class="rec"><div class="dot"></div>${t.n}</div></div>`;
                 }); 
                 document.getElementById('tv-grid').innerHTML=h; 
@@ -545,8 +636,11 @@
             Render.init();
             setInterval(() => {
                 const n=new Date();
-                document.getElementById('clock-time').innerHTML=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
-                document.getElementById('clock-date').innerText=`${n.getFullYear()}.${n.getMonth()+1}.${n.getDate()}`;
+                const clock = document.getElementById('clock-time');
+                if(clock) {
+                    clock.innerHTML=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
+                    document.getElementById('clock-date').innerText=`${n.getFullYear()}.${n.getMonth()+1}.${n.getDate()}`;
+                }
             }, 1000);
             
             const cam = document.getElementById('cam-input');
