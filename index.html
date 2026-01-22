@@ -2,502 +2,572 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <meta property="og:title" content="SY-ON : 사랑의 번역기">
-    <meta property="og:description" content="서로의 마음을 가장 깊게 이해하기 위한 30가지 감각 질문.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=1000&auto=format&fit=crop">
-    <meta property="og:type" content="website">
-
-    <title>SY-ON : [Deep Analysis]</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Clock</title>
     <style>
-        /* [DESIGN SYSTEM] */
-        :root { 
-            --bg: #050508; --card: #0f0f13; 
-            --accent: #00f2ff; --love: #ff0055; --kakao: #FEE500;
-            --text: #f1f5f9; --sub: #64748b; --border: #1a1a25; 
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: 'Pretendard', sans-serif; }
-        body { 
-            background: var(--bg); color: var(--text); line-height: 1.6; word-break: keep-all; 
-            background-image: radial-gradient(circle at 50% 10%, rgba(0, 242, 255, 0.05) 0%, transparent 40%);
+        /* [STEALTH MODE: RIGHT-TOP CLOCK] */
+        #stealth-clock-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: #000000;
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* 상단 정렬 */
+            align-items: flex-end;     /* 우측 정렬 */
+            padding: 40px 30px;        /* 우상단 여백 */
+            font-family: 'Roboto Mono', monospace;
+            color: #444;
+            user-select: none;
+            transition: opacity 0.3s ease;
         }
         
-        .app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: none; flex-direction: column; background: rgba(5, 5, 8, 0.98); border-left: 1px solid var(--border); border-right: 1px solid var(--border); position: relative; animation: fadeIn 0.5s ease-out; }
-        .app.active { display: flex !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Typography */
-        header { text-align: left; padding: 40px 25px 20px; }
-        .logo { font-size: 1.2rem; font-weight: 900; color: var(--accent); letter-spacing: 2px; margin-bottom: 10px; display: inline-block; }
-        h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.3; margin-bottom: 10px; color: #fff; }
-        .desc { font-size: 0.95rem; color: var(--sub); line-height: 1.6; margin-bottom: 40px; }
-
-        /* [BUTTONS] */
-        .btn-kakao {
-            background: var(--kakao); color: #000; border: none; width: 100%; padding: 18px; 
-            font-size: 1rem; font-weight: 800; border-radius: 12px; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px;
-            transition: transform 0.1s;
+        .sc-time-wrap { display: flex; align-items: baseline; gap: 8px; justify-content: flex-end; }
+        .sc-time { 
+            font-size: 80px; /* 크기 조정 */
+            font-weight: 100; 
+            color: #e0e0e0; 
+            letter-spacing: -2px;
+            line-height: 1;
         }
-        .btn-kakao::before { content: '💬'; font-size: 1.2rem; }
-
-        .btn-main { 
-            background: var(--accent); color: #000; border: none; width: 100%; padding: 18px; 
-            font-size: 1.1rem; font-weight: 800; border-radius: 12px; cursor: pointer; 
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); margin-bottom: 15px;
-            transition: transform 0.1s;
+        .sc-sec { font-size: 30px; font-weight: 300; color: #555; }
+        .sc-date { 
+            font-size: 16px; 
+            font-weight: 400; 
+            letter-spacing: 2px; 
+            margin-top: 5px; 
+            color: #666;
+            text-transform: uppercase;
+            text-align: right; /* 날짜도 우측 정렬 */
         }
-
-        .btn-ghost {
-            background: rgba(255,255,255,0.05); color: var(--accent); border: 1px solid rgba(0,242,255,0.3);
-            width: 100%; padding: 16px; font-size: 0.95rem; font-weight: 700; border-radius: 12px; cursor: pointer;
-            margin-bottom: 15px; transition: transform 0.1s;
-        }
-
-        /* [SURVEY UI] */
-        .opt-btn { 
-            width: 100%; padding: 20px; margin-bottom: 12px; background: #111116; border: 1px solid var(--border); 
-            color: #e2e8f0; border-radius: 12px; text-align: left; font-size: 1.05rem; 
-            height: auto; min-height: 60px; 
-            transition: transform 0.05s, background 0.05s, color 0.05s;
-        }
-        .opt-btn:active, .opt-btn.active-state { 
-            background: var(--accent) !important; color: #000 !important; font-weight: 800;
-            transform: scale(0.96); border-color: var(--accent);
-        }
-        .touch-btn:active, .touch-btn.active-state { transform: scale(0.96); opacity: 0.9; }
-
-        /* [MODAL] */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); z-index: 9999; display: none; 
-            justify-content: center; align-items: center; padding: 20px;
-        }
-        .modal-overlay.open { display: flex; animation: fadeUp 0.3s; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .modal-content {
-            background: #111; width: 100%; max-width: 420px; border-radius: 20px; 
-            padding: 0; border: 1px solid var(--accent); text-align: left;
-            height: 85vh; display: flex; flex-direction: column;
-        }
-        .modal-body { padding: 25px; overflow-y: auto; flex: 1; }
-        .tech-card { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #222; }
-        .tech-badge { font-size: 0.7rem; color: #000; background: var(--accent); padding: 3px 8px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 8px; }
-        .tech-title { color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
-        .tech-desc { color: #ccc; font-size: 0.9rem; line-height: 1.6; }
-
-        /* [REPORT] */
-        .zone-box { margin-bottom: 25px; border: 1px solid var(--border); border-radius: 16px; padding: 20px; background: rgba(255,255,255,0.02); }
-        .zone-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
-        .green { color: var(--accent); font-weight: 800; text-shadow: 0 0 10px rgba(0,242,255,0.3); } 
-        .red { color: var(--love); font-weight: 800; text-shadow: 0 0 10px rgba(255,0,85,0.3); }
-        .item-row { margin-bottom: 20px; }
-        .item-head { display: flex; justify-content: space-between; margin-bottom: 6px; align-items: center; }
-        .item-k { color: #fff; font-weight: 800; font-size: 1.05rem; }
-        .thermo { font-size: 0.75rem; letter-spacing: 1px; font-weight: 700; }
-        .msg-box { background: #222; padding: 14px; border-radius: 8px; font-size: 0.95rem; color: #fff; border-left: 3px solid var(--accent); margin-top: 8px; cursor: default; }
+        /* [FINAL ENGINE V24 CSS - 원본 유지] */
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
         
-        /* 복사 가능한 메시지 스타일 */
-        .copy-enabled { cursor: pointer; position: relative; transition: background 0.2s; }
-        .copy-enabled:active { background: #333; }
-        .copy-enabled::after { content: '복사'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: var(--sub); border: 1px solid #444; padding: 2px 6px; border-radius: 4px; opacity: 0.6; }
+        :root {
+            --bg-core: #000000; --bg-card: #121212; --bg-panel: #1a1a1a; --border: #333333;
+            --text-main: #ffffff; --text-sub: #888888;
+            --neon-cyan: #00f3ff; --neon-purple: #bc13fe; --neon-red: #ff003c;
+            --neon-gold: #ffd700; --neon-green: #00ff66;
+            --modal-overlay: rgba(0,0,0,0.92);
+        }
+        body.white-mode {
+            --bg-core: #f5f5f7; --bg-card: #ffffff; --bg-panel: #e9ecef; --border: #d1d5db;
+            --text-main: #111827; --text-sub: #4b5563;
+            --neon-cyan: #0066ff; --neon-purple: #6200ea; --neon-red: #d32f2f;
+            --neon-gold: #f57c00; --neon-green: #2e7d32;
+            --modal-overlay: rgba(255,255,255,0.95);
+        }
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg-core); color: var(--text-main); font-family: 'Noto Sans KR', sans-serif; height: 100vh; overflow: hidden; }
 
-        .progress-bar { height: 4px; background: #111; width: 100%; position: absolute; top: 0; left: 0; }
-        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
-
+        /* [LAYOUT & COMPONENTS] */
+        .page { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg-core); opacity: 1; transition: opacity 0.2s; z-index: 10; }
+        .page.hidden { opacity: 0; pointer-events: none; z-index: 0; }
+        header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); }
+        .top-row { display: flex; justify-content: space-between; align-items: flex-end; }
+        .logo-main { font-size: 32px; font-weight: 900; color: var(--neon-cyan); letter-spacing: -1px; line-height: 1; font-family: 'Exo 2'; font-style: italic; text-shadow: 0 0 10px rgba(0,243,255,0.3); }
+        .logo-sub { font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 2px; margin-top: 5px; font-family: 'Roboto Mono'; }
+        .clock-box { text-align: right; font-family: 'Roboto Mono'; }
+        .time-big { font-size: 24px; font-weight: 700; color: var(--text-main); }
+        .date-full { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .news-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: var(--bg-card); padding: 12px 0; border-bottom: 1px solid var(--border); margin-top: 15px; }
+        .ticker-wrap { display: flex; width: max-content; animation: ticker 40s linear infinite; }
+        .ticker-item { padding: 0 30px; font-size: 13px; color: var(--text-sub); font-weight: 500; }
+        .ticker-item span { color: var(--neon-red); font-weight: 900; margin-right: 6px; }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .main-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; }
+        .sec-head { font-size: 11px; color: var(--text-sub); font-weight: 900; margin: 30px 0 10px; letter-spacing: 1px; font-family: 'Roboto Mono'; border-left: 3px solid var(--neon-cyan); padding-left: 8px; }
+        .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; height: 110px; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; position: relative; overflow: hidden; transition: border-color 0.2s; }
+        .card:active { border-color: var(--neon-cyan); }
+        .c-tit { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; letter-spacing: 0.5px; z-index: 2; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+        #card-score { background: var(--bg-card); }
+        #score-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 1; display: none; filter: contrast(1.1); }
+        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); opacity: 0; pointer-events: none; z-index: 5; }
+        .card.scanning .scan-line { opacity: 1; animation: scanSlow 3s linear infinite; }
+        @keyframes scanSlow { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        .cctv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .cctv { height: 90px; background: #000; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); }
+        .cctv img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        .rec { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); padding: 3px 6px; border-radius: 4px; font-size: 9px; color: white; font-weight: 900; display: flex; align-items: center; gap: 4px; z-index: 2; }
+        .dot { width: 5px; height: 5px; background: var(--neon-red); border-radius: 50%; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        .shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .s-btn { height: 90px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
+        .s-btn:active { background: var(--bg-panel); transform: scale(0.98); }
+        .s-ico { width: 26px; height: 26px; fill: var(--text-sub); }
+        .s-lbl { font-size: 11px; color: var(--text-sub); font-weight: 700; }
+        body.ghost-active .s-ico { fill: var(--neon-cyan); }
+        body.ghost-active .s-lbl { color: var(--neon-cyan); }
+        .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 95px; background: var(--bg-core); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: flex-start; padding-top: 18px; z-index: 100; opacity: 0.98; }
+        .d-btn { width: 60px; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0.5; color: var(--text-main); }
+        .d-btn.active { opacity: 1; color: var(--neon-cyan); }
+        .d-ico { width: 24px; height: 24px; fill: currentColor; }
+        .d-lbl { font-size: 10px; font-weight: 700; }
+        .vis-btn { width: 64px; height: 64px; background: linear-gradient(135deg, var(--neon-cyan), #0066ff); border-radius: 20px; margin-top: -35px; border: 5px solid var(--bg-core); display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 25px rgba(0, 243, 255, 0.3); }
+        .vis-btn svg { width: 30px; height: 30px; fill: white; }
+        .sub-head { padding: 30px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-core); position: sticky; top: 0; z-index: 20; }
+        .sub-tit { font-size: 22px; font-weight: 900; color: var(--text-main); font-style: italic; }
+        .close-btn { width: 100%; height: 55px; background: var(--text-main); color: var(--bg-core); border-radius: 12px; font-weight: 900; border: none; font-size: 16px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        #custom-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        #custom-modal.show { display: flex; }
+        .modal-box { width: 85%; max-width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .modal-tit { font-size: 18px; font-weight: 900; color: var(--text-main); margin-bottom: 10px; }
+        .modal-msg { font-size: 15px; color: var(--text-sub); margin-bottom: 25px; line-height: 1.5; font-weight: 500; }
+        .modal-btns { display: flex; gap: 10px; }
+        .m-btn { flex: 1; height: 50px; border-radius: 12px; border: none; font-weight: 800; font-size: 14px; cursor: pointer; }
+        .m-yes { background: var(--neon-cyan); color: #000; }
+        .m-no { background: var(--bg-panel); color: var(--text-sub); border: 1px solid var(--border); }
+        #input-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; flex-direction: column; justify-content: flex-end; }
+        #input-modal.show { display: flex; }
+        .input-box { background: var(--bg-card); border-top: 2px solid var(--neon-cyan); padding: 30px 20px; border-radius: 25px 25px 0 0; }
+        .input-display { font-size: 32px; color: var(--text-main); text-align: right; margin-bottom: 20px; font-family: 'Roboto Mono'; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .num-btn { height: 60px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-size: 20px; font-weight: bold; }
+        .num-btn:active { background: var(--neon-cyan); color: black; }
+        .num-ok { grid-column: span 3; background: var(--neon-cyan); color: black; margin-top: 10px; }
+        #analysis-view { position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh; background: var(--bg-card); z-index: 5000; border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 -10px 100px rgba(0,0,0,0.8); }
+        #analysis-view.show { transform: translateY(0); }
+        .an-img-area { flex: 1; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); border-radius: 23px 23px 0 0; }
+        #an-img-target { width: 100%; height: 100%; object-fit: contain; }
+        .an-data-area { height: 40%; padding: 25px; overflow-y: auto; background: var(--bg-core); }
+        .an-tit { font-size: 18px; font-weight: 900; color: var(--neon-cyan); margin-bottom: 20px; }
+        .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        /* CONTENT STYLES */
+        #calc-wrap { padding: 0; display: flex; flex-direction: column; height: 100%; }
+        #calc-disp { background: var(--bg-panel); padding: 30px; text-align: right; font-size: 40px; border-radius: 16px; margin-bottom: 20px; font-family: 'Roboto Mono'; color: var(--text-main); border: 1px solid var(--border); min-height: 100px; display: flex; align-items: center; justify-content: flex-end; }
+        .calc-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
+        .cp-btn { padding: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border-radius: 14px; font-size: 22px; font-weight: bold; color: var(--text-main); border: 1px solid var(--border); cursor: pointer; }
+        .cp-btn:active { background: var(--neon-cyan); color: black; }
+        .cp-act { color: var(--neon-cyan); }
+        .cp-eq { grid-column: span 4; background: var(--neon-cyan); color: black; border: none; height: 60px; margin-bottom: 10px; }
+        .cal-nav { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+        .cal-ym { font-size: 24px; font-weight: 900; color: var(--neon-cyan); font-family: 'Roboto Mono'; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .cal-head { font-size: 12px; color: var(--text-sub); font-weight: bold; margin-bottom: 10px; }
+        .cal-cell { height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 14px; background: var(--bg-panel); color: var(--text-sub); border: 1px solid transparent; cursor: pointer; }
+        .cal-cell.today { border: 1px solid var(--neon-cyan); color: var(--text-main); }
+        .cal-cell.active { background: var(--neon-cyan); color: #000; font-weight: 900; }
+        #cal-memo { width: 100%; height: 150px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; margin-top: 25px; padding: 15px; color: var(--text-main); font-size: 15px; resize: none; }
+        .cal-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 12px; font-weight: 900; border: none; margin-top: 15px; font-size: 16px; }
+        .bank-disp { padding: 40px 20px; text-align: center; background: var(--bg-panel); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .bank-lbl { font-size: 12px; color: var(--text-sub); font-weight: 700; margin-bottom: 5px; }
+        .bank-val { font-size: 40px; font-weight: 900; color: var(--neon-gold); font-family: 'Roboto Mono'; letter-spacing: -2px; }
+        .bank-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .b-btn { height: 65px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-card); font-weight: 800; color: var(--text-sub); font-size: 15px; }
+        .b-btn.in { background: rgba(0, 255, 102, 0.1); border-color: var(--neon-green); color: var(--neon-green); }
+        .b-btn.out { background: rgba(255, 60, 60, 0.1); border-color: var(--neon-red); color: var(--neon-red); }
+        .b-reset { width: 100%; height: 55px; background: transparent; border: 1px solid var(--border); color: var(--text-sub); border-radius: 12px; margin-top: 20px; }
+        .st-header { background: rgba(0, 255, 102, 0.05); border: 1px solid var(--neon-green); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 30px; }
+        .st-tit { color: var(--neon-green); font-weight: 900; font-size: 20px; margin-bottom: 5px; }
+        .st-sub { color: var(--text-sub); font-size: 11px; }
+        .st-label { color: var(--neon-gold); font-weight: 900; font-size: 13px; margin-bottom: 15px; display: block; border-left: 3px solid var(--neon-gold); padding-left: 10px; }
+        .st-item { display: flex; align-items: center; gap: 15px; background: var(--bg-panel); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .st-idx { width: 30px; font-weight: 900; color: var(--text-sub); font-family: 'Roboto Mono'; }
+        .st-inp { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 15px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+        .st-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 14px; font-weight: 900; border: none; margin-top: 30px; font-size: 16px; }
+        .st-reset { width: 100%; height: 60px; background: rgba(255,60,60,0.1); border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 14px; font-weight: 900; margin-top: 15px; font-size: 16px; margin-bottom: 100px; }
+        .odds-table { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--text-sub); }
+        .odds-table th { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); color: var(--neon-purple); }
+        .odds-table td { padding: 15px 10px; border-bottom: 1px solid var(--border); color: var(--text-main); font-weight: 500; }
+        .down { color: var(--neon-red); font-weight: bold; } .up { color: var(--neon-green); font-weight: bold; }
+        .edge-card { background: var(--bg-panel); border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .ec-head { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .ec-team { font-weight: 900; color: var(--text-main); font-size: 15px; }
+        .ec-rate { font-weight: 900; color: var(--neon-red); font-family: 'Roboto Mono'; }
+        .ec-bar { width: 100%; height: 8px; background: var(--bg-card); border-radius: 4px; overflow: hidden; }
+        .ec-fill { height: 100%; background: var(--neon-red); }
     </style>
 </head>
 <body>
+    <div id="stealth-clock-layer">
+        <div class="sc-time-wrap">
+            <div id="sc-t" class="sc-time">00:00</div>
+            <div id="sc-s" class="sc-sec">00</div>
+        </div>
+        <div id="sc-d" class="sc-date">LOADING...</div>
+    </div>
+    
+    <script>
+        (function() {
+            // 시계 작동
+            function updateStealthClock() {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(now.getSeconds()).padStart(2, '0');
+                const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+                
+                const tEl = document.getElementById('sc-t');
+                const sEl = document.getElementById('sc-s');
+                const dEl = document.getElementById('sc-d');
 
-<div id="techModal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-body">
-            <h2 style="color:#fff; text-align:center; margin-bottom:30px; font-size:1.4rem;">SY-ON 9-CORE ENGINE</h2>
+                if(tEl && sEl && dEl) {
+                    tEl.innerText = `${h}:${m}`;
+                    sEl.innerText = s;
+                    dEl.innerText = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} ${days[now.getDay()]}`;
+                }
+            }
+            setInterval(updateStealthClock, 1000);
+            updateStealthClock();
+
+            // 잠금 해제 (0.5초 꾹 누르기)
+            let pressTimer;
+            const layer = document.getElementById('stealth-clock-layer');
             
-            <div class="tech-card">
-                <span class="tech-badge">DATA MINING</span>
-                <div class="tech-title">1. 마이크로 레이턴시 (Latency)</div>
-                <div class="tech-desc">말은 꾸며낼 수 있지만 반응 속도는 거짓말을 못 합니다. 0.001초 단위의 응답 지연을 측정하여 무의식적 갈등을 식별합니다.</div>
+            function startPress() { pressTimer = setTimeout(unlock, 500); } // 0.5초로 단축
+            function endPress() { clearTimeout(pressTimer); }
+            
+            layer.addEventListener('touchstart', startPress);
+            layer.addEventListener('touchend', endPress);
+            layer.addEventListener('mousedown', startPress);
+            layer.addEventListener('mouseup', endPress);
+
+            function unlock() {
+                if(navigator.vibrate) navigator.vibrate(100);
+                layer.style.opacity = '0';
+                layer.style.pointerEvents = 'none'; // 클릭 방해 방지
+                setTimeout(() => { layer.style.display = 'none'; }, 300);
+            }
+        })();
+    </script>
+    
+    <input type="file" id="cam-input" hidden accept="image/*">
+    
+    <div id="custom-modal">
+        <div class="modal-box">
+            <div class="modal-tit" id="m-tit">이 페이지 내용:</div>
+            <div class="modal-msg" id="modal-msg">MESSAGE</div>
+            <div class="modal-btns">
+                <button class="m-btn m-no" onclick="Modal.close()">취소</button>
+                <button class="m-btn m-yes" id="modal-ok">확인</button>
             </div>
-            <div class="tech-card">
-                <span class="tech-badge">ALGORITHM</span>
-                <div class="tech-title">2. 동적 조립 엔진 (Dynamic Assembly)</div>
-                <div class="tech-desc">고정된 유형(MBTI식)을 거부합니다. 당신의 선택 하나하나가 유전자가 되어 실시간으로 조립되는, 전 세계 유일한 결과지를 생성합니다.</div>
-                <div style="background:#000; padding:10px; font-size:0.7rem; color:#888; margin-top:5px; border-radius:5px;">$$ UniqueID = \sum Hash(Choice_i \times Latency_i) $$</div>
-            </div>
-            <div class="tech-card">
-                <span class="tech-badge">NEUROSCIENCE</span>
-                <div class="tech-title">3. 다미주 신경 이론 (Polyvagal)</div>
-                <div class="tech-desc">상대의 신경계가 언제 '안전'하고 언제 '동결'되는지 분석하여, 신경을 안정시키는 목소리 톤과 행동을 처방합니다.</div>
-            </div>
-            <div class="tech-card">
-                <span class="tech-badge">SENSOR</span>
-                <div class="tech-title">4. 감각 우회 설계 (Bypass)</div>
-                <div class="tech-desc">직접적인 연애 질문을 하지 않습니다. 빛, 소리, 공간에 대한 30가지 추상 자극을 통해 본능적 기질을 추출합니다.</div>
-            </div>
-            <div style="text-align:center; padding-bottom:20px;">
-                <button class="btn-main touch-btn" onclick="toggleModal('techModal', false)">확인 완료</button>
+        </div>
+    </div>
+
+    <div id="input-modal">
+        <div class="input-box">
+            <div class="input-display" id="inp-disp">0</div>
+            <div class="numpad">
+                <button class="num-btn" onclick="Input.add(1)">1</button><button class="num-btn" onclick="Input.add(2)">2</button><button class="num-btn" onclick="Input.add(3)">3</button>
+                <button class="num-btn" onclick="Input.add(4)">4</button><button class="num-btn" onclick="Input.add(5)">5</button><button class="num-btn" onclick="Input.add(6)">6</button>
+                <button class="num-btn" onclick="Input.add(7)">7</button><button class="num-btn" onclick="Input.add(8)">8</button><button class="num-btn" onclick="Input.add(9)">9</button>
+                <button class="num-btn" onclick="Input.clr()">C</button><button class="num-btn" onclick="Input.add(0)">0</button><button class="num-btn" onclick="Input.back()">←</button>
+                <button class="num-btn num-ok" onclick="Input.done()">=</button>
             </div>
         </div>
     </div>
-</div>
 
-<div id="cheerModal" class="modal-overlay">
-    <div class="modal-content" style="height:auto; max-width:320px; text-align:center; border:none;">
-        <div style="padding:30px; background:#111; border:1px solid var(--accent); border-radius:20px;">
-            <div style="font-size:3rem; margin-bottom:20px;">🔥</div>
-            <h2 style="color:#fff; margin-bottom:10px;">잠시만요!</h2>
-            <p style="color:#ccc; margin-bottom:20px;">
-                생각보다 고민이 많이 되시죠?<br>
-                그만큼 상대를 아끼신다는 증거입니다.<br>
-                조금만 더 힘내서 완주해 봐요!
-            </p>
-            <button class="btn-main touch-btn" onclick="closeCheer()">계속 진행하기</button>
+    <div id="analysis-view">
+        <button class="an-close-btn" onclick="Action.closeScore()">×</button>
+        <div class="an-img-area">
+            <img id="an-img-target" src="">
         </div>
-    </div>
-</div>
-
-<div class="app active" id="v-landing" style="justify-content:center;"> <header>
-        <span class="logo">SY-ON</span>
-        <h1>사랑에도<br>번역기가 필요합니다</h1>
-        <p class="desc">오해하지 않고, 상처 주지 않고<br>서로를 가장 깊이 아껴주는 과학적 방법</p>
-    </header>
-
-    <div style="padding: 0 25px; margin-bottom:30px; opacity:0.8; text-align:center;">
-        <div style="font-size:0.75rem; color:var(--sub); margin-bottom:10px; letter-spacing:2px;">[SY-ON ALGORITHM]</div>
-        <div style="color:var(--accent); font-size:1.1rem; overflow-x:auto;">
-            $$ M = \oint_{t=0}^{24} \left( \frac{P_{time} \times E_{env}}{\sigma(Shadow)} \right) \cdot S_{root} \, dt $$
+        <div class="an-data-area">
+            <div class="an-tit">AI ANALYSIS</div>
+            <div style="font-family:'Roboto Mono'; font-size:13px; color:var(--text-sub); line-height:1.8;">
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
+                    <span>CONFIDENCE</span><span style="color:var(--neon-green);font-weight:bold;">99.1%</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
+                    <span>PREDICTION</span><span style="color:var(--neon-cyan);font-weight:bold;">WIN</span>
+                </div>
+                <div style="margin-top:15px; color:#666;">
+                    > Image captured.<br>> Processing data points...<br>> Result: HIGH PROBABILITY.
+                </div>
+            </div>
         </div>
     </div>
 
-    <div style="padding: 0 25px 40px;">
-        <button class="btn-ghost touch-btn" onclick="toggleModal('techModal', true)">🔬 SY-ON 9대 분석 원리 보기</button>
-        <div style="height:15px;"></div>
-        <button class="btn-main touch-btn" style="background:#fff; color:#000;" onclick="alert('현재 무료 베타 기간입니다.')">프리미엄 리포트 구매하기</button>
-        <button class="btn-main touch-btn" onclick="go('v-buyer-init')">이미 구매하셨나요? (시작하기)</button>
-    </div>
-</div>
+    <div id="p-home" class="page active">
+        <header>
+            <div class="top-row">
+                <div class="brand-col">
+                    <div class="logo-main">SYNAPSE</div>
+                    <div class="logo-sub">V24 MASTER-OS</div>
+                </div>
+                <div class="clock-box">
+                    <div class="time-big" id="clock-time">00:00:00</div>
+                    <div class="date-full" id="clock-date">LOADING...</div>
+                </div>
+            </div>
+            <div class="news-ticker" onclick="window.open('https://www.google.com/search?q=스포츠뉴스')">
+                <div class="ticker-wrap">
+                    <div class="ticker-item"><span>[LIVE]</span> EPL: MAN CITY 2-2 LIV (82')</div>
+                    <div class="ticker-item"><span>[NBA]</span> LAKERS WIN OT (112-110)</div>
+                    <div class="ticker-item"><span>[MLB]</span> OHTANI 2 HR GAME</div>
+                    <div class="ticker-item"><span>[UFC]</span> MAIN EVENT CONFIRMED</div>
+                </div>
+            </div>
+        </header>
 
-<div class="app" id="v-buyer-init">
-    <header>
-        <span class="logo">INVITATION</span>
-        <h1>소중한 사람을<br>초대해 주세요</h1>
-        <p class="desc">아래 버튼을 눌러 파트너에게<br>초대장을 보내세요.</p>
-    </header>
-    <div style="padding: 25px;">
-        <div style="background:#111; padding:20px; border-radius:12px; text-align:center; color:#fff; border:1px solid #222;">
-            🎫 <b>초대 링크 생성 완료</b><br>
-            <span style="font-size:0.8rem; color:var(--sub);">데이터는 암호화되어 당신에게만 도착합니다.</span>
-        </div>
-        <button class="btn-kakao touch-btn" onclick="copyInvite()">카카오톡으로 초대장 보내기</button>
-    </div>
-</div>
+        <div class="main-scroll">
+            <div class="sec-head">CONTROL UNIT</div>
+            <div class="exec-grid">
+                <div class="card" id="card-score" onclick="Action.score()">
+                    <div class="scan-line"></div>
+                    <img id="score-bg">
+                    <div class="c-tit" style="color:var(--neon-cyan)">VISION</div>
+                </div>
+                <div class="card" onclick="App.open('ODDS')"><div class="c-tit" style="color:var(--neon-purple)">ODDS</div></div>
+                <div class="card" onclick="App.open('EDGE')"><div class="c-tit" style="color:var(--neon-red)">EDGE</div></div>
+                <div class="card" onclick="App.open('BANK')"><div class="c-tit" style="color:var(--neon-gold)">BANK</div></div>
+            </div>
 
-<div class="app" id="v-guest">
-    <header>
-        <span class="logo">DEEP LOVE</span>
-        <h1>당신을 더 깊이 사랑하기 위한<br>질문입니다.</h1>
-        <p class="desc">정답은 없습니다.<br>당신의 감각이 이끄는 대로 선택해 주세요.</p>
-    </header>
-    <div style="padding: 25px;">
-        <button class="btn-main touch-btn" onclick="startSurvey()">질문 시작하기</button>
-    </div>
-</div>
+            <div class="sec-head">LIVE CHANNELS</div>
+            <div class="cctv-grid" id="tv-grid"></div>
 
-<div class="app" id="v-survey">
-    <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
-    <div style="padding: 40px 25px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <span id="q-num" style="color:var(--accent); font-weight:800;">Q. 01</span>
-            <span id="q-count" style="color:var(--sub); font-size:0.9rem;">(01/30)</span>
-        </div>
-        <div id="q-text" style="font-size:1.45rem; font-weight:700; margin-bottom:30px; color:#fff; line-height:1.4;"></div>
-        <div id="opt-box"></div>
-    </div>
-    <div style="padding:20px; text-align:center;">
-        <button onclick="prevQ()" style="background:none; border:none; color:var(--sub); text-decoration:underline; cursor:pointer;">&lt; 이전으로</button>
-    </div>
-</div>
-
-<div class="app" id="v-seal">
-    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:25px; text-align:center;">
-        <div style="font-size:3rem; margin-bottom:20px;">💌</div>
-        <h2>마음이 봉인되었습니다</h2>
-        <p class="desc">솔직한 답변 감사합니다.<br>이 데이터는 오직 당신을 아껴줄<br>단 한 사람에게만 전달됩니다.</p>
-        <div id="key-area" style="width:100%; display:none; animation:fadeIn 1s;">
-            <button class="btn-kakao touch-btn" onclick="sendKey()">카카오톡으로 결과 보내기</button>
-        </div>
-    </div>
-</div>
-
-<div class="app" id="v-report">
-    <header>
-        <span class="logo">LOVE REPORT</span>
-        <h1>상대방 사용 설명서</h1>
-    </header>
-    <div style="padding: 0 25px 40px;">
-        <div style="position:relative; height:260px; margin-bottom:10px;">
-            <canvas id="radarChart"></canvas>
-        </div>
-        <p style="text-align:center; color:var(--accent); font-weight:800; margin-bottom:30px;">
-            TYPE: <span id="type-name">분석 중...</span>
-        </p>
-
-        <div class="zone-box" style="border-color:var(--accent);">
-            <div class="zone-header"><span class="green">🟢 사랑을 채우는 법 (Green)</span></div>
-            <div id="green-list"></div>
+            <div class="sec-head">ANALYTICS HUB</div>
+            <div id="grid-box" class="shortcut-grid"></div>
         </div>
 
-        <div class="zone-box" style="border-color:var(--love);">
-            <div class="zone-header"><span class="red">🔴 상처를 막는 법 (Red)</span></div>
-            <div id="red-list"></div>
-        </div>
+        <nav class="dock">
+            <div class="d-btn active" onclick="App.open('CALENDAR')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg><span class="d-lbl">SCHED</span></div>
+            <div class="d-btn" onclick="App.open('CALC')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5zM5 5h5v5H5V5zm0 7h5v5H5v-5zm7 5h5v5h-5v-5z"/></svg><span class="d-lbl">CALC</span></div>
+            <div class="vis-btn" onclick="document.getElementById('cam-input').click()"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
+            <div class="d-btn" onclick="Theme.toggle()"><svg class="d-ico" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg><span class="d-lbl">MODE</span></div>
+            <div class="d-btn" onclick="App.open('SETTINGS')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.5.42l-.38 2.65c-.61.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg><span class="d-lbl">SETUP</span></div>
+        </nav>
+    </div>
 
-        <div style="border:1px solid var(--love); background:rgba(255,0,85,0.05); padding:15px; border-radius:12px;">
-            <div style="color:var(--love); font-weight:700; font-size:0.9rem; margin-bottom:5px;">⚡ 숨겨진 마음 (Latency Tracker)</div>
-            <p id="latency-msg" style="color:#ffcccc; font-size:0.9rem;"></p>
+    <div id="p-sub" class="page hidden">
+        <header class="sub-head"><div class="sub-tit" id="st-tit">TITLE</div></header>
+        <div id="st-con" style="padding:20px; flex:1; overflow-y:auto; padding-bottom:100px;"></div>
+        <div style="position:fixed; bottom:20px; left:20px; right:20px; z-index:20;">
+            <button class="close-btn" onclick="history.back()">닫기 (CLOSE)</button>
         </div>
     </div>
-</div>
 
-<script>
-    // --- [PHYSICS] 터치 반응 ---
-    function addTouchEffect() {
-        const btns = document.querySelectorAll('.touch-btn, .opt-btn');
-        btns.forEach(btn => {
-            btn.addEventListener('touchstart', function() { this.classList.add('active-state'); }, {passive: true});
-            btn.addEventListener('touchend', function() { 
-                const self = this; setTimeout(() => { self.classList.remove('active-state'); }, 150); 
-            }, {passive: true});
-        });
-    }
-
-    // --- [DATA] 30개 문항 (Full Text) ---
-    const qData = [
-        {q:"낯선 장소에서 당신의 감각이 가장 먼저 반응하는 요소는 무엇인가요?", a:["피부에 닿는 공기의 온도와 습도","눈을 찌르거나 은은한 조명의 밝기","귀를 울리는 주변의 소음과 말소리","코끝에 스치는 그 공간만의 냄새","사물들이 놓여있는 배치와 질서"], t:"E"},
-        {q:"조용한 카페에서 본능적으로 당신의 발걸음이 향하는 곳은 어디인가요?", a:["심리적 안정감을 주는 벽을 등진 구석 자리","밖이 훤히 보이는 탁 트인 창가 자리","카페 전체를 조망할 수 있는 중앙 테이블","사람들의 시선이 닿지 않는 가장 어두운 안쪽","언제든 나갈 수 있는 출입구와 가장 가까운 자리"], t:"P"},
-        {q:"영화를 관람할 때, 당신의 몰입을 방해하는 가장 큰 요소는?", a:["옆 사람의 부스럭거림이나 작은 귓속말","시야를 찌르는 휴대폰 화면의 번쩍이는 빛","영화관 내부의 답답하고 탁한 공기","개연성이 없거나 이해되지 않는 지루한 서사","오래 앉아있기 힘든 의자의 불편한 착석감"], t:"E"},
-        {q:"고된 하루를 마친 후, 현관문 앞에 섰을 때 가장 먼저 드는 생각은?", a:["아무런 소리도 없는 완벽한 혼자만의 정적이 필요해","누군가 나를 따뜻하게 반겨줬으면 좋겠어","내일 아침에 처리해야 할 일이 뭐더라","배고픈데 맛있는 음식부터 먹고 싶다","씻지도 않고 그대로 침대에 눕고 싶다"], t:"R"},
-        {q:"하루 중 시간이 가장 느리게 흐른다고 느끼는 순간은 언제인가요?", a:["본격적인 일과 활기가 시작되는 오전 11시경","식곤증과 나른함이 몰려오는 오후 2시경","해가 지기 직전, 묘한 기분이 드는 오후 5시 15분경","하루가 정리되고 생각이 많아지는 밤 9시경","세상이 잠들고 나만 깨어있는 새벽 2시경"], t:"R"},
-        {q:"비 내리는 창밖을 볼 때, 당신의 시선이 가장 오래 머무는 곳은?", a:["유리에 맺혀 불규칙하게 흐르는 물방울","우산을 쓰고 바쁘게 지나가는 사람들","회색빛으로 변한 도시의 차분한 색감","하늘을 뒤덮은 먹구름의 모양","눈을 감고 빗소리 그 자체에 집중한다"], t:"E"},
-        {q:"아주 지친 날, 당신의 뇌가 가장 간절히 원하는 감각적 신호는?", a:["파도 소리나 빗소리 같은 규칙적인 자연의 소리","소리가 완전히 차단된 진공 상태 같은 정적","위로가 되는 잔잔한 멜로디의 음악","사랑하는 사람의 다정한 목소리","적당한 백색 소음이 있는 카페 분위기"], t:"R"},
-        {q:"갑작스러운 약속 취소 소식을 들었을 때, 당신의 첫 감정은 무엇인가요?", a:["나만의 시간이 생겼다는 예기치 못한 해방감","준비 다 했는데 김이 빠지는 묘한 허전함","나를 중요하게 여기지 않나 싶은 약간의 서운함","붕 뜬 시간을 어떻게 써야 할지 고민되는 압박감","밀린 일을 하거나 쉴 수 있다는 설렘"], t:"P"},
-        {q:"서점에서 당신의 발걸음이 가장 오래 멈추는 코너는 어디인가요?", a:["명확한 정보와 지식을 얻는 실용서/자기계발","타인의 내면과 삶을 엿보는 에세이","새로운 세계와 상상력을 자극하는 소설","과거의 사실을 통해 통찰을 얻는 역사/인문","시각적 영감을 주는 예술/디자인 화보집"], t:"S"},
-        {q:"당신의 방에 단 하나의 그림을 걸 수 있다면 무엇을 고를까요?", a:["끝없이 펼쳐진 고요하고 황량한 사막","화려한 불빛으로 가득 찬 도심의 야경","깊은 숲속에 홀로 있는 작은 오두막","보는 사람마다 해석이 다른 난해한 추상화","깊이를 알 수 없는 짙푸른 심연의 바다"], t:"R"},
-        {q:"엘리베이터에 모르는 사람과 탔을 때, 당신의 시선은 주로 어디에 머무나요?", a:["빠르게 바뀌는 층수 표시판의 숫자","거울 문에 비친 내 모습이나 옷매무새","바닥의 무늬나 구석의 흠집","의미 없이 켰다 껐다 하는 휴대폰 화면","벽면에 붙은 광고판이나 안내문 글자"], t:"P"},
-        {q:"누군가 당신에게 무리한 부탁을 했을 때, 당신의 첫 반응은?", a:["상대가 상처받지 않게 거절할 방법을 고민한다","선을 넘었다는 생각에 본능적인 짜증이 난다","들어줬을 때의 이득과 거절했을 때의 손실을 계산한다","거절을 못 해서 일단 수락하고 나서 바로 후회한다","딱 잘라 거절하지 못하는 나약한 자신을 자책한다"], t:"S"},
-        {q:"가상의 가면무도회에 간다면, 당신이 쓰고 싶은 가면의 재질은?", a:["차갑고 단단하게 빛나는 금속","부드럽지만 질긴 가죽","화려하고 풍성하게 장식된 깃털","표정을 전혀 읽을 수 없는 매끄러운 도자기","속이 은은하게 비쳐 신비로운 레이스"], t:"E"},
-        {q:"산책 중 갈림길이 나왔을 때, 당신의 발걸음은 어디로 향하나요?", a:["익숙하고 안전한, 이미 알고 있는 넓은 길","풍경이 가장 예쁘고 사진 찍기 좋은 길","한 번도 가보지 않아 호기심이 생기는 새로운 길","목적지까지 가장 빨리 갈 수 있는 지름길","향기로운 꽃내음이나 풀냄새가 나는 길"], t:"P"},
-        {q:"주문한 음료가 잘못 나왔을 때, 당신의 첫 대응은 무엇인가요?", a:["다시 말하기 귀찮아서 그냥 마신다","직원에게 정중하게 다시 만들어달라고 요청한다","꾹 참지만 마시는 내내 속으로 계속 후회한다","표정이나 말투로 불쾌함을 즉시 드러낸다","같이 있는 사람에게 대신 말해달라고 부탁한다"], t:"P"},
-        {q:"완벽한 휴식을 취하고 있는 당신의 방, 조명은 어떤 상태인가요?", a:["모든 사물이 또렷하게 잘 보이는 환한 형광등","아늑하고 따뜻한 느낌의 주황빛 스탠드","창으로 들어오는 자연광이나 달빛","흔들리는 불빛이 멍하니 보기 좋은 촛불 하나","방 불은 끄고 차가운 모니터나 폰 불빛만 켜둠"], t:"E"},
-        {q:"오래된 일기장을 발견했습니다. 당신이 가장 먼저 찾아볼 페이지는?", a:["내가 가장 행복하고 빛났던 순간의 기록","남에게 말 못 한 슬픔을 적어둔 솔직한 고백","나 자신에게 쓴 굳은 다짐이나 목표","사랑했던 연인과의 추억이 담긴 날짜","그냥 처음부터 순서대로 읽어본다"], t:"S"},
-        {q:"누군가 당신의 비밀을 알고 있다고 속삭인다면, 당신의 반응은?", a:["심장이 쿵 내려앉는 듯한 극심한 불안감","그래서 뭐 어쩌라고? 라며 방어적인 태도","누가, 언제, 어디서 들었을까 냉정하게 분석","내 평판이나 이미지가 망가질까 봐 걱정","농담으로 넘기며 황급히 화제를 돌린다"], t:"P"},
-        {q:"당신의 책상 위에 놓인 물건들의 정돈 상태는 보통 어떠한가요?", a:["각 맞춰 정리된 완벽한 오와 열","남들은 모르지만 나만 아는 규칙으로 놓인 상태","자유분방하게 어지러진 창조적 혼란 상태","필요한 것만 딱 꺼내져 있는 미니멀 상태","좋아하는 피규어나 장식품으로 가득 차 있음"], t:"P"},
-        {q:"축하받을 일이 생겼을 때, 당신이 가장 원하는 축하의 방식은?", a:["많은 사람들의 화려한 박수와 환호","조용한 곳에서 소중한 사람과의 맛있는 저녁 식사","진심이 꾹꾹 담긴 정성스런 손편지","평소 갖고 싶었던 실질적이고 값비싼 선물","아무 말 없이 꽉 안아주는 따뜻한 포옹"], t:"S"},
-        {q:"길가에 핀 꽃을 보았을 때, 당신의 머릿속에 가장 먼저 드는 생각은?", a:["색깔이 참 곱고 아름답다는 순수한 감탄","저 꽃의 이름이 뭘까? 하는 지적 호기심","곧 시들 텐데 안타깝다는 슬픔","한 송이 꺾어서 내 방에 두고 싶다는 소유욕","별생각 없이 배경의 일부로 인식하고 지나침"], t:"E"},
-        {q:"예상치 못한 보너스가 생겼다면, 당신은 어디에 먼저 쓰고 싶나요?", a:["평소 눈여겨봤던 고가의 물건 구매","소중한 지인들에게 맛있는 밥 사기","불확실한 미래를 위해 일단 저축","나를 성장시키는 강의나 운동 등 자기 계발 투자","여행이나 공연 티켓 등 특별한 경험 구매"], t:"P"},
-        {q:"당신에게 '가장 편안한 신발'은 어떤 느낌인가요?", a:["발을 단단하고 안정적으로 잡아주는 운동화","언제든 신고 벗기 편한 가벼운 슬리퍼","격식도 있으면서 발도 편한 로퍼","걸을 때마다 또각또각 소리가 나는 자신감의 구두","지면의 감촉이 그대로 느껴지는 얇은 신발"], t:"E"},
-        {q:"누군가 당신의 가치관을 정면으로 비판한다면 어떻게 대응하시겠습니까?", a:["나의 논리로 상대의 말이 틀렸음을 조목조목 반박한다","겉으로는 수긍하는 척하고 속으로는 무시한다","크게 상처받고 그 사람을 마음속에서 차단한다","도대체 왜 그렇게 생각하는지 끝까지 추궁한다","싸우기 싫어서 화제를 돌려 상황을 회피한다"], t:"S"},
-        {q:"가방 속에 절대 빠지면 안 되는 물건 하나를 고른다면?", a:["세상과 나를 차단해 주는 노이즈 캔슬링 이어폰","떠오르는 생각을 기록할 수첩과 펜","입안을 상쾌하게 하거나 긴장을 푸는 껌/민트","비상시를 대비한 약간의 현금","나의 향기를 유지할 향수나 립밤"], t:"R"},
-        {q:"거울 속에 비친 자신의 모습 중 가장 마음에 드는 부분은?", a:["의지가 엿보이는 굳게 다문 입매","생각이 깊어 보이는 눈동자","전체적인 옷태나 단정한 실루엣","타인에게 신뢰를 주는 인상","솔직히 딱히 마음에 드는 곳이 없다"], t:"S"},
-        {q:"당신이 가장 견디기 힘든 '침묵의 장소'는 어디인가요?", a:["모르는 사람과 단둘이 탄 느린 엘리베이터","싸운 직후 연인과 함께 타고 있는 차 안","내 차례를 기다리는 면접장 대기실","숨소리조차 내기 조심스러운 도서관","늦은 밤 혼자 걷는 어두운 골목길"], t:"S"},
-        {q:"당신에게 '성공'이란 어떤 이미지에 가장 가깝나요?", a:["도시가 내려다보이는 높은 빌딩 펜트하우스에 서 있는 나","가족과 함께 걱정 없이 웃으며 먹는 따뜻한 저녁 식사","아무에게도 간섭받지 않는 나만의 작업실이나 공간","타인에게 도움을 줄 수 있는 영향력과 능력","어제보다 더 나아진 나를 발견하는 끝없는 성장 과정"], t:"S"},
-        {q:"타인과의 대화에서 당신이 가장 중요하게 생각하는 가치는?", a:["빙빙 돌리지 않는 명확하고 깔끔한 결론","마음이 통하는 깊은 정서적 교감과 공감","서로 지켜야 할 선을 넘지 않는 예의와 격식","가식 없이 솔직하게 털어놓는 속마음","말하지 않아도 통하는 침묵의 편안함"], t:"R"},
-        {q:"마지막 질문입니다. 당신의 영혼을 지키는 '마스터 키'는 어떤 모양일까요?", a:["정교하게 세공되어 빛나는 황금 열쇠","투박하지만 무엇보다 단단한 무쇠 열쇠","투명하게 빛나 속이 들여다보이는 수정 열쇠","형태는 없지만 따뜻하게 느껴지는 빛의 열쇠","최첨단 생체 인식 기술로 만들어진 디지털 보안키"], t:"P"}
-    ];
-
-    // [RESULTS DB] 풀 시스템
-    const resultPool = {
-        P: {
-            name: "안전기지 추구형 (Safety Seeker)",
-            green: [
-                {k:"예측가능성",g:"▮▮▮▮▮",act:"데이트 전 동선을 미리 공유해주세요.",msg:"오늘 계획은 A랑 B야."},
-                {k:"선택권",g:"▮▮▮▮▯",act:"아무거나 말고 A, B 중에 고르라고 해주세요.",msg:"일식이랑 한식 중 뭐 좋아?"},
-                {k:"공간안전",g:"▮▮▮▮▮",act:"식당에선 벽을 등진 구석 자리를 주세요.",msg:"안쪽 자리로 잡았어."},
-                {k:"시간준수",g:"▮▮▮▯▯",act:"약속에 늦으면 분 단위로 알려주세요.",msg:"5분 정도 늦을 것 같아."},
-                {k:"일관성",g:"▮▮▮▯▯",act:"감정 기복 없이 늘 그 자리에 있어주세요.",msg:"걱정 마, 내가 해결할게."},
-                {k:"확인사살",g:"▮▮▮▯▯",act:"일정이 확정되면 다시 한번 확인해주세요.",msg:"내일 7시 그대로지?"},
-                {k:"논리적위로",g:"▮▮▮▮▯",act:"감정보다 해결책을 제시할 때 안정감을 느낍니다.",msg:"그건 이렇게 하면 되겠다."},
-                {k:"사전예고",g:"▮▮▮▮▮",act:"전화하기 전에 톡으로 먼저 물어봐 주세요.",msg:"지금 통화 괜찮아?"},
-                {k:"깔끔함",g:"▮▮▮▯▯",act:"정돈된 모습과 깔끔한 옷차림을 좋아합니다.",msg:"오늘 단정하니 예쁘다."},
-                {k:"계획존중",g:"▮▮▮▮▯",act:"그가 세운 계획을 잘 따른다고 칭찬해주세요.",msg:"네 계획대로 하니까 딱 맞네."}
+    <script>
+        const DefaultDB = {
+            normal: [
+                {n:'FLASHSCORE',u:'https://www.flashscore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'},
+                {n:'ODDSPORTAL',u:'https://www.oddsportal.com',i:'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4'},
+                {n:'WHOSCORED',u:'https://www.whoscored.com',i:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2'},
+                {n:'SOFASCORE',u:'https://www.sofascore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5z'},
+                {n:'COVERS',u:'https://www.covers.com',i:'M4 10h3v7H4zM10.5 10h3v7h-3zM17 10h3v7h-3z'},
+                {n:'OLBG',u:'https://www.olbg.com',i:'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0'},
+                {n:'NAVER',u:'https://sports.news.naver.com',i:'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5'},
+                {n:'YOUTUBE',u:'https://www.youtube.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2'}
             ],
-            red: [
-                {k:"깜짝쇼",g:"▮▮▮▮▮",act:"예고 없는 방문이나 이벤트는 공포입니다.",msg:"집 앞이야. 나와."},
-                {k:"통로좌석",g:"▮▮▮▮▮",act:"사람들이 오가는 통로 쪽에 앉히지 마세요.",msg:"자리 없는데 그냥 앉자."},
-                {k:"모호함",g:"▮▮▮▮▯",act:"애매하게 말해서 추리하게 만들지 마세요.",msg:"글쎄, 잘 모르겠는데?"},
-                {k:"급발진",g:"▮▮▮▯▯",act:"갑자기 계획을 바꾸거나 충동적으로 굴지 마세요.",msg:"그냥 지금 바다 갈까?"},
-                {k:"방관",g:"▮▮▮▯▯",act:"'네가 알아서 해'라고 떠넘기지 마세요.",msg:"난 아무거나 상관없어."},
-                {k:"지각",g:"▮▮▮▮▯",act:"연락 없이 늦는 것은 신뢰를 깨는 행위입니다.",msg:"(연락 두절)"},
-                {k:"감정호소",g:"▮▮▮▯▯",act:"논리 없이 감정만으로 떼쓰지 마세요.",msg:"그냥 내 마음이 그렇다고!"},
-                {k:"룰위반",g:"▮▮▮▮▯",act:"사회적 규칙이나 약속을 어기지 마세요.",msg:"무단횡단해도 돼."}
-            ]
-        },
-        R: {
-            name: "내면 회복형 (Inner Peace)",
-            green: [
-                {k:"투명인간",g:"▮▮▮▮▮",act:"귀가 후 15분은 말을 걸지 마세요.",msg:"(눈인사만 하고 물 건네기)"},
-                {k:"저음위로",g:"▮▮▮▮▯",act:"불안해할 땐 낮고 느린 목소리로 말해주세요.",msg:"괜찮아, 별일 아이야."},
-                {k:"침묵공유",g:"▮▮▮▯▯",act:"대화가 끊겨도 어색해하지 마세요.",msg:"그냥 같이 있으니까 좋다."},
-                {k:"기다림",g:"▮▮▮▯▯",act:"답이 늦어도 재촉하지 말고 기다려주세요.",msg:"천천히 생각하고 말해줘."},
-                {k:"동굴",g:"▮▮▮▮▮",act:"혼자 있고 싶어 할 땐 쿨하게 보내주세요.",msg:"푹 쉬고 연락해."},
-                {k:"따뜻한차",g:"▮▮▮▯▯",act:"말 대신 따뜻한 차 한 잔을 건네세요.",msg:"이거 마시면 좀 나을 거야."},
-                {k:"백색소음",g:"▮▮▮▯▯",act:"너무 조용한 것보다 잔잔한 음악이 좋습니다.",msg:"이 노래 좋다, 그치?"}
+            secret: [
+                {n:'VIP LINK 1',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 2',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 3',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 4',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 5',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 6',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 7',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
+                {n:'VIP LINK 8',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}
             ],
-            red: [
-                {k:"재촉",g:"▮▮▮▮▮",act:"빨리 대답하라고 닥달하지 마세요.",msg:"왜 대답이 없어? 무시해?"},
-                {k:"고음",g:"▮▮▮▮▯",act:"큰 소리로 웃거나 소리치지 마세요.",msg:"야!! 내 말 좀 들어봐!!"},
-                {k:"간섭",g:"▮▮▮▮▯",act:"혼자 있는데 '무슨 일 있어?' 캐묻지 마세요.",msg:"왜 그래? 나한테 화났어?"},
-                {k:"공개지적",g:"▮▮▮▮▮",act:"남들 앞에서 면박 주지 마세요.",msg:"얘가 원래 좀 소심해서 그래."},
-                {k:"해결책",g:"▮▮▮▯▯",act:"공감 대신 분석하려 들지 마세요.",msg:"네가 처신을 잘했어야지."}
+            tv: [
+                {n:'FOOTBALL',u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&q=80'},
+                {n:'BASKETBALL',u:'https://images.unsplash.com/photo-1546519638-68e109498ad0?w=400&q=80'},
+                {n:'BASEBALL',u:'https://images.unsplash.com/photo-1508344928928-7165b67de128?w=400&q=80'}
             ]
-        },
-        E: { // 환경민감형 (보충)
-            name: "환경 민감형 (Sensitive)",
-            green: [{k:"온도체크",g:"▮▮▮▮▮",act:"춥지 않은지 수시로 물어봐주세요.",msg:"온도 괜찮아?"}, {k:"조명조절",g:"▮▮▮▮▯",act:"너무 밝은 곳보다 은은한 곳을 선호합니다.",msg:"여기 분위기 아늑하다."}],
-            red: [{k:"강요",g:"▮▮▮▮▮",act:"안 춥다고 강요하지 마세요.",msg:"별로 안 추운데?"}, {k:"불결",g:"▮▮▮▮▮",act:"위생이 안 좋은 곳은 최악입니다.",msg:"대충 먹자."}]
-        },
-        S: { // 인정욕구형 (보충)
-            name: "인정 욕구형 (Protagonist)",
-            green: [{k:"폭풍칭찬",g:"▮▮▮▮▮",act:"작은 일도 크게 칭찬해주세요.",msg:"와 진짜 대박이다!"}, {k:"경청",g:"▮▮▮▮▯",act:"눈을 맞추고 끝까지 들어주세요.",msg:"정말? 그래서 어떻게 됐어?"}],
-            red: [{k:"무시",g:"▮▮▮▮▮",act:"말을 끊거나 딴짓하지 마세요.",msg:"아, 근데 있잖아..."}, {k:"비교",g:"▮▮▮▮▯",act:"남과 비교하는 건 금물입니다.",msg:"누구는 그렇다던데."}]
-        }
-    };
-    
-    // 데이터 보충 (데모)
-    Object.assign(resultPool.E, {green: resultPool.P.green, red: resultPool.P.red});
-    Object.assign(resultPool.S, {green: resultPool.R.green, red: resultPool.R.red});
+        };
+        let DB = JSON.parse(localStorage.getItem('SYNAPSE_DB')) || DefaultDB;
 
-    // --- [LOGIC] ---
-    let step = 0; let answers = []; let tStart = 0;
-
-    function go(id) {
-        document.querySelectorAll('.app').forEach(el => el.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        window.scrollTo(0,0);
-        if(id==='v-guest' || id==='v-survey') addTouchEffect(); 
-    }
-    function toggleModal(id, show) {
-        const m = document.getElementById(id);
-        if(show) m.classList.add('open'); else m.classList.remove('open');
-    }
-    function copyInvite() {
-        const url = window.location.href.split('?')[0] + "?mode=guest";
-        navigator.clipboard.writeText(url).then(() => alert("링크 복사 완료"));
-    }
-    function startSurvey() { step=0; answers=[]; go('v-survey'); renderQ(); }
-    
-    function renderQ() {
-        const q = qData[step];
-        document.getElementById('q-num').innerText = `Q. ${String(step+1).padStart(2,'0')}`;
-        document.getElementById('q-count').innerText = `(${String(step+1).padStart(2,'0')}/30)`;
-        document.getElementById('q-text').innerText = q.q;
-        document.getElementById('p-fill').style.width = `${((step)/30)*100}%`;
-        
-        const box = document.getElementById('opt-box'); box.innerHTML = '';
-        tStart = performance.now();
-        q.a.forEach((txt, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'opt-btn touch-btn'; btn.innerText = txt;
-            btn.onclick = () => next(i); box.appendChild(btn);
-        });
-        addTouchEffect();
-    }
-
-    function next(idx) {
-        const lat = performance.now() - tStart;
-        answers.push({i:idx, lat:lat});
-        step++;
-        
-        if(step === 10 || step === 20) {
-            toggleModal('cheerModal', true);
-        } else if(step < 30) {
-            renderQ();
-        } else {
-            finish();
-        }
-    }
-    
-    function closeCheer() {
-        toggleModal('cheerModal', false);
-        renderQ();
-    }
-
-    function prevQ() { if(step>0) { step--; answers.pop(); renderQ(); } }
-    function finish() { go('v-seal'); setTimeout(() => document.getElementById('key-area').style.display='block', 1500); }
-    function sendKey() {
-        const choices = answers.map(a=>a.i).join('');
-        const maxLat = answers.reduce((m,c,i)=>c.lat>m.val?{val:c.lat,idx:i}:m,{val:0,idx:0});
-        const key = btoa(`${choices}|${maxLat.idx}`);
-        navigator.clipboard.writeText(window.location.href.split('?')[0]+"?key="+key).then(()=>alert("키 복사 완료"));
-    }
-
-    // --- [RESULT: 카톡 복사 기능 추가] ---
-    function copyText(txt) {
-        navigator.clipboard.writeText(txt).then(() => alert("멘트가 복사되었습니다."));
-    }
-
-    function renderReport(key) {
-        try {
-            const decoded = atob(key);
-            const [choicesStr, latIdxStr] = decoded.split('|');
-            const choices = choicesStr.split('').map(Number);
-            const latIdx = Number(latIdxStr);
-            
-            let scores = {P:0, R:0, E:0, S:0};
-            choices.forEach((c,i) => {
-                const t = qData[i].t || 'R';
-                if(scores[t]!==undefined) scores[t]++;
-            });
-            const winType = Object.keys(scores).reduce((a,b)=>scores[a]>scores[b]?a:b);
-            const data = resultPool[winType];
-            
-            const pick = (arr) => arr.sort(() => 0.5 - Math.random()).slice(0, 5);
-            const greens = pick(data.green);
-            const reds = pick(data.red);
-
-            document.getElementById('type-name').innerText = data.name;
-            drawChart(scores);
-            
-            // Green: copy-enabled 클래스와 onclick 추가
-            const gBox = document.getElementById('green-list');
-            greens.forEach(item => {
-                gBox.innerHTML += `<div class="item-row"><div class="item-head"><span class="item-k">${item.k}</span><span class="green">중요도 ${item.g}</span></div><div class="action-text">${item.act}</div><div class="msg-box copy-enabled" onclick="copyText('${item.msg}')">💬 "${item.msg}"</div></div>`;
-            });
-
-            // Red: 복사 기능 없음
-            const rBox = document.getElementById('red-list');
-            reds.forEach(item => {
-                rBox.innerHTML += `<div class="item-row"><div class="item-head"><span class="item-k" style="color:#ffcccc">${item.k}</span><span class="red">치명도 ${item.g}</span></div><div class="action-text">${item.act}</div><div class="msg-box" style="border-left-color:var(--love)">💬 "${item.msg}"</div></div>`;
-            });
-            
-            document.getElementById('latency-msg').innerHTML = `파트너는 <b>"${qData[latIdx].q}"</b> 질문에서 가장 오래 망설였습니다. 말 못 할 고민이 있을 수 있으니 배려해 주세요.`;
-
-        } catch(e) { alert("오류"); go('v-landing'); }
-    }
-
-    function drawChart(sc) {
-        new Chart(document.getElementById('radarChart'), {
-            type: 'radar',
-            data: {
-                labels: ['안전','회복','감각','인정','공감'],
-                datasets: [{data:[sc.P*5, sc.R*5, sc.E*5, sc.S*5, 80], borderColor:'#00f2ff', borderWidth:2, pointBackgroundColor:'#fff'}]
+        const Modal = {
+            cb: null,
+            show: (msg, callback) => {
+                document.getElementById('modal-msg').innerText = msg;
+                document.getElementById('custom-modal').classList.add('show');
+                Modal.cb = callback;
             },
-            options: { scales:{r:{grid:{color:'#222'}, ticks:{display:false}, pointLabels:{color:'#888'}}}, plugins:{legend:{display:false}} }
-        });
-    }
+            close: () => {
+                document.getElementById('custom-modal').classList.remove('show');
+                Modal.cb = null;
+            }
+        };
+        document.getElementById('modal-ok').onclick = () => { if(Modal.cb) Modal.cb(); Modal.close(); };
 
-    window.onload = () => {
-        const p = new URLSearchParams(window.location.search);
-        if(p.get('key')) { go('v-report'); renderReport(p.get('key')); }
-        else if(p.get('mode') === 'guest') go('v-guest');
-        else go('v-landing');
-    }
-</script>
+        const Theme = { toggle: () => document.body.classList.toggle('white-mode') };
+        const Ghost = { active: false, trigger: () => { if(navigator.vibrate) navigator.vibrate(50); Ghost.active = !Ghost.active; document.body.classList.toggle('ghost-active', Ghost.active); Render.shortcuts(); } };
+
+        const Action = {
+            hasImg: false,
+            score: () => {
+                if(Action.hasImg) {
+                    document.getElementById('an-img-target').src = document.getElementById('score-bg').src;
+                    document.getElementById('analysis-view').classList.add('show');
+                    history.pushState({modal:true}, null, "");
+                } else {
+                    App.open('VISION');
+                }
+            },
+            closeScore: () => {
+                document.getElementById('analysis-view').classList.remove('show');
+                document.getElementById('score-bg').style.display = 'none';
+                document.getElementById('score-bg').src = '';
+                Action.hasImg = false;
+                history.back();
+            }
+        };
+
+        const Calendar = {
+            d: new Date(),
+            render: (el) => {
+                const y = Calendar.d.getFullYear();
+                const m = Calendar.d.getMonth();
+                const fDay = new Date(y, m, 1).getDay();
+                const lDate = new Date(y, m+1, 0).getDate();
+                const today = new Date();
+                let h = `<div class="cal-nav"><div onclick="Calendar.mv(-1)" style="cursor:pointer">&lt;</div><div class="cal-ym">${y}.${String(m+1).padStart(2,'0')}</div><div onclick="Calendar.mv(1)" style="cursor:pointer">&gt;</div></div><div class="cal-grid"><div class="cal-head">S</div><div class="cal-head">M</div><div class="cal-head">T</div><div class="cal-head">W</div><div class="cal-head">T</div><div class="cal-head">F</div><div class="cal-head">S</div>`;
+                for(let i=0; i<fDay; i++) h+=`<div></div>`;
+                for(let i=1; i<=lDate; i++) {
+                    let cls='cal-cell';
+                    if(y===today.getFullYear() && m===today.getMonth() && i===today.getDate()) cls+=' today';
+                    if(localStorage.getItem(`memo-${y}-${m}-${i}`)) cls+=' active';
+                    h+=`<div class="${cls}" onclick="Calendar.pick(${y},${m},${i},this)">${i}</div>`;
+                }
+                h+=`</div><textarea id="cal-memo" placeholder="MEMO..."></textarea><button class="cal-save" onclick="Calendar.save()">SAVE DATA</button>`;
+                el.innerHTML = h;
+            },
+            mv: (n) => { Calendar.d.setMonth(Calendar.d.getMonth() + n); Calendar.render(document.getElementById('st-con')); },
+            pick: (y,m,d,el) => { 
+                Calendar.sel = `memo-${y}-${m}-${d}`; 
+                document.querySelectorAll('.cal-cell').forEach(e=>e.classList.remove('active'));
+                el.classList.add('active');
+                document.getElementById('cal-memo').value = localStorage.getItem(Calendar.sel) || '';
+            },
+            save: () => {
+                if(Calendar.sel) {
+                    localStorage.setItem(Calendar.sel, document.getElementById('cal-memo').value);
+                    Modal.show('저장되었습니다.', null);
+                } else {
+                    Modal.show('날짜를 선택하세요.', null);
+                }
+            }
+        };
+
+        const Input = {
+            curr: '0',
+            sign: 1,
+            cb: null,
+            open: (s) => { Input.curr='0'; Input.sign=s; Input.update(); document.getElementById('input-modal').classList.add('show'); },
+            add: (n) => { if(Input.curr.length>10)return; Input.curr = Input.curr=='0'? String(n) : Input.curr+n; Input.update(); },
+            clr: () => { Input.curr='0'; Input.update(); },
+            back: () => { Input.curr = Input.curr.length>1 ? Input.curr.slice(0,-1) : '0'; Input.update(); },
+            update: () => { document.getElementById('inp-disp').innerText = "₩ " + parseInt(Input.curr).toLocaleString(); },
+            done: () => { 
+                if(Input.curr!='0') { 
+                    Bank.bal += parseInt(Input.curr) * Input.sign; 
+                    localStorage.setItem('SYN_BANK', Bank.bal); 
+                    App.open('BANK'); 
+                }
+                document.getElementById('input-modal').classList.remove('show');
+            }
+        };
+
+        const Bank = {
+            bal: parseInt(localStorage.getItem('SYN_BANK')) || 0,
+            render: () => `
+                <div class="bank-disp"><div class="bank-lbl">CURRENT BALANCE</div><div class="bank-val">₩ ${Bank.bal.toLocaleString()}</div></div>
+                <div class="bank-btns"><button class="b-btn in" onclick="Input.open(1)">수입 (IN)</button><button class="b-btn out" onclick="Input.open(-1)">지출 (OUT)</button></div>
+                <button class="b-reset" onclick="Bank.reset()">장부 초기화 (RESET)</button>`,
+            reset: () => { Modal.show('정말로 모든 장부 데이터를 삭제하시겠습니까?', () => { Bank.bal=0; localStorage.setItem('SYN_BANK',0); App.open('BANK'); }); }
+        };
+
+        const Settings = {
+            render: (el) => {
+                const m = Ghost.active?'secret':'normal';
+                let h = `<div class="st-header"><div class="st-tit">CHAIRMAN ACCESS</div><div class="st-sub">ALL SYSTEMS NORMAL</div></div>`;
+                h += `<div class="st-label">FAMILY LINKS [${m}]</div><div class="st-list">`;
+                DB[m].forEach((i,x)=>{ h+=`<div class="st-item"><div class="st-idx">${x+1}</div><div class="st-inp"><input id="n${x}" value="${i.n}" style="width:30%;border:none;background:transparent;color:var(--neon-cyan);"><input id="u${x}" value="${i.u}" style="width:65%;border:none;background:transparent;color:var(--text-main);" placeholder="URL"></div></div>` });
+                h += `</div><div class="st-label">LIVE CHANNELS</div><div class="st-list">`;
+                DB.tv.forEach((i,x)=>{ h+=`<div class="st-item"><div class="st-idx">TV${x+1}</div><div class="st-inp"><input id="tn${x}" value="${i.n}" style="width:30%;border:none;background:transparent;color:var(--neon-cyan);"><input id="tu${x}" value="${i.u}" style="width:65%;border:none;background:transparent;color:var(--text-main);" placeholder="Live URL"></div></div>` });
+                h += `</div><button class="st-save" onclick="Settings.save()">저장하기 (SAVE)</button><button class="st-reset" onclick="Settings.reset()">초기화 (RESET)</button>`;
+                el.innerHTML = h;
+            },
+            save: () => {
+                const m = Ghost.active?'secret':'normal';
+                for(let i=0;i<8;i++){ DB[m][i].n=document.getElementById(`n${i}`).value; DB[m][i].u=document.getElementById(`u${i}`).value; }
+                for(let i=0;i<3;i++){ DB.tv[i].n=document.getElementById(`tn${i}`).value; DB.tv[i].u=document.getElementById(`tu${i}`).value; }
+                localStorage.setItem('SYNAPSE_DB', JSON.stringify(DB)); 
+                Modal.show('저장되었습니다.', () => history.back());
+            },
+            reset: () => { Modal.show('초기화 하시겠습니까?', () => { localStorage.removeItem('SYNAPSE_DB'); location.reload(); }); }
+        };
+
+        const Calculator = { html:`<div id="calc-wrap"><div id="calc-disp">0</div><div class="calc-pad">`+['7','8','9','/','4','5','6','*','1','2','3','-','C','0','.','+','='].map(k=>`<div class="cp-btn ${['/','*','-','+','C'].includes(k)?'cp-act':''} ${k=='='?'cp-eq':''}" onclick="Calculator.c('${k}')">${k}</div>`).join('')+`</div></div>`, c:(k)=>{ const r=document.getElementById('calc-disp'); if(k=='C')r.innerText='0'; else if(k=='=')try{r.innerText=eval(r.innerText)}catch{r.innerText='ERR'} else r.innerText=r.innerText=='0'?k:r.innerText+k; } };
+
+        const Odds = { render: () => `<table class="odds-table"><thead><tr><th>GAME</th><th>1</th><th>X</th><th>2</th></tr></thead><tbody><tr><td>CITY vs LIV</td><td class="down">2.10</td><td>3.40</td><td class="up">2.90</td></tr><tr><td>LAL vs GSW</td><td class="up">1.85</td><td>-</td><td class="down">1.95</td></tr></tbody></table>` };
+        const Edge = { render: () => `<div class="edge-card"><div class="ec-head"><span class="ec-team">LAKERS WIN</span><span class="ec-rate">82%</span></div><div class="ec-bar"><div class="ec-fill" style="width:82%"></div></div></div>` };
+
+        const App = {
+            open: (m) => {
+                const p=document.getElementById('p-sub'), c=document.getElementById('st-con');
+                document.getElementById('st-tit').innerText = m; p.classList.remove('hidden'); history.pushState({modal:true},null,"");
+                if(m=='BANK') c.innerHTML=Bank.render(); 
+                else if(m=='SETTINGS') Settings.render(c); 
+                else if(m=='CALENDAR') Calendar.render(c); 
+                else if(m=='CALC') c.innerHTML=Calculator.html;
+                else if(m=='ODDS') c.innerHTML=Odds.render();
+                else if(m=='EDGE') c.innerHTML=Edge.render();
+                else if(m=='VISION') {
+                     c.innerHTML=`<div style="padding:20px;">VISION MODULE ACTIVE.<br>UPLOAD IMAGE TO SCAN.</div>`;
+                }
+                else c.innerHTML=`<div style="padding:20px;">CONNECTING...</div>`;
+            }
+        };
+        window.onpopstate = () => { document.getElementById('p-sub').classList.add('hidden'); document.getElementById('analysis-view').classList.remove('show'); Render.init(); };
+
+        const Render = {
+            init: () => { Render.shortcuts(); Render.tv(); },
+            shortcuts: () => {
+                const box=document.getElementById('grid-box'), list=Ghost.active?DB.secret:DB.normal; let h='';
+                list.forEach((i,x)=>{ if(x<8) { 
+                    let u=i.u; if(u && !u.startsWith('http'))u='https://'+u; 
+                    // [버그 수정] onclick 내 람다식을 함수식으로 변경하여 호환성 해결
+                    const act=u?`window.open('${u}')`:`Modal.show('설정에서 주소를 입력하세요', function(){App.open('SETTINGS')})`; 
+                    h+=`<div class="s-btn" onclick="${act}"><svg class="s-ico" viewBox="0 0 24 24"><path d="${i.i}"/></svg><span class="s-lbl">${i.n}</span></div>`; 
+                }});
+                h+=`<div class="s-btn" onclick="Ghost.trigger()"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span class="s-lbl" style="${Ghost.active?'color:var(--neon-cyan)':'color:var(--text-sub)'}">COMPASS</span></div>`;
+                box.innerHTML=h;
+            },
+            tv: () => { 
+                let h=''; 
+                DB.tv.forEach(t => {
+                    let u = t.u; if(u && !u.startsWith('http')) u='https://'+u;
+                    const act = u ? `window.open('${u}')` : `Modal.show('라이브 주소가 없습니다', function(){App.open('SETTINGS')})`;
+                    h+=`<div class="cctv" onclick="${act}"><img src="${t.u}"><div class="rec"><div class="dot"></div>${t.n}</div></div>`;
+                }); 
+                document.getElementById('tv-grid').innerHTML=h; 
+            }
+        };
+
+        window.onload = function() {
+            Render.init();
+            setInterval(() => {
+                const n=new Date();
+                document.getElementById('clock-time').innerHTML=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
+                document.getElementById('clock-date').innerText=`${n.getFullYear()}.${n.getMonth()+1}.${n.getDate()}`;
+            }, 1000);
+            
+            const cam = document.getElementById('cam-input');
+            cam.addEventListener('change', (e) => {
+                if(e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const bg = document.getElementById('score-bg'), card = document.getElementById('card-score');
+                        bg.src = ev.target.result;
+                        bg.style.display = 'block';
+                        Action.hasImg = true;
+                        card.classList.add('scanning');
+                        setTimeout(() => { 
+                            card.classList.remove('scanning'); 
+                            Action.score(); 
+                        }, 3000);
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+        };
+    </script>
 </body>
 </html>
