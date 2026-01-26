@@ -2,666 +2,481 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>SYNAPSE : NO EXCUSE</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Clock</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
     
     <style>
-        #landing-layer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #050505; z-index: 999999; overflow-y: auto;
-            font-family: 'Noto Sans KR', sans-serif;
-            color: #fff; display: block;
-        }
-        .ld-container { max-width: 800px; margin: 0 auto; padding: 40px 25px; }
-        .ld-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 40px; }
-        .ld-logo { font-family: 'Exo 2', sans-serif; font-size: 28px; font-weight: 900; color: #00f3ff; font-style: italic; }
-        .ld-ver { font-family: 'Roboto Mono', monospace; font-size: 11px; color: #666; font-weight: 700; letter-spacing: 1px; }
-        
-        .ld-sec { margin-bottom: 60px; }
-        .ld-label { display: inline-block; font-family: 'Roboto Mono', monospace; color: #00f3ff; border: 1px solid #00f3ff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 15px; }
-        .ld-tit { font-size: 28px; font-weight: 900; line-height: 1.3; margin-bottom: 20px; color: #fff; }
-        .ld-desc { font-size: 15px; color: #aaa; line-height: 1.7; word-break: keep-all; }
-        .ld-highlight { color: #fff; font-weight: 700; text-decoration: underline; text-decoration-color: #bc13fe; text-underline-offset: 4px; }
-        
-        .ld-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }
-        .ld-card { background: #121212; border: 1px solid #333; padding: 25px; border-radius: 12px; }
-        .lc-tit { font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 16px; margin-bottom: 10px; display: block; }
-        .lc-txt { font-size: 13px; color: #888; line-height: 1.5; }
-
-        .ld-math { background: #1a1a1a; border: 1px solid #bc13fe; padding: 30px; border-radius: 16px; text-align: center; margin: 30px 0; }
-        .ld-formula { font-family: 'Times New Roman', serif; font-size: 22px; color: #fff; font-style: italic; margin: 15px 0; }
-        
-        .ld-list li { margin-bottom: 15px; padding-left: 15px; border-left: 2px solid #333; }
-        .li-tit { font-weight: 900; color: #fff; font-size: 15px; display: block; margin-bottom: 5px; }
-        .li-desc { font-size: 13px; color: #888; }
-
-        .ld-footer { text-align: center; margin-top: 60px; padding-top: 40px; border-top: 1px solid #333; }
-        .ld-btn { 
-            background: #00f3ff; color: #000; border: none; 
-            font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 18px; 
-            padding: 20px 60px; border-radius: 8px; cursor: pointer; 
-            margin-top: 30px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.4); 
-            width: 100%; max-width: 320px;
-        }
-    </style>
-
-    <style>
-        /* [FINAL ENGINE V24] */
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&family=Noto+Sans+KR:wght@300;500;700;900&family=Roboto+Mono:wght@400;700&display=swap');
-        
+        /* --- [CORE VARIABLES] --- */
         :root {
-            --bg-core: #000000;
-            --bg-card: #121212;
-            --bg-panel: #1a1a1a;
-            --border: #333333;
-            --text-main: #ffffff;
-            --text-sub: #888888;
-            --neon-cyan: #00f3ff;
-            --neon-purple: #bc13fe;
-            --neon-red: #ff003c;
-            --neon-gold: #ffd700;
-            --neon-green: #00ff66;
-            --modal-overlay: rgba(0,0,0,0.92);
+            --bg: #000000;
+            --card: #111;
+            --border: #333;
+            --text: #fff;
+            --cyan: #00f3ff;
+            --purple: #bc13fe;
+            --red: #ff003c;
+            --gold: #ffd700;
+            --green: #00ff88;
+            --calc-btn: #333333;
+            --calc-ops: #ff9f0a;
+            --calc-top: #a5a5a5;
+            --calc-txt: #fff;
         }
 
-        body.white-mode {
-            --bg-core: #f5f5f7;
-            --bg-card: #ffffff;
-            --bg-panel: #e9ecef;
-            --border: #d1d5db;
-            --text-main: #111827;
-            --text-sub: #4b5563;
-            --neon-cyan: #0066ff;
-            --neon-purple: #6200ea;
-            --neon-red: #d32f2f;
-            --neon-gold: #f57c00;
-            --neon-green: #2e7d32;
-            --modal-overlay: rgba(255,255,255,0.95);
+        body.white-mode { --bg: #f2f2f7; --card: #ffffff; --border: #d1d1d6; --text: #000; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; overflow: hidden; height: 100vh; }
+
+        /* --- [LANDING PAGE STYLES] --- */
+        #landing-view { 
+            position: fixed; inset: 0; z-index: 20000; 
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 90%); 
+            overflow-y: auto; padding-bottom: 50px;
+            transition: opacity 0.5s, transform 0.5s;
         }
-
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg-core); color: var(--text-main); font-family: 'Noto Sans KR', sans-serif; height: 100vh; overflow: hidden; }
-
-        /* [LAYOUT] */
-        .page { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg-core); opacity: 1; transition: opacity 0.2s; z-index: 10; }
-        .page.hidden { opacity: 0; pointer-events: none; z-index: 0; }
-
-        /* [HEADER] */
-        header { padding: 35px 20px 15px; border-bottom: 1px solid var(--border); }
-        .top-row { display: flex; justify-content: space-between; align-items: flex-end; }
-        .logo-main { font-size: 32px; font-weight: 900; color: var(--neon-cyan); letter-spacing: -1px; line-height: 1; font-family: 'Exo 2'; font-style: italic; text-shadow: 0 0 10px rgba(0,243,255,0.3); }
-        .logo-sub { font-size: 10px; color: var(--text-sub); font-weight: 700; letter-spacing: 2px; margin-top: 5px; font-family: 'Roboto Mono'; }
-        .clock-box { text-align: right; font-family: 'Roboto Mono'; }
-        .time-big { font-size: 24px; font-weight: 700; color: var(--text-main); }
-        .date-full { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
-
-        /* [TICKER] */
-        .news-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: var(--bg-card); padding: 12px 0; border-bottom: 1px solid var(--border); margin-top: 15px; }
-        .ticker-wrap { display: flex; width: max-content; animation: ticker 40s linear infinite; }
-        .ticker-item { padding: 0 30px; font-size: 13px; color: var(--text-sub); font-weight: 500; }
-        .ticker-item span { color: var(--neon-red); font-weight: 900; margin-right: 6px; }
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        /* [SCROLL AREA] */
-        .main-scroll { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 140px; }
-        .sec-head { font-size: 11px; color: var(--text-sub); font-weight: 900; margin: 30px 0 10px; letter-spacing: 1px; font-family: 'Roboto Mono'; border-left: 3px solid var(--neon-cyan); padding-left: 8px; }
-
-        /* [CONTROL CARDS] */
-        .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { 
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; height: 110px; 
-            display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; 
-            position: relative; overflow: hidden; transition: border-color 0.2s;
+        .cyber-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
+            background-image: linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px; transform: perspective(500px) rotateX(60deg); transform-origin: center top;
         }
-        .card:active { border-color: var(--neon-cyan); }
-        .c-tit { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; letter-spacing: 0.5px; z-index: 2; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+        .ld-container { max-width: 800px; margin: 0 auto; padding: 0 25px; }
+        .ld-header { padding: 40px 0; border-bottom: 1px solid #333; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .ld-brand { font-family: 'Exo 2'; font-size: 28px; font-weight: 900; color: var(--cyan); font-style: italic; }
+        .ld-sub { font-family: 'Roboto Mono'; font-size: 11px; color: #666; font-weight: 700; letter-spacing: 1px; }
+        .ld-section { margin-bottom: 60px; }
+        .ld-label { font-family: 'Roboto Mono'; color: var(--cyan); font-size: 12px; font-weight: 700; border: 1px solid var(--cyan); padding: 5px 10px; border-radius: 20px; display: inline-block; margin-bottom: 15px; }
+        .ld-tit { font-size: 28px; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 15px; }
+        .ld-desc { font-size: 15px; color: #aaa; line-height: 1.6; text-align: justify; }
+        .ld-hl { color: #fff; font-weight: 700; text-decoration: underline; text-decoration-color: var(--purple); }
         
-        #card-score { background: var(--bg-card); }
-        #score-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 1; display: none; filter: contrast(1.1); }
-        
-        /* [SLOW SCAN LINE - 3 SECONDS] */
-        .scan-line { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 2px; 
-            background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); 
-            opacity: 0; pointer-events: none; z-index: 5;
-        }
-        .card.scanning .scan-line { opacity: 1; animation: scanSlow 3s linear infinite; }
-        @keyframes scanSlow { 
-            0% { top: 0; opacity: 0; } 
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 100%; opacity: 0; } 
-        }
+        .ld-card { background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 12px; padding: 20px; margin-bottom: 15px; backdrop-filter: blur(5px); }
+        .ld-card-head { font-family: 'Exo 2'; font-weight: 900; font-size: 16px; margin-bottom: 8px; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .ld-card-body { font-size: 13px; color: #bbb; line-height: 1.5; }
 
-        /* [LIVE CHANNELS] */
-        .cctv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .cctv { height: 90px; background: #000; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid var(--border); }
-        .cctv img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .rec { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); padding: 3px 6px; border-radius: 4px; font-size: 9px; color: white; font-weight: 900; display: flex; align-items: center; gap: 4px; z-index: 2; }
-        .dot { width: 5px; height: 5px; background: var(--neon-red); border-radius: 50%; animation: blink 1s infinite; }
+        .ld-cta { text-align: center; padding: 40px 0; border-top: 1px solid #333; }
+        .enter-btn { 
+            width: 100%; max-width: 320px; height: 60px; background: var(--cyan); color: #000; 
+            font-family: 'Exo 2'; font-weight: 900; font-size: 18px; border: none; border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); animation: pulse 2s infinite; cursor: pointer;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,243,255,0.4); } 70% { box-shadow: 0 0 0 15px rgba(0,243,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,243,255,0); } }
+
+        /* --- [APP STYLES] --- */
+        #stealth-layer { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.4s; }
+        .clock-face { text-align: center; cursor: pointer; }
+        .s-time { font-family: 'Roboto Mono'; font-weight: 100; font-size: 80px; color: #fff; letter-spacing: -4px; line-height: 1; }
+        .s-sec { font-size: 24px; color: #333; font-weight: 300; margin-left: 10px; }
+        .s-date { font-family: 'Exo 2'; font-weight: 300; color: #444; font-size: 13px; letter-spacing: 4px; margin-top: 20px; text-transform: uppercase; }
+        .unlock-bar { width: 0%; height: 3px; background: var(--cyan); margin-top: 40px; transition: width 1.0s linear; margin-left: auto; margin-right: auto; border-radius: 2px; }
+
+        #main-layer { display: none; height: 100%; flex-direction: column; opacity: 0; transition: opacity 0.4s; }
+        
+        header { background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        .ticker-wrap { background: var(--cyan); height: 26px; overflow: hidden; display: flex; align-items: center; }
+        .ticker { white-space: nowrap; padding-left: 100%; animation: ticker 25s linear infinite; font-family: 'Roboto Mono'; font-size: 12px; font-weight: 700; color: #000; }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .top-nav { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Exo 2'; font-weight: 900; font-size: 22px; font-style: italic; letter-spacing: -1px; }
+        .logo span { color: var(--cyan); }
+        .status { font-family: 'Roboto Mono'; font-size: 10px; color: var(--red); border: 1px solid var(--red); padding: 3px 6px; border-radius: 4px; display: flex; align-items: center; gap: 5px; }
+        .live-dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* [SHORTCUTS] */
-        .shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .s-btn { height: 90px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
-        .s-btn:active { background: var(--bg-panel); transform: scale(0.98); }
-        .s-ico { width: 26px; height: 26px; fill: var(--text-sub); }
-        .s-lbl { font-size: 11px; color: var(--text-sub); font-weight: 700; }
-        body.ghost-active .s-ico { fill: var(--neon-cyan); }
-        body.ghost-active .s-lbl { color: var(--neon-cyan); }
+        .content-area { padding: 20px; padding-bottom: 140px; overflow-y: auto; flex: 1; }
+        .section-head { font-family: 'Exo 2'; font-size: 11px; color: #666; font-weight: 700; margin-bottom: 12px; letter-spacing: 1px; display: flex; justify-content: space-between; }
+        .grid-9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 30px; }
+        .link-item { aspect-ratio: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: 0.2s; }
+        .link-item:active { border-color: var(--cyan); background: rgba(0, 243, 255, 0.05); }
+        .link-char { font-family: 'Exo 2'; font-size: 24px; font-weight: 900; color: #333; }
+        .link-item.set .link-char { color: #fff; }
+        .link-name { font-size: 9px; color: #444; margin-top: 4px; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .link-item.set .link-name { color: var(--cyan); }
+        .gear { position: absolute; top: 4px; right: 4px; font-size: 10px; color: #333; padding: 4px; }
 
-        /* [DOCK] */
-        .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 95px; background: var(--bg-core); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: flex-start; padding-top: 18px; z-index: 100; opacity: 0.98; }
-        .d-btn { width: 60px; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0.5; color: var(--text-main); }
-        .d-btn.active { opacity: 1; color: var(--neon-cyan); }
-        .d-ico { width: 24px; height: 24px; fill: currentColor; }
-        .d-lbl { font-size: 10px; font-weight: 700; }
-        .vis-btn { width: 64px; height: 64px; background: linear-gradient(135deg, var(--neon-cyan), #0066ff); border-radius: 20px; margin-top: -35px; border: 5px solid var(--bg-core); display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 25px rgba(0, 243, 255, 0.3); }
-        .vis-btn svg { width: 30px; height: 30px; fill: white; }
+        .match-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 25px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
+        .match-card:active { transform: scale(0.98); border-color: var(--cyan); }
+        .mc-header { padding: 12px 15px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; }
+        .mc-league { font-size: 10px; color: var(--gold); border: 1px solid rgba(255, 215, 0, 0.3); padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .mc-time { font-family: 'Roboto Mono'; font-size: 11px; color: #888; }
+        .mc-body { padding: 20px 15px; }
+        .mc-vs { text-align: center; margin-bottom: 20px; }
+        .team-name { font-size: 18px; font-weight: 900; color: #fff; display: block; margin: 5px 0; }
+        .vs-badge { font-size: 12px; color: #444; font-style: italic; font-weight: 900; }
 
-        /* [MODAL COMMON] */
-        .sub-head { padding: 30px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-core); position: sticky; top: 0; z-index: 20; }
-        .sub-tit { font-size: 22px; font-weight: 900; color: var(--text-main); font-style: italic; }
-        .close-btn { width: 100%; height: 55px; background: var(--text-main); color: var(--bg-core); border-radius: 12px; font-weight: 900; border: none; font-size: 16px; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .azi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 20px; background: #000; padding: 10px; border-radius: 8px; border: 1px solid #222; }
+        .azi-item { text-align: center; }
+        .azi-label { font-size: 8px; color: #666; margin-bottom: 4px; font-family: 'Exo 2'; letter-spacing: 0.5px; }
+        .azi-val { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 700; color: #fff; }
+        .azi-val.str { color: #fff; }
+        .azi-val.flow { color: var(--red); }
+        .azi-val.eff { color: var(--green); }
+        .azi-val.edge { color: var(--red); text-shadow: 0 0 5px rgba(255,0,60,0.5); font-weight: 900; }
 
-        /* [CUSTOM MODAL SYSTEM] */
-        #custom-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        #custom-modal.show { display: flex; }
-        .modal-box { width: 85%; max-width: 320px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .modal-tit { font-size: 18px; font-weight: 900; color: var(--text-main); margin-bottom: 10px; }
-        .modal-msg { font-size: 15px; color: var(--text-sub); margin-bottom: 25px; line-height: 1.5; font-weight: 500; }
-        .modal-btns { display: flex; gap: 10px; }
-        .m-btn { flex: 1; height: 50px; border-radius: 12px; border: none; font-weight: 800; font-size: 14px; cursor: pointer; }
-        .m-yes { background: var(--neon-cyan); color: #000; }
-        .m-no { background: var(--bg-panel); color: var(--text-sub); border: 1px solid var(--border); }
+        .res-banner { background: linear-gradient(90deg, rgba(0,243,255,0.1), transparent); border-left: 3px solid var(--cyan); padding: 12px; margin-bottom: 5px; }
+        .res-tit { font-size: 10px; color: var(--cyan); font-weight: 700; margin-bottom: 2px; }
+        .res-main { font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
+        .click-hint { text-align: center; font-size: 11px; color: #888; padding: 10px; border-top: 1px solid var(--border); background: rgba(255,255,255,0.03); font-weight: 700; animation: pulse-text 2s infinite; }
+        @keyframes pulse-text { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-        /* [CUSTOM NUMBER PAD MODAL] */
-        #input-modal { position: fixed; inset: 0; background: var(--modal-overlay); z-index: 9999; display: none; flex-direction: column; justify-content: flex-end; }
-        #input-modal.show { display: flex; }
-        .input-box { background: var(--bg-card); border-top: 2px solid var(--neon-cyan); padding: 30px 20px; border-radius: 25px 25px 0 0; }
-        .input-display { font-size: 32px; color: var(--text-main); text-align: right; margin-bottom: 20px; font-family: 'Roboto Mono'; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .num-btn { height: 60px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; color: var(--text-main); font-size: 20px; font-weight: bold; }
-        .num-btn:active { background: var(--neon-cyan); color: black; }
-        .num-ok { grid-column: span 3; background: var(--neon-cyan); color: black; margin-top: 10px; }
+        .engine-float { position: fixed; bottom: 85px; left: 20px; right: 20px; z-index: 150; pointer-events: none; }
+        .eng-btn { pointer-events: auto; width: 100%; height: 50px; background: var(--card); border: 1px solid var(--gold); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; font-family: 'Exo 2'; letter-spacing: 2px; font-size: 14px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .eng-btn:active { background: var(--gold); color: #000; }
 
-        /* [ANALYSIS VIEW] */
-        #analysis-view { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 92vh; 
-            background: var(--bg-card); z-index: 5000; 
-            border-top: 2px solid var(--neon-cyan); border-radius: 25px 25px 0 0;
-            display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            box-shadow: 0 -10px 100px rgba(0,0,0,0.8);
-        }
-        #analysis-view.show { transform: translateY(0); }
-        .an-img-area { flex: 1; background: #000; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); border-radius: 23px 23px 0 0; }
-        #an-img-target { width: 100%; height: 100%; object-fit: contain; }
-        .an-data-area { height: 40%; padding: 25px; overflow-y: auto; background: var(--bg-core); }
-        .an-tit { font-size: 18px; font-weight: 900; color: var(--neon-cyan); margin-bottom: 20px; }
-        .an-close-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(0,0,0,0.6); border-radius: 50%; color: white; border: none; font-weight: bold; font-size: 20px; z-index: 10; cursor: pointer; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(10,10,10,0.95); border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; padding-bottom: 10px; z-index: 200; backdrop-filter: blur(10px); }
+        .d-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #666; cursor: pointer; }
+        .d-btn:active { color: var(--text); }
+        .d-ico { font-size: 22px; }
+        .d-lbl { font-size: 10px; font-weight: 700; font-family: 'Exo 2'; }
 
-        /* [CONTENTS] */
-        #calc-wrap { padding: 0; display: flex; flex-direction: column; height: 100%; }
-        #calc-disp { background: var(--bg-panel); padding: 30px; text-align: right; font-size: 40px; border-radius: 16px; margin-bottom: 20px; font-family: 'Roboto Mono'; color: var(--text-main); border: 1px solid var(--border); min-height: 100px; display: flex; align-items: center; justify-content: flex-end; }
-        .calc-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
-        .cp-btn { padding: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border-radius: 14px; font-size: 22px; font-weight: bold; color: var(--text-main); border: 1px solid var(--border); cursor: pointer; }
-        .cp-btn:active { background: var(--neon-cyan); color: black; }
-        .cp-act { color: var(--neon-cyan); }
-        .cp-eq { grid-column: span 4; background: var(--neon-cyan); color: black; border: none; height: 60px; margin-bottom: 10px; }
+        .sub-page { position: fixed; inset: 0; background: var(--bg); z-index: 500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; overflow-y: auto; }
+        .sub-page.active { transform: translateX(0); }
+        .sub-header { height: 60px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border); font-weight: 900; font-size: 18px; justify-content: space-between; background: var(--card); flex-shrink: 0; position: sticky; top: 0; z-index: 10; }
+        .back-arrow { font-size: 24px; padding: 10px; margin-left: -10px; cursor: pointer; }
 
-        .cal-nav { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
-        .cal-ym { font-size: 24px; font-weight: 900; color: var(--neon-cyan); font-family: 'Roboto Mono'; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
-        .cal-head { font-size: 12px; color: var(--text-sub); font-weight: bold; margin-bottom: 10px; }
-        .cal-cell { height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 14px; background: var(--bg-panel); color: var(--text-sub); border: 1px solid transparent; cursor: pointer; }
-        .cal-cell.today { border: 1px solid var(--neon-cyan); color: var(--text-main); }
-        .cal-cell.active { background: var(--neon-cyan); color: #000; font-weight: 900; }
-        #cal-memo { width: 100%; height: 150px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; margin-top: 25px; padding: 15px; color: var(--text-main); font-size: 15px; resize: none; }
-        .cal-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 12px; font-weight: 900; border: none; margin-top: 15px; font-size: 16px; }
+        .analysis-body { padding: 25px; line-height: 1.8; color: #ddd; font-size: 14px; text-align: justify; padding-bottom: 100px; }
+        .hl { color: var(--cyan); font-weight: 700; }
+        .section-title-l { font-size: 16px; font-weight: 900; color: #fff; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid var(--border); padding-bottom: 5px; }
 
-        .bank-disp { padding: 40px 20px; text-align: center; background: var(--bg-panel); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .bank-lbl { font-size: 12px; color: var(--text-sub); font-weight: 700; margin-bottom: 5px; }
-        .bank-val { font-size: 40px; font-weight: 900; color: var(--neon-gold); font-family: 'Roboto Mono'; letter-spacing: -2px; }
-        .bank-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .b-btn { height: 65px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-card); font-weight: 800; color: var(--text-sub); font-size: 15px; }
-        .b-btn.in { background: rgba(0, 255, 102, 0.1); border-color: var(--neon-green); color: var(--neon-green); }
-        .b-btn.out { background: rgba(255, 60, 60, 0.1); border-color: var(--neon-red); color: var(--neon-red); }
-        .b-reset { width: 100%; height: 55px; background: transparent; border: 1px solid var(--border); color: var(--text-sub); border-radius: 12px; margin-top: 20px; }
+        .calc-body { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; }
+        #calc-display { width: 100%; text-align: right; font-size: 50px; color: var(--text); font-weight: 300; padding: 20px; margin-bottom: 20px; font-family: 'Roboto Mono'; word-break: break-all; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .c-btn { aspect-ratio: 1; border-radius: 50%; border: none; font-size: 24px; display: flex; align-items: center; justify-content: center; background: var(--calc-btn); color: var(--calc-txt); transition: filter 0.2s; }
+        .c-btn:active { filter: brightness(1.3); }
+        .c-ops { background: var(--calc-ops); color: #fff; font-size: 28px; }
+        .c-top { background: var(--calc-top); color: #000; }
 
-        .st-header { background: rgba(0, 255, 102, 0.05); border: 1px solid var(--neon-green); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 30px; }
-        .st-tit { color: var(--neon-green); font-weight: 900; font-size: 20px; margin-bottom: 5px; }
-        .st-sub { color: var(--text-sub); font-size: 11px; }
-        .st-label { color: var(--neon-gold); font-weight: 900; font-size: 13px; margin-bottom: 15px; display: block; border-left: 3px solid var(--neon-gold); padding-left: 10px; }
-        .st-item { display: flex; align-items: center; gap: 15px; background: var(--bg-panel); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .st-idx { width: 30px; font-weight: 900; color: var(--text-sub); font-family: 'Roboto Mono'; }
-        .st-inp { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 15px; padding: 5px 0; border-bottom: 1px solid var(--border); }
-        .st-save { width: 100%; height: 60px; background: var(--neon-cyan); color: #000; border-radius: 14px; font-weight: 900; border: none; margin-top: 30px; font-size: 16px; }
-        .st-reset { width: 100%; height: 60px; background: rgba(255,60,60,0.1); border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 14px; font-weight: 900; margin-top: 15px; font-size: 16px; margin-bottom: 100px; }
+        .cal-body { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+        .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 10px; }
+        .cal-ym { font-size: 20px; font-weight: 700; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 20px; }
+        .cal-head { font-size: 12px; color: #666; padding-bottom: 10px; }
+        .cal-day { height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px; position: relative; }
+        .cal-day.today { color: var(--cyan); font-weight: 900; }
+        .cal-day.selected { background: var(--text); color: var(--bg); font-weight: 900; }
+        .cal-day.has-memo::after { content:''; position: absolute; bottom: 6px; width: 4px; height: 4px; background: var(--purple); border-radius: 50%; }
+        .memo-area { flex: 1; background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; }
+        .memo-date { font-size: 12px; color: #666; margin-bottom: 10px; font-weight: 700; }
+        #memo-input { width: 100%; flex: 1; background: transparent; border: none; color: var(--text); font-size: 16px; line-height: 1.5; resize: none; }
 
-        .odds-table { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--text-sub); }
-        .odds-table th { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); color: var(--neon-purple); }
-        .odds-table td { padding: 15px 10px; border-bottom: 1px solid var(--border); color: var(--text-main); font-weight: 500; }
-        .down { color: var(--neon-red); font-weight: bold; } .up { color: var(--neon-green); font-weight: bold; }
-        .edge-card { background: var(--bg-panel); border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid var(--border); }
-        .ec-head { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .ec-team { font-weight: 900; color: var(--text-main); font-size: 15px; }
-        .ec-rate { font-weight: 900; color: var(--neon-red); font-family: 'Roboto Mono'; }
-        .ec-bar { width: 100%; height: 8px; background: var(--bg-card); border-radius: 4px; overflow: hidden; }
-        .ec-fill { height: 100%; background: var(--neon-red); }
+        .setup-list { padding: 20px; }
+        .setup-item { padding: 20px; border-bottom: 1px solid var(--border); }
+        .st-head { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+        .st-desc { font-size: 12px; color: #666; line-height: 1.4; }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .modal-body { width: 85%; background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); }
+        .inp { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 10px; border-radius: 8px; }
+        .btn-ok { width: 100%; padding: 12px; background: var(--cyan); color: #000; font-weight: 800; border: none; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-    <div id="landing-layer">
+    <div id="landing-view">
+        <div class="cyber-bg"></div>
         <div class="ld-container">
-            <header class="ld-head">
-                <div class="ld-logo">AZI VISION</div>
-                <div class="ld-ver">SYSTEM V2.5</div>
+            <header class="ld-header">
+                <div class="ld-brand">SYNAPSE <span style="color:#fff">BLACK</span></div>
+                <div class="ld-sub">GALAXY EDITION V2.5</div>
             </header>
 
-            <section class="ld-sec">
-                <span class="ld-label">01. INTRODUCTION</span>
-                <h1 class="ld-tit">SYNAPSE BLACK:<br>데이터의 실체는 배당의 흐름보다 강력합니다.</h1>
+            <section class="ld-section">
+                <span class="ld-label">01. PROJECT BRIEF</span>
+                <h1 class="ld-tit">베팅 인텔리전스의<br>종착지.</h1>
                 <p class="ld-desc">
-                    시냅스 블랙은 단순한 승부 예측을 넘어, 시장의 보이지 않는 왜곡과 자본의 흐름을 수학적으로 해체합니다. <br><br>
-                    20년 차 엔지니어의 경험과 최첨단 시뮬레이션 엔진이 결합된 <span class="ld-highlight">애지분석법(Azi-Analysis)</span>은 당신의 비즈니스 성공을 위한 가장 강력한 무기가 될 것입니다.
+                    시냅스 블랙은 단순한 분석 도구를 넘어, 자본의 흐름을 읽고 승률의 왜곡을 포착하는 <span class="ld-hl">개인 전용 배틀 스테이션</span>입니다. 
+                    <br><br>
+                    20년 경력의 시냅스 수석 엔지니어와 의장님의 철학이 결합된 본 시스템은 시장의 보이지 않는 지표를 수치화하여 최적의 진입 시점을 제공합니다.
                 </p>
             </section>
 
-            <section class="ld-sec">
-                <span class="ld-label">02. CORE ALGORITHM</span>
-                <h2 class="ld-tit">애지분석법 (Azi-Analysis)</h2>
-                <p class="ld-desc">시냅스 블랙의 심장부인 애지분석법은 세 가지 핵심 필터를 통해 시장의 허점을 완벽하게 포착합니다.</p>
-                <div class="ld-grid">
+            <section class="ld-section">
+                <span class="ld-label">02. CORE ENGINE</span>
+                <h1 class="ld-tit">보이지 않는 것을<br>수치화하다.</h1>
+                <div style="margin-top:20px;">
                     <div class="ld-card">
-                        <span class="lc-tit" style="color:#00f3ff">① 구조 분석 (Structure Analysis)</span>
-                        <div class="lc-txt">시장의 설계 판독: 북메이커가 설정한 기준점과 초기 배당의 구조적 의도를 해부합니다. 리스크 방어: 타겟 구간에 정확히 안착한 수익 구조만을 선별하여 수학적으로 안정적인 수익 모델을 제시합니다.</div>
+                        <div class="ld-card-head" style="color:var(--cyan)">⚡ AZI-ANALYSIS</div>
+                        <div class="ld-card-body">
+                            애지분석법(Azi-Analysis)을 기반으로 한 1만 회의 몬테카를로 시뮬레이션이 상시 가동됩니다.
+                        </div>
                     </div>
                     <div class="ld-card">
-                        <span class="lc-tit" style="color:#bc13fe">② 흐름 분석 (Flow Analysis)</span>
-                        <div class="lc-txt">실시간 자본 추적: 전 세계 거대 자본(Smart Money)의 이동 방향과 배당의 유기적인 변화를 스캐닝합니다. 데이터 왜곡 포착: 대중의 심리가 반영된 허수 자본과 실제 승부처를 구분하여 수익성을 극대화합니다.</div>
-                    </div>
-                    <div class="ld-card">
-                        <span class="lc-tit" style="color:#ffd700">③ 효율 분석 (Efficiency Analysis)</span>
-                        <div class="lc-txt">1만 회 몬테카를로 시뮬레이션: v2.5 엔진이 해당 경기를 가상 세계에서 10,000회 사전 수행하여 통계적 확률을 산출합니다. 로컬 인텔리전스 딥 스캔: 현지 전술 변화, 선수 컨디션, 기상 변수 등 정성적 데이터를 정량적 수치로 환산합니다.</div>
+                        <div class="ld-card-head" style="color:var(--red)">🎯 EDGE SCORE</div>
+                        <div class="ld-card-body">
+                            구조(Structure), 흐름(Flow), 효율(Efficiency)을 종합하여 시장의 착시를 깨부수는 확신 지수입니다.
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section class="ld-sec">
-                <span class="ld-label">03. EDGE SCORE</span>
-                <div class="ld-math">
-                    <p class="ld-desc">애지분석법의 모든 연산 결과는 단 하나의 숫자로 수렴됩니다. 우리는 주관적 감을 배제하고 오직 수학적 기대 가치(EV)만을 신뢰합니다.</p>
-                    <div class="ld-formula">Edge Score = (Structure + Flow + Efficiency) / 3</div>
-                    <p class="ld-desc" style="font-size:12px; color:#00f3ff; margin-top:15px;">진입 기준: 엣지 지수가 임계치를 돌파한 경기만을 엄선하여 고밀도 리포트로 제공합니다.</p>
+            <section class="ld-section">
+                <span class="ld-label">03. STEALTH PROTOCOL</span>
+                <h1 class="ld-tit">보이는 것이<br>전부가 아닙니다.</h1>
+                <p class="ld-desc">
+                    보안은 시냅스의 최우선 가치입니다. 외부인에게는 단순한 디지털 시계로 위장합니다.
+                </p>
+                <div class="ld-card" style="border-color:var(--cyan);">
+                    <div class="ld-card-head">🔒 1.0s TIME LOCK</div>
+                    <div class="ld-card-body">
+                        시계 화면을 <span class="ld-hl">정확히 1.0초간</span> 누르고 있을 때만 본부(HQ)로 진입할 수 있습니다. 찰나의 순간으로 시스템을 은닉하십시오.
+                    </div>
                 </div>
             </section>
 
-            <section class="ld-sec">
-                <span class="ld-label">04. INTEGRITY SYSTEM</span>
-                <h2 class="ld-tit">시냅스만의 철저한 무결성 시스템</h2>
-                <ul class="ld-list">
-                    <li>
-                        <span class="li-tit">독보적 보안</span>
-                        <span class="li-desc">모든 분석 리포트 하단에는 고유 검증 ID(Synapse-V-ID)가 부여되어 데이터의 위변조를 원천 차단합니다.</span>
-                    </li>
-                    <li>
-                        <span class="li-tit">완벽한 개발 공정</span>
-                        <span class="li-desc">비즈니스 엔진의 안정성을 위해 단 1픽셀의 임의 변경도 허용하지 않는 엄격한 개발 가이드를 준수합니다.</span>
-                    </li>
-                    <li>
-                        <span class="li-tit">투명한 데이터 근거</span>
-                        <span class="li-desc">모든 분석 결과는 공신력 있는 데이터와 현지 인텔리전스의 명확한 출처를 기반으로 작성됩니다.</span>
-                    </li>
-                </ul>
-            </section>
-
-            <div class="ld-footer">
-                <h2 class="ld-tit" style="font-size:22px;">지금, 비즈니스의 격차를 경험하십시오.</h2>
-                <p class="ld-desc">데이터는 거짓말을 하지 않습니다. 다만 해석의 밀도가 다를 뿐입니다.<br>시냅스 블랙 v2.5와 함께 시장의 흐름을 지배하는 상위 1%의 시각을 소유하십시오.</p>
-                <button class="ld-btn" onclick="document.getElementById('landing-layer').style.display='none'">SYSTEM ACCESS</button>
-            </div>
-        </div>
-    </div>
-    <input type="file" id="cam-input" hidden accept="image/*">
-    
-    <div id="custom-modal">
-        <div class="modal-box">
-            <div class="modal-tit" id="m-tit">이 페이지 내용:</div>
-            <div class="modal-msg" id="modal-msg">MESSAGE</div>
-            <div class="modal-btns">
-                <button class="m-btn m-no" onclick="Modal.close()">취소</button>
-                <button class="m-btn m-yes" id="modal-ok">확인</button>
+            <div class="ld-cta">
+                <p class="ld-desc" style="margin-bottom:20px;">
+                    상위 1%의 시각을 소유할 준비가 되셨습니까?
+                </p>
+                <button class="enter-btn" onclick="enterSystem()">SYSTEM ACCESS</button>
             </div>
         </div>
     </div>
 
-    <div id="input-modal">
-        <div class="input-box">
-            <div class="input-display" id="inp-disp">0</div>
-            <div class="numpad">
-                <button class="num-btn" onclick="Input.add(1)">1</button><button class="num-btn" onclick="Input.add(2)">2</button><button class="num-btn" onclick="Input.add(3)">3</button>
-                <button class="num-btn" onclick="Input.add(4)">4</button><button class="num-btn" onclick="Input.add(5)">5</button><button class="num-btn" onclick="Input.add(6)">6</button>
-                <button class="num-btn" onclick="Input.add(7)">7</button><button class="num-btn" onclick="Input.add(8)">8</button><button class="num-btn" onclick="Input.add(9)">9</button>
-                <button class="num-btn" onclick="Input.clr()">C</button><button class="num-btn" onclick="Input.add(0)">0</button><button class="num-btn" onclick="Input.back()">←</button>
-                <button class="num-btn num-ok" onclick="Input.done()">=</button>
-            </div>
+    <div id="stealth-layer">
+        <div class="clock-face" id="stealth-trigger">
+            <div><span class="s-time" id="s-hhmm">00:00</span><span class="s-sec" id="s-ss">00</span></div>
+            <div class="s-date" id="s-date">LOCKED</div>
+            <div class="unlock-bar"></div>
         </div>
     </div>
 
-    <div id="analysis-view">
-        <button class="an-close-btn" onclick="Action.closeScore()">×</button>
-        <div class="an-img-area">
-            <img id="an-img-target" src="">
-        </div>
-        <div class="an-data-area">
-            <div class="an-tit">AI ANALYSIS</div>
-            <div style="font-family:'Roboto Mono'; font-size:13px; color:var(--text-sub); line-height:1.8;">
-                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
-                    <span>CONFIDENCE</span><span style="color:var(--neon-green);font-weight:bold;">99.1%</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:10px;">
-                    <span>PREDICTION</span><span style="color:var(--neon-cyan);font-weight:bold;">WIN</span>
-                </div>
-                <div style="margin-top:15px; color:#666;">
-                    > Image captured.<br>> Processing data points...<br>> Result: HIGH PROBABILITY.
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="p-home" class="page active">
+    <div id="main-layer">
         <header>
-            <div class="top-row">
-                <div class="brand-col">
-                    <div class="logo-main">SYNAPSE</div>
-                    <div class="logo-sub">V24 MASTER-OS</div>
-                </div>
-                <div class="clock-box">
-                    <div class="time-big" id="clock-time">00:00:00</div>
-                    <div class="date-full" id="clock-date">LOADING...</div>
-                </div>
+            <div class="ticker-wrap">
+                <div class="ticker">[SYSTEM NOTICE] 시냅스 블랙 v2.5 엔진 가동... 알 타아원 vs 알 하즘 정밀 분석 완료... 1만회 시뮬레이션 종료... 배당 흐름 왜곡 구간 포착... 보안 접속 유지 중...</div>
             </div>
-            <div class="news-ticker" onclick="window.open('https://www.google.com/search?q=스포츠뉴스')">
-                <div class="ticker-wrap">
-                    <div class="ticker-item"><span>[LIVE]</span> EPL: MAN CITY 2-2 LIV (82')</div>
-                    <div class="ticker-item"><span>[NBA]</span> LAKERS WIN OT (112-110)</div>
-                    <div class="ticker-item"><span>[MLB]</span> OHTANI 2 HR GAME</div>
-                    <div class="ticker-item"><span>[UFC]</span> MAIN EVENT CONFIRMED</div>
-                </div>
+            <div class="top-nav">
+                <div class="logo">SYNAPSE <span>BLACK</span></div>
+                <div class="status"><div class="live-dot"></div>LIVE</div>
             </div>
         </header>
 
-        <div class="main-scroll">
-            <div class="sec-head">CONTROL UNIT</div>
-            <div class="exec-grid">
-                <div class="card" id="card-score" onclick="Action.score()">
-                    <div class="scan-line"></div>
-                    <img id="score-bg">
-                    <div class="c-tit" style="color:var(--neon-cyan)">VISION</div>
+        <div class="content-area">
+            <div class="section-head"><span>MY BATTLE STATION</span><span style="color:var(--cyan)">9 LINKS</span></div>
+            <div class="grid-9" id="link-grid"></div>
+
+            <div class="section-head"><span>PREMIUM INTELLIGENCE</span><span style="color:var(--red)">MATCH 01</span></div>
+            <div class="match-card" onclick="App.open('MATCH_DETAIL')">
+                <div class="mc-header"><span class="mc-league">SAUDI PRO</span><span class="mc-time">01.23 00:15 KST</span></div>
+                <div class="mc-body">
+                    <div class="mc-vs"><span class="team-name">AL TAAWON</span><span class="vs-badge">VS</span><span class="team-name">AL HAZEM</span></div>
+                    <div class="azi-grid">
+                        <div class="azi-item"><div class="azi-label">STRUCTURE</div><div class="azi-val str">+3.7</div></div>
+                        <div class="azi-item"><div class="azi-label">FLOW</div><div class="azi-val flow">-2.1</div></div>
+                        <div class="azi-item"><div class="azi-label">EFFICIENCY</div><div class="azi-val eff">+4.9</div></div>
+                        <div class="azi-item"><div class="azi-label" style="color:var(--red)">EDGE</div><div class="azi-val edge">+2.17</div></div>
+                    </div>
+                    <div class="res-banner"><div class="res-tit">FINAL DESTINATION</div><div class="res-main">2.5 OVER (오버)</div></div>
                 </div>
-                <div class="card" onclick="App.open('ODDS')"><div class="c-tit" style="color:var(--neon-purple)">ODDS</div></div>
-                <div class="card" onclick="App.open('EDGE')"><div class="c-tit" style="color:var(--neon-red)">EDGE</div></div>
-                <div class="card" onclick="App.open('BANK')"><div class="c-tit" style="color:var(--neon-gold)">BANK</div></div>
+                <div class="click-hint">👇 터치하여 정밀 분석 리포트 확인</div>
             </div>
 
-            <div class="sec-head">LIVE CHANNELS</div>
-            <div class="cctv-grid" id="tv-grid"></div>
-
-            <div class="sec-head">ANALYTICS HUB</div>
-            <div id="grid-box" class="shortcut-grid"></div>
+             <div class="section-head"><span>PREMIUM INTELLIGENCE</span><span style="color:#666">MATCH 02 (ANALYZING...)</span></div>
+            <div class="match-card" style="opacity: 0.6;">
+                <div class="mc-header"><span class="mc-league" style="border-color:#444; color:#888;">PENDING</span><span class="mc-time">--.-- --:--</span></div>
+                <div class="mc-body" style="text-align:center; padding:40px;">
+                    <div style="font-size:12px; color:#666; margin-bottom:10px;">DATA PROCESSING</div>
+                    <div style="font-family:'Exo 2'; font-size:20px; color:#444;">ANALYZING NEXT MATCH</div>
+                </div>
+            </div>
         </div>
 
-        <nav class="dock">
-            <div class="d-btn active" onclick="App.open('CALENDAR')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg><span class="d-lbl">SCHED</span></div>
-            <div class="d-btn" onclick="App.open('CALC')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5zM5 5h5v5H5V5zm0 7h5v5H5v-5zm7 5h5v5h-5v-5z"/></svg><span class="d-lbl">CALC</span></div>
-            <div class="vis-btn" onclick="document.getElementById('cam-input').click()"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div>
-            <div class="d-btn" onclick="Theme.toggle()"><svg class="d-ico" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg><span class="d-lbl">MODE</span></div>
-            <div class="d-btn" onclick="App.open('SETTINGS')"><svg class="d-ico" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.5.42l-.38 2.65c-.61.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg><span class="d-lbl">SETUP</span></div>
-        </nav>
+        <div class="engine-float"><div class="eng-btn" onclick="Engine.open()">⚡ ENGINE RECHARGE</div></div>
+
+        <div class="dock">
+            <div class="d-btn" onclick="App.open('CALENDAR')"><div class="d-ico">📅</div><div class="d-lbl">일정</div></div>
+            <div class="d-btn" onclick="App.open('CALC')"><div class="d-ico">🔢</div><div class="d-lbl">계산기</div></div>
+            <div class="d-btn" onclick="document.body.classList.toggle('white-mode')"><div class="d-ico">🌗</div><div class="d-lbl">모드</div></div>
+            <div class="d-btn" onclick="App.open('SETUP')"><div class="d-ico">⚙️</div><div class="d-lbl">설정</div></div>
+        </div>
     </div>
 
-    <div id="p-sub" class="page hidden">
-        <header class="sub-head"><div class="sub-tit" id="st-tit">TITLE</div></header>
-        <div id="st-con" style="padding:20px; flex:1; overflow-y:auto; padding-bottom:100px;"></div>
-        <div style="position:fixed; bottom:20px; left:20px; right:20px; z-index:20;">
-            <button class="close-btn" onclick="history.back()">닫기 (CLOSE)</button>
+    <div id="page-match-detail" class="sub-page">
+        <div class="sub-header"><span class="back-arrow" onclick="history.back()">←</span><span>분석 리포트</span><span style="width:24px;"></span></div>
+        <div class="analysis-body">
+            <div style="text-align:center; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:20px;">
+                <div style="font-size:12px; color:var(--gold);">SAUDI PRO LEAGUE</div>
+                <div style="font-size:22px; font-weight:900; color:#fff; margin:10px 0;">AL TAAWON vs AL HAZEM</div>
+                <div style="background:rgba(0,243,255,0.1); color:var(--cyan); display:inline-block; padding:5px 15px; border-radius:20px; font-weight:700;">PICK: 2.5 OVER</div>
+            </div>
+            <div class="section-title-l">1. 경기 환경 및 마켓 스냅샷</div>
+            <p>리그: 사우디아라비아 1부 (Pro League)<br>권고 방향: <span class="hl">오버 (OVER)</span> [출처: 시냅스 v2.5 엔진 최종 연산]<br>현재 시간 기준 킥오프 3시간 전 데이터가 로딩되었습니다.</p>
+            <div class="section-title-l">2. 애지 분석 지수 (Azi Index) 상세</div>
+            <p><b>- 구조 (Structure +3.7):</b><br>홈팀의 압도적 우세가 점쳐지는 가운데, 다득점 발생 시 수익률이 극대화되는 설계가 확인되었습니다. 특히 홈팀의 공격 전개 속도가 리그 평균을 상회하며, 원정팀의 수비 복귀 속도와 구조적 엇박자를 낼 가능성이 큽니다.<br><br><b>- 흐름 (Flow -2.1):</b><br>전 세계 자본이 일시적으로 언더(↓)에 집중되며 오버 배당이 상승(↑) 중인 '왜곡 구간'입니다. 대중은 최근 저득점 기록에 매몰되어 있으나, 스마트 머니는 역배당 흐름을 타고 있습니다.<br><br><b>- 효율 (Efficiency +4.9):</b><br>의장님 보정 지침(1.2G Floor) 적용 시, 양 팀의 수비 균열이 화력을 압도합니다. 양 팀 합산 기대 득점(xG)은 3.12골로 산출되었습니다.</p>
+            <div class="section-title-l">3. 시냅스 v2.5 엔진 정밀 분석</div>
+            <p><b>① 1만 회 몬테카를로 시뮬레이션 결과</b><br>의장님의 '득점 하한선 1.2골' 보정 로직을 적용하여 10,000회 시뮬레이션을 수행했습니다. 그 결과 2.5 오버 발생 확률은 <span class="hl">64.2%</span> (10,000회 중 6,420회)로 집계되었습니다. 예상 스코어 분포는 2-1(14%), 3-1(11%), 2-2(8%) 순으로, 다득점 시나리오가 지배적입니다.<br><br><b>② 로컬 인텔리전스 및 전술적 팩트</b><br>알 타아원(홈)은 최근 홈 경기에서 공격 점유율을 60% 이상 유지하며 페널티 박스 투입 횟수가 리그 상위권입니다. 반면 알 하즘(원정)은 원정 경기 시 집중력이 급격히 떨어지며 최근 5번의 원정에서 매 경기 2실점 이상을 허용했습니다. 홈팀의 강한 전방 압박과 원정팀의 헐거운 수비가 충돌하는 순간, 대량 득점의 문이 열릴 것입니다.</p>
+            <div class="section-title-l">4. 비즈니스 최종 결론</div>
+            <p>본 경기는 시장의 보수적인 시각(언더)을 정밀 연산(오버)으로 깨부수는 '하이 밸류' 승부처입니다. 데이터 불일치 구간에서 발생하는 강력한 엣지(+2.17)를 놓치지 마십시오.<br><br><i style="color:#666; font-size:12px;">[출처: 시냅스 v2.5 엔진 / 검증 ID: Synapse-V-20260123]</i></p>
         </div>
+    </div>
+
+    <div id="page-calendar" class="sub-page">
+        <div class="sub-header"><span class="back-arrow" onclick="history.back()">←</span><span>일정 관리</span><span style="width:24px;"></span></div>
+        <div class="cal-body">
+            <div class="cal-nav"><span onclick="Calendar.mv(-1)" style="font-size:20px; padding:10px; cursor:pointer;">&lt;</span><span class="cal-ym" id="cal-title">2026.01</span><span onclick="Calendar.mv(1)" style="font-size:20px; padding:10px; cursor:pointer;">&gt;</span></div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="memo-area"><div class="memo-date" id="memo-date-disp">선택된 날짜 메모</div><textarea id="memo-input" placeholder="배팅 내역이나 메모를 입력하세요... (자동 저장됨)" oninput="Calendar.saveMemo()"></textarea></div>
+        </div>
+    </div>
+
+    <div id="page-calc" class="sub-page">
+        <div class="sub-header"><span class="back-arrow" onclick="history.back()">←</span><span>계산기</span><span style="width:24px;"></span></div>
+        <div class="calc-body">
+            <div id="calc-display">0</div>
+            <div class="calc-grid">
+                <button class="c-btn c-top" onclick="Calc.clr()">C</button><button class="c-btn c-top" onclick="Calc.op('(')">( )</button><button class="c-btn c-top" onclick="Calc.op('%')">%</button><button class="c-btn c-ops" onclick="Calc.op('/')">÷</button>
+                <button class="c-btn" onclick="Calc.num(7)">7</button><button class="c-btn" onclick="Calc.num(8)">8</button><button class="c-btn" onclick="Calc.num(9)">9</button><button class="c-btn c-ops" onclick="Calc.op('*')">×</button>
+                <button class="c-btn" onclick="Calc.num(4)">4</button><button class="c-btn" onclick="Calc.num(5)">5</button><button class="c-btn" onclick="Calc.num(6)">6</button><button class="c-btn c-ops" onclick="Calc.op('-')">-</button>
+                <button class="c-btn" onclick="Calc.num(1)">1</button><button class="c-btn" onclick="Calc.num(2)">2</button><button class="c-btn" onclick="Calc.num(3)">3</button><button class="c-btn c-ops" onclick="Calc.op('+')">+</button>
+                <button class="c-btn" onclick="history.back()">↩</button><button class="c-btn" onclick="Calc.num(0)">0</button><button class="c-btn" onclick="Calc.op('.')">.</button><button class="c-btn c-ops" onclick="Calc.eq()">=</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-setup" class="sub-page">
+        <div class="sub-header"><span class="back-arrow" onclick="history.back()">←</span><span>설정 및 안내</span><span style="width:24px;"></span></div>
+        <div class="setup-list">
+            <div class="setup-item"><div class="st-head">시냅스 블랙 v2.5</div><div class="st-desc">현재 최신 버전이 구동 중입니다.</div></div>
+            <div class="setup-item"><div class="st-head">사용 가이드</div><div class="st-desc">1. 시계 화면을 1초간 누르면 잠금이 해제됩니다.<br>2. 9개의 링크 박스를 눌러 자주 가는 사이트를 설정하세요.<br>3. 하단 메뉴를 통해 일정과 계산기를 활용하세요.</div></div>
+            <div class="setup-item" style="border:none;"><div class="st-head">초기화</div><button onclick="localStorage.clear(); location.reload();" style="padding:10px; background:#333; color:#fff; border:none; border-radius:8px; margin-top:10px;">데이터 전체 초기화</button></div>
+        </div>
+    </div>
+
+    <div class="modal" id="link-modal">
+        <div class="modal-body"><h3 style="color:#fff; margin-top:0;">바로가기 설정</h3><input type="text" id="inp-name" class="inp" placeholder="이름 (예: 베트맨)"><input type="text" id="inp-url" class="inp" placeholder="주소 (예: betman.co.kr)"><button class="btn-ok" onclick="Links.save()">저장</button><button onclick="Links.close()" style="width:100%; padding:10px; background:none; border:none; color:#666; margin-top:5px;">취소</button></div>
+    </div>
+
+    <div class="modal" id="pay-modal">
+        <div class="modal-body" style="border-color:var(--gold);"><h3 style="color:var(--gold); margin-top:0;">ENGINE ACCESS</h3><div style="background:#111; padding:15px; border-radius:8px; margin:15px 0; border:1px solid #333;"><div style="font-size:11px; color:#666;">BANK ACCOUNT</div><div style="font-size:16px; font-weight:bold; color:#fff; margin-top:5px;" id="bank-acc">카카오뱅크 3333-00-0000000</div></div><button class="btn-ok" style="background:var(--gold);" onclick="Engine.copy()">계좌번호 복사</button><button onclick="Engine.close()" style="width:100%; padding:10px; background:none; border:none; color:#666; margin-top:5px;">닫기</button></div>
     </div>
 
     <script>
-        // [STEALTH LOGIC REMOVED] - As requested by user to keep code original
+        // --- [LANDING LOGIC] ---
+        function enterSystem() {
+            document.getElementById('landing-view').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('landing-view').style.display = 'none';
+                Stealth.init();
+            }, 500);
+        }
 
-        // --- 기존 데이터 및 로직 유지 ---
-        const DefaultDB = {
-            normal: [
-                {n:'FLASHSCORE',u:'https://www.flashscore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'},
-                {n:'ODDSPORTAL',u:'https://www.oddsportal.com',i:'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4'},
-                {n:'WHOSCORED',u:'https://www.whoscored.com',i:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2'},
-                {n:'SOFASCORE',u:'https://www.sofascore.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h5v5h-5V5z'},
-                {n:'COVERS',u:'https://www.covers.com',i:'M4 10h3v7H4zM10.5 10h3v7h-3zM17 10h3v7h-3z'},
-                {n:'OLBG',u:'https://www.olbg.com',i:'M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0'},
-                {n:'NAVER',u:'https://sports.news.naver.com',i:'M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5'},
-                {n:'YOUTUBE',u:'https://www.youtube.com',i:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2'}
-            ],
-            secret: [
-                {n:'VIP LINK 1',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 2',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 3',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 4',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 5',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 6',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 7',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'},
-                {n:'VIP LINK 8',u:'',i:'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'}
-            ],
-            tv: [
-                {n:'FOOTBALL',u:'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=400&q=80'},
-                {n:'BASKETBALL',u:'https://images.unsplash.com/photo-1546519638-68e109498ad0?w=400&q=80'},
-                {n:'BASEBALL',u:'https://images.unsplash.com/photo-1508344928928-7165b67de128?w=400&q=80'}
-            ]
+        // --- [HISTORY API] ---
+        history.pushState({page:'home'}, null, '');
+        window.onpopstate = function(event) {
+            const actives = document.querySelectorAll('.sub-page.active');
+            if (actives.length > 0) { actives.forEach(page => page.classList.remove('active')); } 
+            else { history.pushState({page:'home'}, null, ''); }
         };
-        let DB = JSON.parse(localStorage.getItem('SYNAPSE_DB')) || DefaultDB;
 
-        const Modal = {
-            cb: null,
-            show: (msg, callback) => {
-                document.getElementById('modal-msg').innerText = msg;
-                document.getElementById('custom-modal').classList.add('show');
-                Modal.cb = callback;
-            },
-            close: () => {
-                document.getElementById('custom-modal').classList.remove('show');
-                Modal.cb = null;
+        const App = {
+            open: (pageName) => {
+                history.pushState({page: pageName}, null, '');
+                document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
+                if(pageName === 'CALENDAR') { document.getElementById('page-calendar').classList.add('active'); Calendar.init(); } 
+                else if(pageName === 'CALC') { document.getElementById('page-calc').classList.add('active'); } 
+                else if(pageName === 'SETUP') { document.getElementById('page-setup').classList.add('active'); } 
+                else if(pageName === 'MATCH_DETAIL') { document.getElementById('page-match-detail').classList.add('active'); }
             }
         };
-        document.getElementById('modal-ok').onclick = () => { if(Modal.cb) Modal.cb(); Modal.close(); };
 
-        const Theme = { toggle: () => document.body.classList.toggle('white-mode') };
-        const Ghost = { active: false, trigger: () => { if(navigator.vibrate) navigator.vibrate(50); Ghost.active = !Ghost.active; document.body.classList.toggle('ghost-active', Ghost.active); Render.shortcuts(); } };
+        const Stealth = {
+            timer: null,
+            init: () => {
+                const trig = document.getElementById('stealth-trigger');
+                setInterval(() => {
+                    const d = new Date();
+                    document.getElementById('s-hhmm').innerText = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                    document.getElementById('s-ss').innerText = String(d.getSeconds()).padStart(2,'0');
+                }, 1000);
 
-        const Action = {
-            hasImg: false,
-            score: () => {
-                if(Action.hasImg) {
-                    document.getElementById('an-img-target').src = document.getElementById('score-bg').src;
-                    document.getElementById('analysis-view').classList.add('show');
-                    history.pushState({modal:true}, null, "");
-                } else {
-                    App.open('VISION');
-                }
+                const start = () => { document.querySelector('.unlock-bar').style.width = '100%'; Stealth.timer = setTimeout(Stealth.unlock, 1000); };
+                const end = () => { clearTimeout(Stealth.timer); document.querySelector('.unlock-bar').style.width = '0%'; };
+
+                trig.addEventListener('mousedown', start); trig.addEventListener('touchstart', start);
+                trig.addEventListener('mouseup', end); trig.addEventListener('touchend', end); trig.addEventListener('mouseleave', end);
             },
-            closeScore: () => {
-                document.getElementById('analysis-view').classList.remove('show');
-                document.getElementById('score-bg').style.display = 'none';
-                document.getElementById('score-bg').src = '';
-                Action.hasImg = false;
-                history.back();
+            unlock: () => {
+                document.getElementById('stealth-layer').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('stealth-layer').style.display = 'none';
+                    document.getElementById('main-layer').style.display = 'flex';
+                    setTimeout(() => document.getElementById('main-layer').style.opacity = '1', 50);
+                }, 400);
             }
+        };
+
+        const Links = {
+            data: JSON.parse(localStorage.getItem('SLINKS_V6')) || Array(9).fill({n:'', u:''}),
+            targetIdx: 0,
+            init: () => {
+                const grid = document.getElementById('link-grid');
+                grid.innerHTML = '';
+                Links.data.forEach((item, idx) => {
+                    const isSet = item.n && item.u;
+                    let initial = '+';
+                    if(isSet) { initial = item.n.charAt(0).toUpperCase(); if(item.n.charCodeAt(0) >= 0xAC00) initial = item.n.charAt(0); }
+                    const div = document.createElement('div');
+                    div.className = `link-item ${isSet ? 'set' : ''}`;
+                    div.innerHTML = `<div class="gear" onclick="event.stopPropagation(); Links.edit(${idx})">⚙️</div><div class="link-char">${initial}</div><div class="link-name">${isSet ? item.n : 'EMPTY'}</div>`;
+                    div.onclick = () => { if(isSet) { let url = item.u; if(!url.startsWith('http')) url = 'https://' + url; window.open(url, '_blank'); } else Links.edit(idx); };
+                    grid.appendChild(div);
+                });
+            },
+            edit: (idx) => { Links.targetIdx = idx; document.getElementById('inp-name').value = Links.data[idx].n; document.getElementById('inp-url').value = Links.data[idx].u; document.getElementById('link-modal').style.display = 'flex'; },
+            save: () => { const n = document.getElementById('inp-name').value.trim(); const u = document.getElementById('inp-url').value.trim(); Links.data[Links.targetIdx] = { n, u }; localStorage.setItem('SLINKS_V6', JSON.stringify(Links.data)); Links.init(); Links.close(); },
+            close: () => document.getElementById('link-modal').style.display = 'none'
+        };
+
+        const Calc = {
+            curr: '0',
+            num: (n) => { if(Calc.curr === '0') Calc.curr = String(n); else Calc.curr += n; Calc.upd(); },
+            op: (o) => { if(o === 'C') Calc.clr(); else { Calc.curr += o; Calc.upd(); } },
+            clr: () => { Calc.curr = '0'; Calc.upd(); },
+            eq: () => { try { Calc.curr = String(eval(Calc.curr)); } catch { Calc.curr = 'Error'; } Calc.upd(); },
+            upd: () => document.getElementById('calc-display').innerText = Calc.curr
         };
 
         const Calendar = {
-            d: new Date(),
-            render: (el) => {
-                const y = Calendar.d.getFullYear();
-                const m = Calendar.d.getMonth();
-                const fDay = new Date(y, m, 1).getDay();
-                const lDate = new Date(y, m+1, 0).getDate();
+            dt: new Date(), selDate: null, 
+            init: () => { Calendar.render(); const today = new Date(); Calendar.select(today.getFullYear(), today.getMonth(), today.getDate()); },
+            mv: (n) => { Calendar.dt.setMonth(Calendar.dt.getMonth() + n); Calendar.render(); },
+            render: () => {
+                const y = Calendar.dt.getFullYear(); const m = Calendar.dt.getMonth();
+                document.getElementById('cal-title').innerText = `${y}.${String(m+1).padStart(2,'0')}`;
+                const firstDay = new Date(y, m, 1).getDay(); const lastDate = new Date(y, m+1, 0).getDate();
+                const grid = document.getElementById('cal-grid');
+                grid.innerHTML = ['일','월','화','수','목','금','토'].map(d=>`<div class="cal-head">${d}</div>`).join('');
+                for(let i=0; i<firstDay; i++) grid.innerHTML += `<div></div>`;
                 const today = new Date();
-                let h = `<div class="cal-nav"><div onclick="Calendar.mv(-1)" style="cursor:pointer">&lt;</div><div class="cal-ym">${y}.${String(m+1).padStart(2,'0')}</div><div onclick="Calendar.mv(1)" style="cursor:pointer">&gt;</div></div><div class="cal-grid"><div class="cal-head">S</div><div class="cal-head">M</div><div class="cal-head">T</div><div class="cal-head">W</div><div class="cal-head">T</div><div class="cal-head">F</div><div class="cal-head">S</div>`;
-                for(let i=0; i<fDay; i++) h+=`<div></div>`;
-                for(let i=1; i<=lDate; i++) {
-                    let cls='cal-cell';
-                    if(y===today.getFullYear() && m===today.getMonth() && i===today.getDate()) cls+=' today';
-                    if(localStorage.getItem(`memo-${y}-${m}-${i}`)) cls+=' active';
-                    h+=`<div class="${cls}" onclick="Calendar.pick(${y},${m},${i},this)">${i}</div>`;
+                for(let i=1; i<=lastDate; i++) {
+                    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                    const hasMemo = localStorage.getItem(`MEMO_${dateStr}`) ? 'has-memo' : '';
+                    let cls = 'cal-day ' + hasMemo;
+                    if(y===today.getFullYear() && m===today.getMonth() && i===today.getDate()) cls += ' today';
+                    if(Calendar.selDate === dateStr) cls += ' selected';
+                    grid.innerHTML += `<div class="${cls}" onclick="Calendar.select(${y},${m},${i})">${i}</div>`;
                 }
-                h+=`</div><textarea id="cal-memo" placeholder="MEMO..."></textarea><button class="cal-save" onclick="Calendar.save()">SAVE DATA</button>`;
-                el.innerHTML = h;
             },
-            mv: (n) => { Calendar.d.setMonth(Calendar.d.getMonth() + n); Calendar.render(document.getElementById('st-con')); },
-            pick: (y,m,d,el) => { 
-                Calendar.sel = `memo-${y}-${m}-${d}`; 
-                document.querySelectorAll('.cal-cell').forEach(e=>e.classList.remove('active'));
-                el.classList.add('active');
-                document.getElementById('cal-memo').value = localStorage.getItem(Calendar.sel) || '';
+            select: (y, m, d) => {
+                const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                Calendar.selDate = dateStr; Calendar.render(); 
+                document.getElementById('memo-date-disp').innerText = `${dateStr} 메모`;
+                document.getElementById('memo-input').value = localStorage.getItem(`MEMO_${dateStr}`) || '';
             },
-            save: () => {
-                if(Calendar.sel) {
-                    localStorage.setItem(Calendar.sel, document.getElementById('cal-memo').value);
-                    Modal.show('저장되었습니다.', null);
-                } else {
-                    Modal.show('날짜를 선택하세요.', null);
-                }
-            }
+            saveMemo: () => { if(!Calendar.selDate) return; const txt = document.getElementById('memo-input').value; localStorage.setItem(`MEMO_${Calendar.selDate}`, txt); Calendar.render(); }
+        };
+        
+        const Engine = {
+            open: () => document.getElementById('pay-modal').style.display = 'flex',
+            close: () => document.getElementById('pay-modal').style.display = 'none',
+            copy: () => { navigator.clipboard.writeText(document.getElementById('bank-acc').innerText); alert('계좌번호가 복사되었습니다.'); }
         };
 
-        const Input = {
-            curr: '0',
-            sign: 1,
-            cb: null,
-            open: (s) => { Input.curr='0'; Input.sign=s; Input.update(); document.getElementById('input-modal').classList.add('show'); },
-            add: (n) => { if(Input.curr.length>10)return; Input.curr = Input.curr=='0'? String(n) : Input.curr+n; Input.update(); },
-            clr: () => { Input.curr='0'; Input.update(); },
-            back: () => { Input.curr = Input.curr.length>1 ? Input.curr.slice(0,-1) : '0'; Input.update(); },
-            update: () => { document.getElementById('inp-disp').innerText = "₩ " + parseInt(Input.curr).toLocaleString(); },
-            done: () => { 
-                if(Input.curr!='0') { 
-                    Bank.bal += parseInt(Input.curr) * Input.sign; 
-                    localStorage.setItem('SYN_BANK', Bank.bal); 
-                    App.open('BANK'); 
-                }
-                document.getElementById('input-modal').classList.remove('show');
-            }
-        };
-
-        const Bank = {
-            bal: parseInt(localStorage.getItem('SYN_BANK')) || 0,
-            render: () => `
-                <div class="bank-disp"><div class="bank-lbl">CURRENT BALANCE</div><div class="bank-val">₩ ${Bank.bal.toLocaleString()}</div></div>
-                <div class="bank-btns"><button class="b-btn in" onclick="Input.open(1)">수입 (IN)</button><button class="b-btn out" onclick="Input.open(-1)">지출 (OUT)</button></div>
-                <button class="b-reset" onclick="Bank.reset()">장부 초기화 (RESET)</button>`,
-            reset: () => { Modal.show('정말로 모든 장부 데이터를 삭제하시겠습니까?', () => { Bank.bal=0; localStorage.setItem('SYN_BANK',0); App.open('BANK'); }); }
-        };
-
-        const Settings = {
-            render: (el) => {
-                const m = Ghost.active?'secret':'normal';
-                let h = `<div class="st-header"><div class="st-tit">CHAIRMAN ACCESS</div><div class="st-sub">ALL SYSTEMS NORMAL</div></div>`;
-                h += `<div class="st-label">FAMILY LINKS [${m}]</div><div class="st-list">`;
-                DB[m].forEach((i,x)=>{ h+=`<div class="st-item"><div class="st-idx">${x+1}</div><div class="st-inp"><input id="n${x}" value="${i.n}" style="width:30%;border:none;background:transparent;color:var(--neon-cyan);"><input id="u${x}" value="${i.u}" style="width:65%;border:none;background:transparent;color:var(--text-main);" placeholder="URL"></div></div>` });
-                h += `</div><div class="st-label">LIVE CHANNELS</div><div class="st-list">`;
-                DB.tv.forEach((i,x)=>{ h+=`<div class="st-item"><div class="st-idx">TV${x+1}</div><div class="st-inp"><input id="tn${x}" value="${i.n}" style="width:30%;border:none;background:transparent;color:var(--neon-cyan);"><input id="tu${x}" value="${i.u}" style="width:65%;border:none;background:transparent;color:var(--text-main);" placeholder="Live URL"></div></div>` });
-                h += `</div><button class="st-save" onclick="Settings.save()">저장하기 (SAVE)</button><button class="st-reset" onclick="Settings.reset()">초기화 (RESET)</button>`;
-                el.innerHTML = h;
-            },
-            save: () => {
-                const m = Ghost.active?'secret':'normal';
-                for(let i=0;i<8;i++){ DB[m][i].n=document.getElementById(`n${i}`).value; DB[m][i].u=document.getElementById(`u${i}`).value; }
-                for(let i=0;i<3;i++){ DB.tv[i].n=document.getElementById(`tn${i}`).value; DB.tv[i].u=document.getElementById(`tu${i}`).value; }
-                localStorage.setItem('SYNAPSE_DB', JSON.stringify(DB)); 
-                Modal.show('저장되었습니다.', () => history.back());
-            },
-            reset: () => { Modal.show('초기화 하시겠습니까?', () => { localStorage.removeItem('SYNAPSE_DB'); location.reload(); }); }
-        };
-
-        const Calculator = { html:`<div id="calc-wrap"><div id="calc-disp">0</div><div class="calc-pad">`+['7','8','9','/','4','5','6','*','1','2','3','-','C','0','.','+','='].map(k=>`<div class="cp-btn ${['/','*','-','+','C'].includes(k)?'cp-act':''} ${k=='='?'cp-eq':''}" onclick="Calculator.c('${k}')">${k}</div>`).join('')+`</div></div>`, c:(k)=>{ const r=document.getElementById('calc-disp'); if(k=='C')r.innerText='0'; else if(k=='=')try{r.innerText=eval(r.innerText)}catch{r.innerText='ERR'} else r.innerText=r.innerText=='0'?k:r.innerText+k; } };
-
-        const Odds = { render: () => `<table class="odds-table"><thead><tr><th>GAME</th><th>1</th><th>X</th><th>2</th></tr></thead><tbody><tr><td>CITY vs LIV</td><td class="down">2.10</td><td>3.40</td><td class="up">2.90</td></tr><tr><td>LAL vs GSW</td><td class="up">1.85</td><td>-</td><td class="down">1.95</td></tr></tbody></table>` };
-        const Edge = { render: () => `<div class="edge-card"><div class="ec-head"><span class="ec-team">LAKERS WIN</span><span class="ec-rate">82%</span></div><div class="ec-bar"><div class="ec-fill" style="width:82%"></div></div></div>` };
-
-        const App = {
-            open: (m) => {
-                const p=document.getElementById('p-sub'), c=document.getElementById('st-con');
-                document.getElementById('st-tit').innerText = m; p.classList.remove('hidden'); history.pushState({modal:true},null,"");
-                if(m=='BANK') c.innerHTML=Bank.render(); 
-                else if(m=='SETTINGS') Settings.render(c); 
-                else if(m=='CALENDAR') Calendar.render(c); 
-                else if(m=='CALC') c.innerHTML=Calculator.html;
-                else if(m=='ODDS') c.innerHTML=Odds.render();
-                else if(m=='EDGE') c.innerHTML=Edge.render();
-                else if(m=='VISION') {
-                     c.innerHTML=`<div style="padding:20px;">VISION MODULE ACTIVE.<br>UPLOAD IMAGE TO SCAN.</div>`;
-                }
-                else c.innerHTML=`<div style="padding:20px;">CONNECTING...</div>`;
-            }
-        };
-        window.onpopstate = () => { document.getElementById('p-sub').classList.add('hidden'); document.getElementById('analysis-view').classList.remove('show'); Render.init(); };
-
-        const Render = {
-            init: () => { Render.shortcuts(); Render.tv(); },
-            shortcuts: () => {
-                const box=document.getElementById('grid-box'), list=Ghost.active?DB.secret:DB.normal; let h='';
-                list.forEach((i,x)=>{ if(x<8) { 
-                    let u=i.u; if(u && !u.startsWith('http'))u='https://'+u; 
-                    const act=u?`window.open('${u}')`:`Modal.show('설정에서 주소를 입력하세요', ()=>App.open('SETTINGS'))`; 
-                    h+=`<div class="s-btn" onclick="${act}"><svg class="s-ico" viewBox="0 0 24 24"><path d="${i.i}"/></svg><span class="s-lbl">${i.n}</span></div>`; 
-                }});
-                h+=`<div class="s-btn" onclick="Ghost.trigger()"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg><span class="s-lbl" style="${Ghost.active?'color:var(--neon-cyan)':'color:var(--text-sub)'}">COMPASS</span></div>`;
-                box.innerHTML=h;
-            },
-            tv: () => { 
-                let h=''; 
-                DB.tv.forEach(t => {
-                    let u = t.u; if(u && !u.startsWith('http')) u='https://'+u;
-                    const act = u ? `window.open('${u}')` : `Modal.show('라이브 주소가 없습니다', ()=>App.open('SETTINGS'))`;
-                    h+=`<div class="cctv" onclick="${act}"><img src="${t.u}"><div class="rec"><div class="dot"></div>${t.n}</div></div>`;
-                }); 
-                document.getElementById('tv-grid').innerHTML=h; 
-            }
-        };
-
-        window.onload = function() {
-            Render.init();
-            setInterval(() => {
-                const n=new Date();
-                const clock = document.getElementById('clock-time');
-                if(clock) {
-                    clock.innerHTML=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`;
-                    document.getElementById('clock-date').innerText=`${n.getFullYear()}.${n.getMonth()+1}.${n.getDate()}`;
-                }
-            }, 1000);
-            
-            const cam = document.getElementById('cam-input');
-            cam.addEventListener('change', (e) => {
-                if(e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        const bg = document.getElementById('score-bg'), card = document.getElementById('card-score');
-                        bg.src = ev.target.result;
-                        bg.style.display = 'block';
-                        Action.hasImg = true;
-                        card.classList.add('scanning');
-                        setTimeout(() => { 
-                            card.classList.remove('scanning'); 
-                            Action.score(); 
-                        }, 3000);
-                    }
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            });
-        };
+        window.onload = () => { Links.init(); }; // Stealth init called after landing
     </script>
 </body>
 </html>
