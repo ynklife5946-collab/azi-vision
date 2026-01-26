@@ -13,26 +13,57 @@
     <style>
         /* --- [CORE VARIABLES] --- */
         :root {
+            /* DARK MODE (DEFAULT) */
             --bg: #000000;
             --card: #111;
             --border: #333;
             --text: #fff;
+            --text-sub: #aaa;
             --cyan: #00f3ff;
             --purple: #bc13fe;
             --red: #ff003c;
             --gold: #ffd700;
             --green: #00ff88;
+            
             --calc-btn: #333333;
             --calc-ops: #ff9f0a;
             --calc-top: #a5a5a5;
             --calc-txt: #fff;
+            
+            --azi-bg: #000;
+            --report-bg: rgba(255,255,255,0.03);
+            --dock-bg: rgba(10,10,10,0.95);
         }
 
-        body.white-mode { --bg: #f2f2f7; --card: #ffffff; --border: #d1d1d6; --text: #000; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; overflow: hidden; height: 100vh; }
+        /* --- [PROFESSIONAL WHITE MODE] --- */
+        body.white-mode { 
+            --bg: #f2f2f7; /* iOS/Samsung Light Gray */
+            --card: #ffffff;
+            --border: #d1d1d6;
+            --text: #1c1c1e;
+            --text-sub: #666666;
+            
+            /* High Contrast Colors for White BG */
+            --cyan: #007aff; /* Vivid Blue */
+            --purple: #af52de;
+            --red: #ff3b30;
+            --gold: #ff9500; /* Darker Gold */
+            --green: #34c759;
+            
+            --calc-btn: #e5e5ea;
+            --calc-ops: #ff9f0a;
+            --calc-top: #d1d1d6;
+            --calc-txt: #000;
+            
+            --azi-bg: #f2f2f7;
+            --report-bg: #f9f9f9;
+            --dock-bg: rgba(250,250,250,0.95);
+        }
 
-        /* --- [LANDING PAGE STYLES] --- */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; overflow: hidden; height: 100vh; transition: background 0.3s, color 0.3s; }
+
+        /* --- [LANDING PAGE] --- */
         #landing-view { 
             position: fixed; inset: 0; z-index: 20000; 
             background: radial-gradient(circle at center, #1a1a1a 0%, #000 90%); 
@@ -46,10 +77,10 @@
         }
         .ld-container { max-width: 800px; margin: 0 auto; padding: 0 25px; }
         .ld-header { padding: 40px 0; border-bottom: 1px solid #333; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .ld-brand { font-family: 'Exo 2'; font-size: 28px; font-weight: 900; color: var(--cyan); font-style: italic; }
+        .ld-brand { font-family: 'Exo 2'; font-size: 28px; font-weight: 900; color: #00f3ff; font-style: italic; }
         .ld-sub { font-family: 'Roboto Mono'; font-size: 11px; color: #666; font-weight: 700; letter-spacing: 1px; }
         .ld-section { margin-bottom: 60px; }
-        .ld-label { font-family: 'Roboto Mono'; color: var(--cyan); font-size: 12px; font-weight: 700; border: 1px solid var(--cyan); padding: 5px 10px; border-radius: 20px; display: inline-block; margin-bottom: 15px; }
+        .ld-label { font-family: 'Roboto Mono'; color: #00f3ff; font-size: 12px; font-weight: 700; border: 1px solid #00f3ff; padding: 5px 10px; border-radius: 20px; display: inline-block; margin-bottom: 15px; }
         .ld-tit { font-size: 28px; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 15px; }
         .ld-desc { font-size: 15px; color: #aaa; line-height: 1.6; text-align: justify; }
         .ld-hl { color: #fff; font-weight: 700; text-decoration: underline; text-decoration-color: var(--purple); }
@@ -60,7 +91,7 @@
 
         .ld-cta { text-align: center; padding: 40px 0; border-top: 1px solid #333; }
         .enter-btn { 
-            width: 100%; max-width: 320px; height: 60px; background: var(--cyan); color: #000; 
+            width: 100%; max-width: 320px; height: 60px; background: #00f3ff; color: #000; 
             font-family: 'Exo 2'; font-weight: 900; font-size: 18px; border: none; border-radius: 8px;
             box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); animation: pulse 2s infinite; cursor: pointer;
         }
@@ -72,11 +103,11 @@
         .s-time { font-family: 'Roboto Mono'; font-weight: 100; font-size: 80px; color: #fff; letter-spacing: -4px; line-height: 1; }
         .s-sec { font-size: 24px; color: #333; font-weight: 300; margin-left: 10px; }
         .s-date { font-family: 'Exo 2'; font-weight: 300; color: #444; font-size: 13px; letter-spacing: 4px; margin-top: 20px; text-transform: uppercase; }
-        .unlock-bar { width: 0%; height: 3px; background: var(--cyan); margin-top: 40px; transition: width 1.0s linear; margin-left: auto; margin-right: auto; border-radius: 2px; }
+        .unlock-bar { width: 0%; height: 3px; background: #00f3ff; margin-top: 40px; transition: width 1.0s linear; margin-left: auto; margin-right: auto; border-radius: 2px; }
 
         #main-layer { display: none; height: 100%; flex-direction: column; opacity: 0; transition: opacity 0.4s; }
         
-        header { background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        header { background: var(--dock-bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; transition: background 0.3s; }
         .ticker-wrap { background: var(--cyan); height: 26px; overflow: hidden; display: flex; align-items: center; }
         .ticker { white-space: nowrap; padding-left: 100%; animation: ticker 25s linear infinite; font-family: 'Roboto Mono'; font-size: 12px; font-weight: 700; color: #000; }
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
@@ -88,59 +119,59 @@
         @keyframes blink { 50% { opacity: 0; } }
 
         .content-area { padding: 20px; padding-bottom: 140px; overflow-y: auto; flex: 1; }
-        .section-head { font-family: 'Exo 2'; font-size: 11px; color: #666; font-weight: 700; margin-bottom: 12px; letter-spacing: 1px; display: flex; justify-content: space-between; }
+        .section-head { font-family: 'Exo 2'; font-size: 11px; color: var(--text-sub); font-weight: 700; margin-bottom: 12px; letter-spacing: 1px; display: flex; justify-content: space-between; }
         .grid-9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 30px; }
-        .link-item { aspect-ratio: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: 0.2s; }
-        .link-item:active { border-color: var(--cyan); background: rgba(0, 243, 255, 0.05); }
-        .link-char { font-family: 'Exo 2'; font-size: 24px; font-weight: 900; color: #333; }
-        .link-item.set .link-char { color: #fff; }
-        .link-name { font-size: 9px; color: #444; margin-top: 4px; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .link-item.set .link-name { color: var(--cyan); }
-        .gear { position: absolute; top: 4px; right: 4px; font-size: 10px; color: #333; padding: 4px; }
+        .link-item { aspect-ratio: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: 0.2s; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .link-item:active { border-color: var(--cyan); transform: scale(0.98); }
+        .link-char { font-family: 'Exo 2'; font-size: 24px; font-weight: 900; color: var(--text); opacity: 0.3; }
+        .link-item.set .link-char { color: var(--text); opacity: 1; }
+        .link-name { font-size: 9px; color: var(--text-sub); margin-top: 4px; max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .link-item.set .link-name { color: var(--cyan); font-weight: 700; }
+        .gear { position: absolute; top: 4px; right: 4px; font-size: 10px; color: var(--text-sub); padding: 4px; }
 
-        .match-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 25px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
+        .match-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 25px; overflow: hidden; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .match-card:active { transform: scale(0.98); border-color: var(--cyan); }
-        .mc-header { padding: 12px 15px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; }
+        .mc-header { padding: 12px 15px; border-bottom: 1px solid var(--border); background: var(--report-bg); display: flex; justify-content: space-between; align-items: center; }
         .mc-league { font-size: 10px; color: var(--gold); border: 1px solid rgba(255, 215, 0, 0.3); padding: 2px 6px; border-radius: 4px; font-weight: 700; }
-        .mc-time { font-family: 'Roboto Mono'; font-size: 11px; color: #888; }
+        .mc-time { font-family: 'Roboto Mono'; font-size: 11px; color: var(--text-sub); }
         .mc-body { padding: 20px 15px; }
         .mc-vs { text-align: center; margin-bottom: 20px; }
-        .team-name { font-size: 18px; font-weight: 900; color: #fff; display: block; margin: 5px 0; }
-        .vs-badge { font-size: 12px; color: #444; font-style: italic; font-weight: 900; }
+        .team-name { font-size: 18px; font-weight: 900; color: var(--text); display: block; margin: 5px 0; }
+        .vs-badge { font-size: 12px; color: var(--text-sub); font-style: italic; font-weight: 900; }
 
-        .azi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 20px; background: #000; padding: 10px; border-radius: 8px; border: 1px solid #222; }
+        .azi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 20px; background: var(--azi-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
         .azi-item { text-align: center; }
-        .azi-label { font-size: 8px; color: #666; margin-bottom: 4px; font-family: 'Exo 2'; letter-spacing: 0.5px; }
-        .azi-val { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 700; color: #fff; }
-        .azi-val.str { color: #fff; }
+        .azi-label { font-size: 8px; color: var(--text-sub); margin-bottom: 4px; font-family: 'Exo 2'; letter-spacing: 0.5px; }
+        .azi-val { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 700; color: var(--text); }
+        .azi-val.str { color: var(--text); } /* Structure Color Adaptive */
         .azi-val.flow { color: var(--red); }
         .azi-val.eff { color: var(--green); }
         .azi-val.edge { color: var(--red); text-shadow: 0 0 5px rgba(255,0,60,0.5); font-weight: 900; }
 
         .res-banner { background: linear-gradient(90deg, rgba(0,243,255,0.1), transparent); border-left: 3px solid var(--cyan); padding: 12px; margin-bottom: 5px; }
         .res-tit { font-size: 10px; color: var(--cyan); font-weight: 700; margin-bottom: 2px; }
-        .res-main { font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
-        .click-hint { text-align: center; font-size: 11px; color: #888; padding: 10px; border-top: 1px solid var(--border); background: rgba(255,255,255,0.03); font-weight: 700; animation: pulse-text 2s infinite; }
+        .res-main { font-size: 16px; font-weight: 900; color: var(--text); letter-spacing: 0.5px; }
+        .click-hint { text-align: center; font-size: 11px; color: var(--text-sub); padding: 10px; border-top: 1px solid var(--border); background: var(--report-bg); font-weight: 700; animation: pulse-text 2s infinite; }
         @keyframes pulse-text { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
         .engine-float { position: fixed; bottom: 85px; left: 20px; right: 20px; z-index: 150; pointer-events: none; }
-        .eng-btn { pointer-events: auto; width: 100%; height: 50px; background: var(--card); border: 1px solid var(--gold); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; font-family: 'Exo 2'; letter-spacing: 2px; font-size: 14px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .eng-btn { pointer-events: auto; width: 100%; height: 50px; background: var(--card); border: 1px solid var(--gold); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 900; font-family: 'Exo 2'; letter-spacing: 2px; font-size: 14px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .eng-btn:active { background: var(--gold); color: #000; }
 
-        .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(10,10,10,0.95); border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; padding-bottom: 10px; z-index: 200; backdrop-filter: blur(10px); }
-        .d-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #666; cursor: pointer; }
+        .dock { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--dock-bg); border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; padding-bottom: 10px; z-index: 200; backdrop-filter: blur(10px); transition: background 0.3s; }
+        .d-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--text-sub); cursor: pointer; }
         .d-btn:active { color: var(--text); }
         .d-ico { font-size: 22px; }
         .d-lbl { font-size: 10px; font-weight: 700; font-family: 'Exo 2'; }
 
         .sub-page { position: fixed; inset: 0; background: var(--bg); z-index: 500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; overflow-y: auto; }
         .sub-page.active { transform: translateX(0); }
-        .sub-header { height: 60px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border); font-weight: 900; font-size: 18px; justify-content: space-between; background: var(--card); flex-shrink: 0; position: sticky; top: 0; z-index: 10; }
-        .back-arrow { font-size: 24px; padding: 10px; margin-left: -10px; cursor: pointer; }
+        .sub-header { height: 60px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border); font-weight: 900; font-size: 18px; justify-content: space-between; background: var(--card); flex-shrink: 0; position: sticky; top: 0; z-index: 10; color: var(--text); }
+        .back-arrow { font-size: 24px; padding: 10px; margin-left: -10px; cursor: pointer; color: var(--text); }
 
-        .analysis-body { padding: 25px; line-height: 1.8; color: #ddd; font-size: 14px; text-align: justify; padding-bottom: 100px; }
+        .analysis-body { padding: 25px; line-height: 1.8; color: var(--text-sub); font-size: 14px; text-align: justify; padding-bottom: 100px; }
         .hl { color: var(--cyan); font-weight: 700; }
-        .section-title-l { font-size: 16px; font-weight: 900; color: #fff; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid var(--border); padding-bottom: 5px; }
+        .section-title-l { font-size: 16px; font-weight: 900; color: var(--text); margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid var(--border); padding-bottom: 5px; }
 
         .calc-body { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; }
         #calc-display { width: 100%; text-align: right; font-size: 50px; color: var(--text); font-weight: 300; padding: 20px; margin-bottom: 20px; font-family: 'Roboto Mono'; word-break: break-all; }
@@ -151,27 +182,27 @@
         .c-top { background: var(--calc-top); color: #000; }
 
         .cal-body { flex: 1; padding: 20px; display: flex; flex-direction: column; }
-        .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 10px; }
+        .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 10px; color: var(--text); }
         .cal-ym { font-size: 20px; font-weight: 700; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 20px; }
-        .cal-head { font-size: 12px; color: #666; padding-bottom: 10px; }
-        .cal-day { height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px; position: relative; }
+        .cal-head { font-size: 12px; color: var(--text-sub); padding-bottom: 10px; }
+        .cal-day { height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px; position: relative; color: var(--text); }
         .cal-day.today { color: var(--cyan); font-weight: 900; }
         .cal-day.selected { background: var(--text); color: var(--bg); font-weight: 900; }
         .cal-day.has-memo::after { content:''; position: absolute; bottom: 6px; width: 4px; height: 4px; background: var(--purple); border-radius: 50%; }
         .memo-area { flex: 1; background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; }
-        .memo-date { font-size: 12px; color: #666; margin-bottom: 10px; font-weight: 700; }
+        .memo-date { font-size: 12px; color: var(--text-sub); margin-bottom: 10px; font-weight: 700; }
         #memo-input { width: 100%; flex: 1; background: transparent; border: none; color: var(--text); font-size: 16px; line-height: 1.5; resize: none; }
 
         .setup-list { padding: 20px; }
         .setup-item { padding: 20px; border-bottom: 1px solid var(--border); }
         .st-head { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
-        .st-desc { font-size: 12px; color: #666; line-height: 1.4; }
+        .st-desc { font-size: 12px; color: var(--text-sub); line-height: 1.4; }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .modal-body { width: 85%; background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); }
-        .inp { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 10px; border-radius: 8px; }
-        .btn-ok { width: 100%; padding: 12px; background: var(--cyan); color: #000; font-weight: 800; border: none; border-radius: 8px; }
+        .inp { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); color: var(--text); margin-bottom: 10px; border-radius: 8px; }
+        .btn-ok { width: 100%; padding: 12px; background: var(--cyan); color: #fff; font-weight: 800; border: none; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -181,7 +212,7 @@
         <div class="ld-container">
             <header class="ld-header">
                 <div class="ld-brand">SYNAPSE <span style="color:#fff">BLACK</span></div>
-                <div class="ld-sub">GALAXY EDITION V2.5</div>
+                <div class="ld-sub">GALAXY EDITION V2.7</div>
             </header>
 
             <section class="ld-section">
@@ -190,7 +221,7 @@
                 <p class="ld-desc">
                     시냅스 블랙은 단순한 분석 도구를 넘어, 자본의 흐름을 읽고 승률의 왜곡을 포착하는 <span class="ld-hl">개인 전용 배틀 스테이션</span>입니다. 
                     <br><br>
-                    20년 경력의 시냅스 수석 엔지니어와 의장님의 철학이 결합된 본 시스템은 시장의 보이지 않는 지표를 수치화하여 최적의 진입 시점을 제공합니다.
+                    시냅스 수석 엔지니어팀과 의장님의 철학이 결합된 본 시스템은 시장의 보이지 않는 지표를 수치화하여 최적의 진입 시점을 제공합니다.
                 </p>
             </section>
 
@@ -199,15 +230,15 @@
                 <h1 class="ld-tit">보이지 않는 것을<br>수치화하다.</h1>
                 <div style="margin-top:20px;">
                     <div class="ld-card">
-                        <div class="ld-card-head" style="color:var(--cyan)">⚡ AZI-ANALYSIS</div>
+                        <div class="ld-card-head" style="color:#00f3ff">⚡ AZI-ANALYSIS</div>
                         <div class="ld-card-body">
                             애지분석법(Azi-Analysis)을 기반으로 한 1만 회의 몬테카를로 시뮬레이션이 상시 가동됩니다.
                         </div>
                     </div>
                     <div class="ld-card">
-                        <div class="ld-card-head" style="color:var(--red)">🎯 EDGE SCORE</div>
+                        <div class="ld-card-head" style="color:#ff003c">🎯 EDGE SCORE</div>
                         <div class="ld-card-body">
-                            구조(Structure), 흐름(Flow), 효율(Efficiency)을 종합하여 시장의 착시를 깨부수는 확신 지수입니다.
+                            구조(Structure), 흐름(Flow), 효율(Efficiency)을 종합하여 시장의 착시를 <span style="color:#fff;font-weight:700">간파하는</span> 확신 지수입니다.
                         </div>
                     </div>
                 </div>
@@ -219,7 +250,7 @@
                 <p class="ld-desc">
                     보안은 시냅스의 최우선 가치입니다. 외부인에게는 단순한 디지털 시계로 위장합니다.
                 </p>
-                <div class="ld-card" style="border-color:var(--cyan);">
+                <div class="ld-card" style="border-color:#00f3ff;">
                     <div class="ld-card-head">🔒 1.0s TIME LOCK</div>
                     <div class="ld-card-body">
                         시계 화면을 <span class="ld-hl">정확히 1.0초간</span> 누르고 있을 때만 본부(HQ)로 진입할 수 있습니다. 찰나의 순간으로 시스템을 은닉하십시오.
@@ -275,12 +306,12 @@
                 <div class="click-hint">👇 터치하여 정밀 분석 리포트 확인</div>
             </div>
 
-             <div class="section-head"><span>PREMIUM INTELLIGENCE</span><span style="color:#666">MATCH 02 (ANALYZING...)</span></div>
+             <div class="section-head"><span>PREMIUM INTELLIGENCE</span><span style="color:var(--text-sub)">MATCH 02 (ANALYZING...)</span></div>
             <div class="match-card" style="opacity: 0.6;">
-                <div class="mc-header"><span class="mc-league" style="border-color:#444; color:#888;">PENDING</span><span class="mc-time">--.-- --:--</span></div>
+                <div class="mc-header"><span class="mc-league" style="border-color:var(--border); color:var(--text-sub);">PENDING</span><span class="mc-time">--.-- --:--</span></div>
                 <div class="mc-body" style="text-align:center; padding:40px;">
-                    <div style="font-size:12px; color:#666; margin-bottom:10px;">DATA PROCESSING</div>
-                    <div style="font-family:'Exo 2'; font-size:20px; color:#444;">ANALYZING NEXT MATCH</div>
+                    <div style="font-size:12px; color:var(--text-sub); margin-bottom:10px;">DATA PROCESSING</div>
+                    <div style="font-family:'Exo 2'; font-size:20px; color:var(--text-sub);">ANALYZING NEXT MATCH</div>
                 </div>
             </div>
         </div>
@@ -298,9 +329,9 @@
     <div id="page-match-detail" class="sub-page">
         <div class="sub-header"><span class="back-arrow" onclick="history.back()">←</span><span>분석 리포트</span><span style="width:24px;"></span></div>
         <div class="analysis-body">
-            <div style="text-align:center; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:20px;">
+            <div style="text-align:center; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:20px;">
                 <div style="font-size:12px; color:var(--gold);">SAUDI PRO LEAGUE</div>
-                <div style="font-size:22px; font-weight:900; color:#fff; margin:10px 0;">AL TAAWON vs AL HAZEM</div>
+                <div style="font-size:22px; font-weight:900; color:var(--text); margin:10px 0;">AL TAAWON vs AL HAZEM</div>
                 <div style="background:rgba(0,243,255,0.1); color:var(--cyan); display:inline-block; padding:5px 15px; border-radius:20px; font-weight:700;">PICK: 2.5 OVER</div>
             </div>
             <div class="section-title-l">1. 경기 환경 및 마켓 스냅샷</div>
@@ -310,7 +341,7 @@
             <div class="section-title-l">3. 시냅스 v2.5 엔진 정밀 분석</div>
             <p><b>① 1만 회 몬테카를로 시뮬레이션 결과</b><br>의장님의 '득점 하한선 1.2골' 보정 로직을 적용하여 10,000회 시뮬레이션을 수행했습니다. 그 결과 2.5 오버 발생 확률은 <span class="hl">64.2%</span> (10,000회 중 6,420회)로 집계되었습니다. 예상 스코어 분포는 2-1(14%), 3-1(11%), 2-2(8%) 순으로, 다득점 시나리오가 지배적입니다.<br><br><b>② 로컬 인텔리전스 및 전술적 팩트</b><br>알 타아원(홈)은 최근 홈 경기에서 공격 점유율을 60% 이상 유지하며 페널티 박스 투입 횟수가 리그 상위권입니다. 반면 알 하즘(원정)은 원정 경기 시 집중력이 급격히 떨어지며 최근 5번의 원정에서 매 경기 2실점 이상을 허용했습니다. 홈팀의 강한 전방 압박과 원정팀의 헐거운 수비가 충돌하는 순간, 대량 득점의 문이 열릴 것입니다.</p>
             <div class="section-title-l">4. 비즈니스 최종 결론</div>
-            <p>본 경기는 시장의 보수적인 시각(언더)을 정밀 연산(오버)으로 깨부수는 '하이 밸류' 승부처입니다. 데이터 불일치 구간에서 발생하는 강력한 엣지(+2.17)를 놓치지 마십시오.<br><br><i style="color:#666; font-size:12px;">[출처: 시냅스 v2.5 엔진 / 검증 ID: Synapse-V-20260123]</i></p>
+            <p>본 경기는 시장의 보수적인 시각(언더)을 정밀 연산(오버)으로 <b>공략하는</b> '하이 밸류' 승부처입니다. 데이터 불일치 구간에서 발생하는 강력한 엣지(+2.17)를 놓치지 마십시오.<br><br><i style="color:var(--text-sub); font-size:12px;">[출처: 시냅스 v2.5 엔진 / 검증 ID: Synapse-V-20260123]</i></p>
         </div>
     </div>
 
@@ -347,11 +378,11 @@
     </div>
 
     <div class="modal" id="link-modal">
-        <div class="modal-body"><h3 style="color:#fff; margin-top:0;">바로가기 설정</h3><input type="text" id="inp-name" class="inp" placeholder="이름 (예: 베트맨)"><input type="text" id="inp-url" class="inp" placeholder="주소 (예: betman.co.kr)"><button class="btn-ok" onclick="Links.save()">저장</button><button onclick="Links.close()" style="width:100%; padding:10px; background:none; border:none; color:#666; margin-top:5px;">취소</button></div>
+        <div class="modal-body"><h3 style="color:var(--text); margin-top:0;">바로가기 설정</h3><input type="text" id="inp-name" class="inp" placeholder="이름 (예: 베트맨)"><input type="text" id="inp-url" class="inp" placeholder="주소 (예: betman.co.kr)"><button class="btn-ok" onclick="Links.save()">저장</button><button onclick="Links.close()" style="width:100%; padding:10px; background:none; border:none; color:var(--text-sub); margin-top:5px;">취소</button></div>
     </div>
 
     <div class="modal" id="pay-modal">
-        <div class="modal-body" style="border-color:var(--gold);"><h3 style="color:var(--gold); margin-top:0;">ENGINE ACCESS</h3><div style="background:#111; padding:15px; border-radius:8px; margin:15px 0; border:1px solid #333;"><div style="font-size:11px; color:#666;">BANK ACCOUNT</div><div style="font-size:16px; font-weight:bold; color:#fff; margin-top:5px;" id="bank-acc">카카오뱅크 3333-00-0000000</div></div><button class="btn-ok" style="background:var(--gold);" onclick="Engine.copy()">계좌번호 복사</button><button onclick="Engine.close()" style="width:100%; padding:10px; background:none; border:none; color:#666; margin-top:5px;">닫기</button></div>
+        <div class="modal-body" style="border-color:var(--gold);"><h3 style="color:var(--gold); margin-top:0;">ENGINE ACCESS</h3><div style="background:var(--bg); padding:15px; border-radius:8px; margin:15px 0; border:1px solid var(--border);"><div style="font-size:11px; color:var(--text-sub);">BANK ACCOUNT</div><div style="font-size:16px; font-weight:bold; color:var(--text); margin-top:5px;" id="bank-acc">카카오뱅크 3333-00-0000000</div></div><button class="btn-ok" style="background:var(--gold); color:#000;" onclick="Engine.copy()">계좌번호 복사</button><button onclick="Engine.close()" style="width:100%; padding:10px; background:none; border:none; color:var(--text-sub); margin-top:5px;">닫기</button></div>
     </div>
 
     <script>
@@ -387,6 +418,7 @@
             timer: null,
             init: () => {
                 const trig = document.getElementById('stealth-trigger');
+                // Clock Loop
                 setInterval(() => {
                     const d = new Date();
                     document.getElementById('s-hhmm').innerText = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
